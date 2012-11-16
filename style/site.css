@@ -1,0 +1,54 @@
+h1,h2,h3,h4 {
+	color: navy;
+}
+h1,h2 {
+	text-align: center;
+}
+#enTete {
+	background-image: url('logo-getalp-transparent-bg.png');
+	background-repeat: no-repeat;
+	background-position: top left;
+}
+#partieCentrale {
+	display: table;
+	width: 100%;
+}
+
+#menuContextuel {
+	float: left;
+	width: 16%;
+}
+
+#partiePrincipale {
+	margin-left: 18%;
+}
+div {
+    /*border-style: solid;
+    border-width: 1px;*/
+    padding: 5px;
+}
+
+.odd {
+	background-color: #E5E5E5;
+}
+
+.even {
+	background-color: #D5D5D5;
+}
+
+table {
+	font-size: 1.2em;
+	margin:auto;
+	border:1px solid navy;
+ 	-moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.copyright {
+	text-align: center;
+	font-size: 0.7em;
+}
+
+a img {
+	border:none;
+}
