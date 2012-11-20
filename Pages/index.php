@@ -4,12 +4,15 @@
 	require_once(RACINE_SITE.'include/fonctions.php');
 	include(RACINE_SITE.'include/header.php');
 ?>
-<div id="enTete">
-    <h1>Site des dictionnaires</h1>
-	<h2>Accueil</h2>
+<header id="enTete">
+	<div id="langMenu">
+		<?php print_lang_menu();?>
+	</div>
+    <h1><?php echo gettext('iPoLex : entrepôt de données lexicales');?></h1>
+	<h2><?php echo gettext('Accueil');?></h2>
 	<hr />
-</div>
-<div id="partieCentrale">
+</header>
+<section id="partieCentrale">
 <?php
 	$tri = !empty($_REQUEST['tri'])?$_REQUEST['tri']:'Nom';
 	$user = !empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';
@@ -60,12 +63,19 @@ if (is_dir(DICTIONNAIRES_SITE)) {
 	<table>
 		<thead>
 			<?php if ($tri == 'Source') {
-				 	echo '<tr><th>&nbsp;</th><th>Source</th><th><a href="?tri=Nom">Nom</a></th><th>Catégorie</th><th>Type</th><th>Administrateur</th><th>Format</th><th>Cibles <a style="font-size:smaller;" href="?tri=Langues">toutes</a></th><th>Entrées</th><th colspan="3"></th></tr>';
+				 	echo '<tr><th>&nbsp;</th><th>Source</th><th><a href="?tri=Nom">',gettext('Nom'),
+				 	'</a></th><th>',gettext('Catégorie'),'</th><th>Type</th><th>',gettext('Administrateur'),
+				 	'</th><th>',gettext('Format'),'</th><th>',gettext('Cibles'),' <a style="font-size:smaller;" href="?tri=Langues">',gettext('toutes'),
+				 	' </a></th><th>',gettext('Entrées'),'</th><th colspan="3"></th></tr>';
 				}
 				else if ($tri == 'Langues') {
-				 	echo '<tr><th>&nbsp;</th><th>Langue</th><th><a href="?tri=Nom">Nom</a></th><th>Catégorie</th><th>Type</th><th>Administrateur</th><th>Format</th><th><a href="?tri=Langues">Langues</a> <a style="font-size:smaller;" href="?tri=Source">source</a></th><th>Entrées</th></tr>';
+				 	echo '<tr><th>&nbsp;</th><th>',gettext('Langue'),'</th><th><a href="?tri=Nom">',gettext('Nom'),'</a></th><th>',gettext('Catégorie'),
+				 	'</th><th>Type</th><th>',gettext('Administrateur'),'</th><th>',gettext('Format'),'</th><th><a href="?tri=Langues">',gettext('Langues'),
+				 	'</a> <a style="font-size:smaller;" href="?tri=Source">',gettext('Source'),'</a></th><th>',gettext('Entrées'),'</th></tr>';
 				}
-				else echo '<tr><th>&nbsp;</th><th>Nom</th><th>Catégorie</th><th>Type</th><th>Administrateur</th><th>Format</th><th><a href="?tri=Source">Source</a></th><th>Cibles <a style="font-size:smaller;" href="?tri=Langues">toutes</a></th><th>Entrées</th></tr>';
+				else echo '<tr><th>&nbsp;</th><th>',gettext('Nom'),'</th><th>',gettext('Catégorie'),'</th><th>',gettext('Type'),
+				'</th><th>',gettext('Administrateur'),'</th><th>',gettext('Format'),'</th><th><a href="?tri=Source">',gettext('Source'),
+				'</a></th><th>',gettext('Cibles'),' <a style="font-size:smaller;" href="?tri=Langues">',gettext('toutes'),'</a></th><th>',gettext('Entrées'),'</th></tr>';
 				?>
 		</thead>
 		<tbody>
@@ -166,14 +176,14 @@ if (is_dir(DICTIONNAIRES_SITE)) {
 		</tbody>
 	</table>
 	
-	<p style="text-align:center;"><a href="modifDictionnaire.php"><img src="<?php echo RACINE_WEB;?>images/assets/b_new.png"/>Ajout d'un dictionnaire</a></p>
- 	<p>Vous pouvez accéder directement aux dictionnaires en montant le site sur votre bureau comme un répertoire
- 	distant avec le protocole <a href="http://fr.wikipedia.org/wiki/WebDAV">WebDav</a>. Pour monter un dictionnaire spécifique, 
- 	copiez l'adresse URL de la flèche droite verte. Pour monter le répertoire contenant tous les 
- 	dictionnaires, utilisez l'adresse URL suivante : <a href="<?php echo DICTIONNAIRES_DAV;?>">
+	<p style="text-align:center;"><a href="modifDictionnaire.php"><img src="<?php echo RACINE_WEB;?>images/assets/b_new.png"/>
+	<?php echo gettext('Ajout d\'un dictionnaire');?></a></p>
+ 	<p><?php echo gettext('Vous pouvez accéder directement aux dictionnaires en montant le site sur votre bureau comme un répertoire distant avec le protocole <a href="http://fr.wikipedia.org/wiki/WebDAV">WebDav</a>.'); 
+ 	echo ' ',gettext('Pour monter un dictionnaire spécifique, copiez l\'adresse URL de la flèche droite verte.');
+ 	echo ' ',gettext('Pour monter le répertoire contenant tous les dictionnaires, utilisez l\'adresse URL suivante'); echo gettext(' : ');?><a href="<?php echo DICTIONNAIRES_DAV;?>">
  	<?php echo DICTIONNAIRES_DAV;?></a>.</p>
  
- </div>
+ </section>
 <?php
 	function parseDict($dico) {
 		$infos = array();

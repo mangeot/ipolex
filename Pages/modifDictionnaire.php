@@ -1,6 +1,6 @@
 <?php
 	require_once('../init.php');
-	require_once(RACINE_SITE.'include/langues.php');
+	require_once(RACINE_SITE.'include/lang_'.$LANG.'.php');
 	require_once(RACINE_SITE.'include/fonctions.php');
 	$Params = array();
 
@@ -81,41 +81,47 @@
 	}
 	include(RACINE_SITE.'include/header.php');
 ?>
-<div id="enTete">
-	<h1>Site des dictionnaires</h1>
-	<h2>Ajout/Modification d'un dictionnaire</h3>
+<header id="enTete">
+	<div id="langMenu">
+		<?php print_lang_menu();?>
+	</div>
+	<h1><?php echo gettext('iPoLex : entrepôt de données lexicales');?></h1>
+	<h2><?php echo gettext('Ajout/Modification d\'un dictionnaire');?></h3>
 	<hr />
-</div>
+</header>
 <div id="partieCentrale">
 <?php
 	if (!empty($_REQUEST['Enregistrer']) && !empty($_REQUEST['Name'])) {
 		$Params['Dirname'] = creerDictionnaire($Params);
 	}
+	if (!empty($Params['Dirname']) && !empty($Params['NameC']) && file_exists(DICTIONNAIRES_SITE.'/'.$Params['Dirname']."/".$Params['NameC'].'-metadata.xml')) {
+		echo '<p>',gettext('Adresse WebDAV pour accès aux données'),gettext(' : '),'<a href="',DICTIONNAIRES_WEB,'/',$Params['Dirname'],'">',DICTIONNAIRES_WEB,'/',$Params['Dirname'],'</a></p>';
+	}
 ?>
 <form action="?" method="post">
 <fieldset name="Gérer un dictionnaire">
-<legend>Gestion d'un dictionnaire</legend>
+<legend><?php echo gettext('Gestion d\'un dictionnaire');?></legend>
 <div>
-	<p>*Nom complet : <input type="text" size="50" id="NameC" name="NameC" value="<?php affichep('NameC')?>" /></p>
-	<p>*Nom abrégé : <input type="text" id="Name" name="Name" onfocus="copyifempty(this,'NameC');" value="<?php affichep('Name')?>"/></p>
-	<p>Propriétaire : <input type="text" id="Owner"  onfocus="copyifempty(this,'Name');" name="Owner"  value="<?php affichep('Owner')?>"/></p>
-	<p>*Catégorie : <select id="Category" name="Category" onchange="this.form.submit()">
+	<p>*<?php echo gettext('Nom complet'); echo gettext(' : ');?><input type="text" required="required" size="50" id="NameC" name="NameC" value="<?php affichep('NameC')?>" /></p>
+	<p>*<?php echo gettext('Nom abrégé'); echo gettext(' : ');?><input type="text" required="required"  pattern="[A-Z][a-zA-Z0-9\-]+"  id="Name" name="Name" onfocus="copyifempty(this,'NameC');" value="<?php affichep('Name')?>"/>[A-Z][a-zA-Z0-9\-]+</p>
+	<p><?php echo gettext('Propriétaire'); echo gettext(' : ');?><input type="text" id="Owner"  onfocus="copyifempty(this,'Name');" name="Owner"  value="<?php affichep('Owner')?>"/></p>
+	<p>*<?php echo gettext('Catégorie'); echo gettext(' : ');?><select id="Category"  required="required" name="Category" onchange="this.form.submit()">
 		<option value="">choisir...</option>
-		<?php afficheo('Category',"monolingual")?>monolingue</option>
-		<?php afficheo('Category',"bilingual")?>bilingue</option>
-		<?php afficheo('Category',"multilingual")?>multilingue</option>
+		<?php afficheo('Category',"monolingual")?><?php echo gettext('monolingue');?></option>
+		<?php afficheo('Category',"bilingual")?><?php echo gettext('bilingue');?></option>
+		<?php afficheo('Category',"multilingual")?><?php echo gettext('multilingue');?></option>
 	</select>
 	</p>
 	<?php if (!empty($Params['Category'])) {
 		echo '
 	<p>*Type : <select id="Type" name="Type" onchange="this.form.submit()">';
-		afficheo('Type','monodirectional'); echo 'monodirectionnel (1 volume)</option>';
+		afficheo('Type','monodirectional'); echo gettext('monodirectionnel (1 volume)'),'</option>';
 		if ($Params['Category'] !== 'monolingual') {
-			afficheo('Type','monovolume'); echo 'monovolume (1 volume avec traductions alignées)</option>';
-			afficheo('Type','bidirectional'); echo 'bidirectionnel (2 volumes La->Lb et Lb->La)</option>';
-			afficheo('Type','direct'); echo 'direct (2 volumes La et Lb reliés)</option>';
-			afficheo('Type','pivot'); echo 'pivot (x volumes Lx reliés à 1 volume pivot)</option>';
-			afficheo('Type','mixed'); echo 'mixé</option>';
+			afficheo('Type','monovolume'); echo gettext('monovolume (1 volume avec traductions alignées)'),'</option>';
+			afficheo('Type','bidirectional'); echo gettext('bidirectionnel (2 volumes La->Lb et Lb->La)'),'</option>';
+			afficheo('Type','direct'); echo gettext('direct (2 volumes La et Lb reliés)'),'</option>';
+			afficheo('Type','pivot'); echo gettext('pivot (x volumes Lx reliés à 1 volume pivot)'),'</option>';
+			afficheo('Type','mixed'); echo gettext('mixé'),'</option>';
 		}
 		echo '
 			</select>
@@ -141,13 +147,13 @@
 		?>
 		</ol>
 	</p>
-	<a href="#" onclick="document.getElementById('moreInfo').style.display='block'">Plus d'infos</a><br/>
+	<a href="#" onclick="document.getElementById('moreInfo').style.display='block'"><?php echo gettext('Plus d\'infos')?></a><br/>
 	<div id="moreInfo" style="display:none;">
-	Répertoire : 	<input type="text" size="50" name="Dirname" value="<?php affichep('Dirname')?>" /><br/>
-	URL des métadonnées :
- <?php echo 'file://',DICTIONNAIRES_SITE, '/';affichep('Dirname');echo '/',affichep('Name');echo '-metadata.xml';?><br/>
-	Date de création : <input type="text"  size="50" name="CreationDate" value="<?php affichep('CreationDate',date('c'))?>" /><br/>
-	Date d'installation :<input type="text"  size="50" name="InstallationDate" value="<?php affichep('InstallationDate',date('c'))?>" /><br/>
+	<?php echo gettext('Répertoire'),gettext(' : ');?>	<input type="text" size="50" name="Dirname" value="<?php affichep('Dirname')?>" /><br/>
+	<?php echo gettext('URL des métadonnées'),gettext(' : ');?>
+	 <?php echo DICTIONNAIRES_DAV, '/';affichep('Dirname');echo '/',affichep('Name');echo '-metadata.xml';?><br/>
+	<?php echo gettext('Date de création'),gettext(' : ');?><input type="text"  size="50" name="CreationDate" value="<?php affichep('CreationDate',date('c'))?>" /><br/>
+	<?php echo gettext('Date d\'installation'),gettext(' : ');?><input type="text"  size="50" name="InstallationDate" value="<?php affichep('InstallationDate',date('c'))?>" /><br/>
 	ResultFormatter: <input type="text"  size="100" name="ResultFormatter" value="<?php affichep('ResultFormatter',DefaultResultFormatter)?>" /><br/>
 	ResultPreprocessor: <input type="text"  size="100" name="ResultPreprocessor" value="<?php affichep('ResultPreprocessor')?>" /><br/>
 	ResultPostupdateprocessor: <input type="text"  size="100" name="ResultPostupdateprocessor" value="<?php affichep('ResultPostupdateprocessor',DefaultResultPostUpdateProcessor)?>" /><br/>
@@ -160,14 +166,18 @@
 		echo 'Other files : <textarea name="OtherFiles" cols="100" rows="8">',stripslashes($Params['OtherFiles']),'</textarea><br/>',"\n";
 		}
 	?>
-	<?php $xsls = $Params['XslStylesheet'];
+	<?php 
+			if (!empty($Params['XslStylesheet'])) {
+		$xsls = $Params['XslStylesheet'];
 		foreach ($xsls as $xsl) {
 			echo 'XSL sheet : <input name="XslStylesheet[]" value="',$xsl,'" />
-	';}?>
+	';}
+	}
+	?>
 	</div>
 	<?php
 		if (empty($Params['Consulter']) || (!empty($Params['Name']) && !empty($Params['Type']) && !empty($Params['Volume1Source']))) {
-			echo '<p style="text-align:center;"><input type="submit" name="Enregistrer" value="Enregistrer" /></p>';
+			echo '<p style="text-align:center;"><input type="submit" name="Enregistrer" value="',gettext('Enregistrer'),'" /></p>';
 		}
 	?>
 </div>
@@ -190,15 +200,15 @@
 	
 	function ajouteVolume($num) {
 		global $Params;
-		echo '<li>Langue source : <select id="Volume'.$num.'Source" name="Volume'.$num.'Source" onchange="this.form.submit()">';
-		echo '<option value="">Choisir...</option>';
+		echo '<li>',gettext('Langue source'),gettext(' : '),'<select id="Volume'.$num.'Source" name="Volume'.$num.'Source" onchange="this.form.submit()">';
+		echo '<option value="">',gettext('Choisir...'),'</option>';
 		$source='';
 		if (!empty($Params['Volume'.$num.'Source'])) {
 			$source = $Params['Volume'.$num.'Source'];
 		}
 		afficheLanguesOptions($source);
 		echo '</select>';
-		echo 'Langues cibles : ';
+		echo gettext('Langues cibles'),gettext(' : ');
 		$targets = getNumCibles($Params,$num);
 		$t=1;
 		while ($t<=$targets) {
@@ -207,14 +217,14 @@
 		}
 		ajouteCiblePlus($num,$t);
 		if (!empty($Params['Name']) && !empty($Params['Type']) && !empty($source) && !empty($Params['Dirname'])) {
-			echo '<input type="submit" id="ManageVolume'.$num.'" name="ManageVolume" value="Gérer le volume '.$num.'" />';
+			echo '<input type="submit" id="ManageVolume',$num,'" name="ManageVolume" value="',gettext('Gérer le volume'),' ',$num,'" />';
 		}
 		echo '</li>';
 	}
 	function ajouteCible($vol,$cible) {
 		global $Params;
 		echo '<select id="Volume'.$vol.'Target'.$cible.'" name="Volume'.$vol.'Target'.$cible.'"  onchange="this.form.submit()">';
-		echo '<option value="">Choisir...</option>';
+		echo '<option value="">',gettext('Choisir...'),'</option>';
 		$option='';
 		if (!empty($Params['Volume'.$vol.'Target'.$cible])) {
 			$option = $Params['Volume'.$vol.'Target'.$cible];
@@ -266,8 +276,8 @@
 		array_push($admins,$params['Administrators']);
 		restrictAccess($dirname,$admins);
 		
-		echo '<p>Le fichier de métadonnées du dictionnaire a été enregistré.
-		Vous pouvez maintenant gérer les volumes.</p>';
+		echo '<p>',gettext('Le fichier de métadonnées du dictionnaire a été enregistré.
+		Vous pouvez maintenant gérer les volumes.'),'</p>';
 		return $dirname;
 	}
 		

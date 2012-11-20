@@ -20,8 +20,10 @@
 
 	define ('DML_PREFIX','http://www-clips.imag.fr/geta/services/dml');
 	define ('XLINK_PREFIX','http://www.w3.org/1999/xlink');
-	define ('DefaultResultFormatter','fr.imag.clips.papillon.business.motamot.MotamotFormatter');
-	define ('DefaultResultPostUpdateProcessor','fr.imag.clips.papillon.business.motamot.MotamotPostUpdateProcessor');
+	define ('DefaultResultFormatter','');
+	define ('DefaultResultPostUpdateProcessor','');
+	//define ('DefaultResultFormatter','fr.imag.clips.papillon.business.motamot.MotamotFormatter');
+	//define ('DefaultResultPostUpdateProcessor','fr.imag.clips.papillon.business.motamot.MotamotPostUpdateProcessor');
 	
 	function creerDictMetadata($params,$sources,$cibles) {
 		$res = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>

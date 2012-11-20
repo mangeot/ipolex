@@ -1,0 +1,130 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ipotruc v1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-11-19 18:13+0100\n"
+"PO-Revision-Date: 2012-11-19 18:13+0100\n"
+"Last-Translator: Mathieu MANGEOT <mathieu.mangeot@imag.fr>\n"
+"Language-Team: GETALP <mathieu.mangeot@imag.fr>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: include/footer.php:3 index-general.php:34 Pages/index.php:9
+msgid "Accueil"
+msgstr "Home"
+
+#: include/footer.php:4
+msgid "tous droits réservés"
+msgstr "all rights reserved"
+
+#: include/header.php:6 include/header.php:7 include/header.php:8
+#: Pages/index.php:8
+msgid "iPoLex : entrepôt de données lexicales"
+msgstr "iPoLex: Linguistic data warehouse"
+
+#: index-general.php:17 index-general.php:18 index-general.php:19
+msgid "Entrepôts de données linguistiques"
+msgstr "Linguistic data warehouse"
+
+#: index-general.php:33
+msgid "Entrepôts de données linguistiques du GETALP"
+msgstr "GETALP linguistic data warehouse"
+
+#: index-general.php:39
+msgid "Partie centrale"
+msgstr "Central part"
+
+#: index-general.php:41 index-general.php:42 Pages/index.php:180
+msgid " : "
+msgstr ": "
+
+#: index-general.php:41
+msgid "Entrepôt de données lexicales (dictionnaires, lexiques, terminologies)"
+msgstr "Lexical data warehouse (dictionaries, lexicons, terminologies)"
+
+#: index-general.php:42
+msgid "Entrepôt de données corporales (corpus textuels)"
+msgstr "Corporal data warehouse (corpora)"
+
+#: Pages/index.php:63 Pages/index.php:69 Pages/index.php:73
+msgid "Nom"
+msgstr "Name"
+
+#: Pages/index.php:64 Pages/index.php:69 Pages/index.php:73
+msgid "Catégorie"
+msgstr "Category"
+
+#: Pages/index.php:64 Pages/index.php:70 Pages/index.php:74
+msgid "Administrateur"
+msgstr "Administrator"
+
+#: Pages/index.php:65 Pages/index.php:70 Pages/index.php:74
+msgid "Format"
+msgstr "Format"
+
+#: Pages/index.php:65 Pages/index.php:75
+msgid "Cibles"
+msgstr "Targets"
+
+#: Pages/index.php:65 Pages/index.php:75
+msgid "toutes"
+msgstr "all"
+
+#: Pages/index.php:66 Pages/index.php:71 Pages/index.php:75
+msgid "Entrées"
+msgstr "Entries"
+
+#: Pages/index.php:69
+msgid "Langue"
+msgstr "Language"
+
+#: Pages/index.php:70
+msgid "Langues"
+msgstr "Languages"
+
+#: Pages/index.php:71 Pages/index.php:74
+msgid "Source"
+msgstr "Source"
+
+#: Pages/index.php:73
+msgid "Type"
+msgstr "Type"
+
+#: Pages/index.php:177
+msgid "Ajout d'un dictionnaire"
+msgstr "Adding a dictionary"
+
+#: Pages/index.php:178
+msgid ""
+"Vous pouvez accéder directement aux dictionnaires en montant le site sur "
+"votre bureau comme un répertoire distant avec le protocole <a href=\"http://"
+"fr.wikipedia.org/wiki/WebDAV\">WebDav</a>."
+msgstr ""
+"You can access directly to the dictionaries by mounting the site on your "
+"desktop as a remote volume with the <a href=\"http://en.wikipedia.org/wiki/"
+"WebDAV\">WebDav</a> protocole."
+
+#: Pages/index.php:179
+msgid ""
+"Pour monter un dictionnaire spécifique, copiez l'adresse URL de la flèche "
+"droite verte."
+msgstr ""
+"In order to mount a specific dictionary, copy the URL address of the right "
+"green arrow."
+
+#: Pages/index.php:180
+msgid ""
+"Pour monter le répertoire contenant tous les dictionnaires, utilisez "
+"l'adresse URL suivante"
+msgstr ""
+"In order to mount the remote volume containing all the dictionaries, copy "
+"the following URL address"

@@ -1,7 +1,7 @@
 <hr/>
-<div id="piedDePage">
-<p style="text-align:center;"><a href="index.php">Accueil</a></p>
-<p class="copyright">Copyright © Mathieu Mangeot, GETALP, tous droits réservés</p>
-</div>
+<footer id="piedDePage">
+<p><a href="index.php"><?php echo gettext('Accueil');?></a></p>
+<p class="copyright">Copyright © Mathieu Mangeot, GETALP, <?php echo gettext('tous droits réservés');?></p>
+</footer>
 </body>
 </html>

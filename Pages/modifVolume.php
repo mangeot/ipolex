@@ -1,6 +1,6 @@
 <?php
 	require_once('../init.php');
-	require_once(RACINE_SITE.'include/langues.php');
+	require_once(RACINE_SITE.'include/lang_'.$LANG.'.php');
 	require_once(RACINE_SITE.'include/fonctions.php');
 
 	$Params = array();
@@ -67,11 +67,15 @@
 	$modif = !empty($Params['Template']);
 	include(RACINE_SITE.'include/header.php');
 ?>
-<div id="enTete">
-	<h1>Site des dictionnaires</h1>
-	<h2>Ajout/modification d'un volume</h2>
+<header id="enTete">
+	<div id="langMenu">
+		<?php print_lang_menu();?>
+	</div>
+	<h1><?php echo gettext('iPoLex : entrepôt de données lexicales');?></h1>
+	<h2><?php echo gettext('Ajout/modification d\'un volume');?></h3>
 	<hr />
-</div>
+</header>
+
 <div id="partieCentrale">
 <?php
 	if (!empty($_REQUEST['Enregistrer'])) {
@@ -80,22 +84,22 @@
 ?>
 <form action="?" method="post">
 <fieldset name="Gérer un volume">
-<legend>Gestion d'un volume</legend>
+<legend><?php echo gettext('Gestion d\'un volume');?></legend>
 <div>
-	<p>Nom du dictionnaire : <?php affichep('Dictname')?>; 
-	langue source : <?php echo $LANGUES[$source]?>; 
-	langues cible : <?php foreach ($targets as $cible) {echo $LANGUES[$cible],', ';}?></p>
-	<p>Nombre d'entrées : <input type="text" id="HwNumber" name="HwNumber"  value="<?php affichep('HwNumber')?>"/></p>
+	<p><?php echo gettext('Nom du dictionnaire'), gettext(' : ');?><?php affichep('Dictname')?>; 
+	<?php echo gettext('langue source'), gettext(' : ');?><?php echo $LANGUES[$source]?>; 
+	<?php echo gettext('langues cible'), gettext(' : ');?><?php foreach ($targets as $cible) {echo $LANGUES[$cible],', ';}?></p>
+	<p><?php echo gettext('Nombre d\'entrées'), gettext(' : ');?><input type="text" id="HwNumber" name="HwNumber"  value="<?php affichep('HwNumber')?>"/></p>
 	<p>*Format : <select id="Format" name="Format" onchange="this.form.submit()">
-		<option value="">choisir...</option>
+		<option value=""><?php echo gettext('Choisir...');?></option>
 		<?php afficheo('Format',"xml")?>xml</option>
-		<?php afficheo('Format',"txt")?>texte</option>
+		<?php afficheo('Format',"txt")?><?php echo gettext('texte');?></option>
 		<?php afficheo('Format',"csv")?>csv (excel)</option>
 		<?php afficheo('Format',"ao")?>ariane</option>
 		<?php afficheo('Format',"unl")?>unl</option>
 		<?php afficheo('Format',"rtf")?>RTF</option>
 		<?php afficheo('Format',"odt")?>ODT (OpenDocument)</option>
-		<?php afficheo('Format',"other")?>autre</option>
+		<?php afficheo('Format',"other")?><?php echo gettext('autre');?></option>
 	</select>
 	</p>
 	<p>Encodage : <input type="text" id="Encoding" name="Encoding"  value="<?php affichep('Encoding','UTF-8')?>"/></p>
@@ -103,9 +107,8 @@
 		$langs = $targets;
 		array_push($langs,$source);
 		sort($langs,SORT_LOCALE_STRING);
-		echo '<p>*Pointeurs CDM <a href="http://fr.wikipedia.org/wiki/XPath">XPath</a> :<br/>
-		Attention, n\'oubliez pas de vider
-		la description d\'un pointeur s\'il ne correspond à rien dans votre structure !</p>
+		echo '<p>*',gettext('Pointeurs CDM <a href="http://fr.wikipedia.org/wiki/XPath">XPath</a>'),gettext(' : '),'<br/>';
+		echo gettext('Attention, n\'oubliez pas de vider la description d\'un pointeur s\'il ne correspond à rien dans votre structure !'),'</p>
 		  <ul>',"\n";
 		  foreach ($CDMElements as $nom => $element) {
 		  	if ($nom=='cdm-translation'||$nom=='cdm-translation-ref') {$langs= $targets;}
@@ -119,7 +122,7 @@
 		  	}
 		  }
 		  if (!empty($Params['CDMFreeElementsName'])) {
-			echo '<li style="list-style-type:none;">Éléments CDM spécifiques à un volume :</li>';
+			echo '<li style="list-style-type:none;">',gettext('Éléments CDM spécifiques à un volume'),gettext(' : '),'</li>';
 			$Valeurs = $Params['CDMFreeElementsValue'];
 			$i=0;			
 			foreach ($Params['CDMFreeElementsName'] as $nom) {
@@ -129,7 +132,7 @@
 			}
 		  }
 			echo '		  </ul>';
-		echo '<p>*Article XML modèle (vide) :
+		echo '<p>*',gettext('Article XML modèle (vide)'), gettext(' : '),'
 			<textarea name="Template" id="Template" cols="40" rows="10">';
 		if (!empty($Params['Template'])) {
 			echo stripslashes($Params['Template']);
@@ -147,16 +150,16 @@
 		</p>';
 	}
 	?>
-	<a href="#" onclick="document.getElementById('moreInfo').style.display='block'">Plus d'infos</a><br/>
+	<a href="#" onclick="document.getElementById('moreInfo').style.display='block'"><?php echo gettext('Plus d\'infos');?></a><br/>
 	<div id="moreInfo" style="display:none;">
-	Répertoire : <input type="text" size="50" name="Dirname" value="<?php affichep('Dirname')?>" /><br/>
-	Nom : <input type="text" size="50" name="Name" value="<?php affichep('Name')?>" /><br/>
- URL des métadonnées :
+	<?php echo gettext('Répertoire'), gettext(' : ');?><input type="text" size="50" name="Dirname" value="<?php affichep('Dirname')?>" /><br/>
+	<?php echo gettext('Nom'), gettext(' : ');?><input type="text" size="50" name="Name" value="<?php affichep('Name')?>" /><br/>
+ <?php echo gettext('URL des métadonnées'), gettext(' : ');?>
  <?php echo 'file://',DICTIONNAIRES_SITE, '/';affichep('Dirname');echo '/',affichep('Name');echo '-metadata.xml';?><br/>
-	Date de création : <input type="text"  size="50" name="CreationDate" value="<?php affichep('CreationDate',date('c'))?>" /><br/>
-	Date d'installation :<input type="text"  size="50" name="InstallationDate" value="<?php affichep('InstallationDate',date('c'))?>" /><br/>
-	Auteurs : <input type="text"  size="100" name="Authors" value="<?php affichep('Authors')?>" /><br/>
-	Administrateurs : <input type="text" size="100" id="Administrators" name="Administrators" value="<?php $u=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';affichep('Administrators',$u);?>"/><br/>	
+	 <?php echo gettext('Date de création'), gettext(' : ');?><input type="text"  size="50" name="CreationDate" value="<?php affichep('CreationDate',date('c'))?>" /><br/>
+	<?php echo gettext('Date d\'installation'), gettext(' : ');?><input type="text"  size="50" name="InstallationDate" value="<?php affichep('InstallationDate',date('c'))?>" /><br/>
+	<?php echo gettext('Auteurs'), gettext(' : ');?><input type="text"  size="100" name="Authors" value="<?php affichep('Authors')?>" /><br/>
+	<?php echo gettext('Administrateurs'), gettext(' : ');?><input type="text" size="100" id="Administrators" name="Administrators" value="<?php $u=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';affichep('Administrators',$u);?>"/><br/>	
 	XmlschemaRef : <input type="text"  size="100" name="XmlschemaRef" value="<?php affichep('XmlschemaRef')?>" /><br/>
 	TemplateInterfaceRef : <input type="text"  size="100" name="TemplateInterfaceRef" value="<?php affichep('TemplateInterfaceRef')?>" /><br/>
 	<input name="Dictname" type="hidden" id="Dictname"  value="<?php affichep('Dictname')?>" />
@@ -166,11 +169,11 @@
 		foreach ($xsls as $xsl) {
 			echo 'Stylesheet : <input type="text" name="XslStylesheet[]" value="',$xsl,'" /><br/>
 	';}?>
-	Commentaires : 	<input type="text" size="100" name="Comments" value="<?php affichep('Comments')?>" /><br/>
+	<?php echo gettext('Commentaires'), gettext(' : ');?><input type="text" size="100" name="Comments" value="<?php affichep('Comments')?>" /><br/>
 	</div>
 	<?php
 		if (!empty($Params['Dictname']) && !empty($Params['Format']) && !empty($Params['Source'])) {
-			echo '<p style="text-align:center;"><input type="submit" name="Enregistrer" value="Enregistrer" /></p>';
+			echo '<p style="text-align:center;"><input type="submit" name="Enregistrer" value="',gettext('Enregistrer'),'" /></p>';
 		}
 	?>
 
@@ -229,8 +232,7 @@
 											|| empty($params['cdm-entry'])
 											|| empty($params['cdm-entry-id'])
 											|| empty($params['cdm-headword']))) {
-			echo '<p style="color:red;">Attention, vous devez impérativement remplir les pointeurs
-			CDM précédés d\'un astérisque *</p>';
+			echo '<p style="color:red;">',gettext('Attention, vous devez impérativement remplir les pointeurs CDM précédés d\'un astérisque *'),'</p>';
 		}
 		else {
 			$cibles = array_filter(explode(' ',$params['Targets']));
@@ -252,14 +254,14 @@
 			$dataFileName = strtolower($name);
 			$dataFileName .= '.'.$params['Format'];			
 			
-			echo '<p>Le fichier de métadonnées du volume est créé. Vous pouvez maintenant 
-			ouvrir le dossier du volume sur votre bureau en <a href="http://fr.wikipedia.org/wiki/WebDAV">WebDav</a> avec l\'adresse URL suivante : 
+			echo '<p>',gettext('Le fichier de métadonnées du volume est créé.'),' ',
+			gettext('Vous pouvez maintenant ouvrir le dossier du volume sur votre bureau en <a href="http://fr.wikipedia.org/wiki/WebDAV">WebDav</a> avec l\'adresse URL suivante'),
+			gettext(' : '),'
 			<a href="',DICTIONNAIRES_DAV,'/',$params['Dirname'],'/">',DICTIONNAIRES_DAV,'/',$params['Dirname'],'/</a>
-			 (vous seul avez les droits d\'écriture sur ce dossier).</p>
-			<p>Téléversez ensuite le fichier de données du volume en le renommant 
-			avec le nom suivant : <code><strong>',$dataFileName,'</strong></code>.</p>
-			<p>Une fois que vous avez terminé, retournez sur la page de 
-			<a href="modifDictionnaire.php?Modifier=on&Dirname=',$params['Dirname'],'&Name=',$params['Dictname'],'">modification du dictionnaire</a>.</p>';
+			 (',gettext('vous seul avez les droits d\'écriture sur ce dossier'),').</p>
+			<p>',gettext('Téléversez ensuite le fichier de données du volume en le renommant avec le nom suivant'),gettext(' : '),'<code><strong>',$dataFileName,'</strong></code>.</p>
+			<p>',gettext('Une fois que vous avez terminé, retournez sur'),' ',' 
+			<a href="modifDictionnaire.php?Modifier=on&Dirname=',$params['Dirname'],'&Name=',$params['Dictname'],'">',gettext('page de modification du dictionnaire'),'</a>.</p>';
 		}
 	}
 ?>

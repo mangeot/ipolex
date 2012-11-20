@@ -1,0 +1,13 @@
+./include/connexion.php
+./include/fonctions.php
+./include/footer.php
+./include/header.php
+./include/langues.php
+./index-general.php
+./index.php
+./init.php
+./Pages/dictlist.php
+./Pages/dictlistOrig.php
+./Pages/index.php
+./Pages/modifDictionnaire.php
+./Pages/modifVolume.php

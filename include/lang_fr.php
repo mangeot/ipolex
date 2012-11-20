@@ -31,6 +31,7 @@ $LANGUES = array(
 'ave'=>'avestique',
 'awa'=>'awadhi',
 'axi'=>'axie',
+'axm'=>'axème',
 'aym'=>'aymara',
 'aze'=>'azéri',
 'bad'=>'banda',
