@@ -1,7 +1,5 @@
 <?php
 	require_once('../init.php');
-	require_once(RACINE_SITE.'include/lang_'.$LANG.'.php');
-	require_once(RACINE_SITE.'include/fonctions.php');
 
 	$Params = array();
 	
@@ -42,6 +40,23 @@
 				}
 				$Params[$nom] =  $node->getAttribute('xpath');
 			}
+			else if ($nom == 'links') {
+				foreach ($node->childNodes as $linkNode) {
+					if ($linkNode->nodeType == XML_ELEMENT_NODE && $linkNode->nodeName == 'link') {
+						$newLink = array();
+						$newLink['name'] = $linkNode->getAttribute('name');
+						$newLink['xpath'] = $linkNode->getAttribute('xpath');
+						foreach ($linkNode->childNodes as $linkValue) {
+							if ($linkValue->nodeType == XML_ELEMENT_NODE) {
+								$nom = $linkValue->nodeName;
+								$newLink[$nom] = $linkValue->getAttribute('xpath');
+							}
+						}
+						if (empty($Params['CDMLinks'])) {$Params['CDMLinks']=array();}
+						array_push($Params['CDMLinks'],$newLink);
+					}
+				}
+			}
 			else {
 				if (empty($Params['CDMFreeElementsName'])) {$Params['CDMFreeElementsName']=array();}
 				if (empty($Params['CDMFreeElementsValue'])) {$Params['CDMFreeElementsValue']=array();}
@@ -78,8 +93,18 @@
 
 <div id="partieCentrale">
 <?php
-	if (!empty($_REQUEST['Enregistrer'])) {
+	if (!empty($_REQUEST['Enregistrer']) || !empty($_REQUEST['AjoutLien'])) {
 		enregistrerVolume($Params);
+		if (!empty($_REQUEST['AjoutLien'])) {
+			$LinkCopy = $CDMLink;
+			if (empty($Params['CDMLinks'])) {
+				$Params['CDMLinks'] = array();
+			}
+			array_push($Params['CDMLinks'],$LinkCopy);
+		}
+	}
+	else {
+		echo '<p>',gettext('Adresse WebDAV pour accès aux données'),gettext(' : '),'<a href="',DICTIONNAIRES_WEB,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
 	}
 ?>
 <form action="?" method="post">
@@ -114,7 +139,7 @@
 		  	if ($nom=='cdm-translation'||$nom=='cdm-translation-ref') {$langs= $targets;}
 		  	if ($nom=='cdm-example'||$nom=='cdm-idiom'||$nom=='cdm-translation'||$nom=='cdm-translation-ref') {
 				foreach ($langs as $cible) {
-					echo '<li>',$element[0],$LANGUES[$cible], ' : <input type="text" size="70" id="',$nom,'_',$cible,'" name="',$nom,'_',$cible,'"  value="', affichep($nom.'_'.$cible,$element[1]),'"/> ',$element[2],"\n";
+					echo '<li>',$element[0],$LANGUES[$cible], gettext(' : '),'<input type="text" size="70" id="',$nom,'_',$cible,'" name="',$nom,'_',$cible,'"  value="', affichep($nom.'_'.$cible,$element[1]),'"/> ',$element[2],"\n";
 				}
 		  	}
 		  	else {
@@ -132,6 +157,20 @@
 			}
 		  }
 			echo '		  </ul>';
+			
+		echo '<p>',gettext('Liens vers d\'autres entrées'), gettext(' : '),' <input type="submit" name="AjoutLien" id="AjoutLien" value="+" /></p>';
+		if (empty($Params['CDMLinks'] )) {
+			$Params['CDMLinks']  = array();
+		}
+		$i = 0;
+		foreach ($Params['CDMLinks'] as $cdmlink) {
+			echo '<p>',gettext('Lien'),gettext(' : '),$i,'</p><ul> ';
+			foreach ($cdmlink as $nom => $valeur) {
+				echo '<li>',$CDMLinkInfo[$nom][0], ' : <input type="text" size="70" id="CDMLinks[',$i,'][',$nom,']" name="CDMLinks[',$i,'][',$nom,']"  value="', $valeur,'"/> ',$CDMLinkInfo[$nom][1],"\n";
+			}
+			$i++;
+			echo '</ul>';
+		}
 		echo '<p>*',gettext('Article XML modèle (vide)'), gettext(' : '),'
 			<textarea name="Template" id="Template" cols="40" rows="10">';
 		if (!empty($Params['Template'])) {
@@ -165,7 +204,8 @@
 	<input name="Dictname" type="hidden" id="Dictname"  value="<?php affichep('Dictname')?>" />
 	<input name="Source" type="hidden" id="Source"  value="<?php affichep('Source')?>"/>
 	<input name="Targets" type="hidden" id="Targets"  value="<?php affichep('Targets')?>"/>
-	<?php $xsls = $Params['XslStylesheet'];
+	<?php 
+		$xsls = (!empty($Params['XslStylesheet']))?$Params['XslStylesheet']:array();
 		foreach ($xsls as $xsl) {
 			echo 'Stylesheet : <input type="text" name="XslStylesheet[]" value="',$xsl,'" /><br/>
 	';}?>

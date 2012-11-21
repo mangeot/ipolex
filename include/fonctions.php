@@ -1,23 +1,45 @@
 <?php
 
 	$CDMElements = array(
-	'cdm-volume' => array('*Volume','/volume',''),
-	'cdm-entry' => array('*Article','/volume/entry',''),
-	'cdm-entry-id' => array('*Identifiant unique de l\'article','/volume/entry/@id','valeur éventuellement vide'),
-	'cdm-headword' => array('*Mot-vedette','/volume/entry/headword/text()',''),
-	'cdm-homograph-number' => array('Numéro d\'homographe','/volume/entry/headword/@hn',''),
-	'cdm-headword-variant' => array('Variante','/volume/entry/variant/text()',''),
-	'cdm-writing' => array('Transcription','/volume/entry/transcription/text()','ex : romaji, pinyin'),
-	'cdm-reading' => array('Lecture','/volume/entry/reading/text()','ex : yomigana'),
-	'cdm-pronunciation' => array('Prononciation','/volume/entry/pron/text()','en API si possible'),
-	'cdm-pos' => array('Classe grammaticale','/volume/entry/pos/text()',''),
-	'cdm-definition' => array('Définition','/volume/entry/definition/text()','non indexé'),
-	'cdm-translation' => array('Traduction en ','/volume/entry/translation/text()',''),
-	'cdm-translation-ref' => array('Lien vers la traduction en ','/volume/entry/translation-ref/text()',''),
-	'cdm-example' => array('Exemple en ','/volume/entry/examples/example/text()',''),
-	'cdm-idiom' => array('Expression idiomatique en ','/volume/entry/idioms/idiom/text()','')
+	'cdm-volume' => array('*'.gettext('Volume'),'/volume',''),
+	'cdm-entry' => array('*'.gettext('Article'),'/volume/entry',''),
+	'cdm-entry-id' => array('*'.gettext('Identifiant unique de l\'article'),'/volume/entry/@id',gettext('valeur éventuellement vide')),
+	'cdm-headword' => array('*'.gettext('Mot-vedette'),'/volume/entry/headword/text()',''),
+	'cdm-homograph-number' => array(gettext('Numéro d\'homographe'),'/volume/entry/headword/@hn',''),
+	'cdm-headword-variant' => array(gettext('Variante'),'/volume/entry/variant/text()',''),
+	'cdm-writing' => array(gettext('Transcription'),'/volume/entry/transcription/text()',gettext('ex : romaji, pinyin')),
+	'cdm-reading' => array(gettext('Lecture'),'/volume/entry/reading/text()',gettext('ex : yomigana')),
+	'cdm-pronunciation' => array(gettext('Prononciation'),'/volume/entry/pron/text()',gettext('en API si possible')),
+	'cdm-pos' => array(gettext('Classe grammaticale'),'/volume/entry/pos/text()',''),
+	'cdm-definition' => array(gettext('Définition'),'/volume/entry/definition/text()',gettext('non indexé')),
+	'cdm-translation' => array(gettext('Traduction en '),'/volume/entry/translation/text()',''),
+	'cdm-example' => array(gettext('Exemple en '),'/volume/entry/examples/example/text()',''),
+	'cdm-idiom' => array(gettext('Expression idiomatique en '),'/volume/entry/idioms/idiom/text()','')
+	);
+	
+	$CDMLinkInfo = array(
+		'name' => array('*'.gettext('Nom'),''),
+		'volume' => array('*'.gettext('Volume cible'),''),
+		'xpath' => array('*'.gettext('XPath du lien'),gettext('XPath de l\'élément')),
+		'value' => array('*'.gettext('XPath de la valeur du lien'),gettext('Chemin relatif à l\'élément')),
+		'type' => array('*'.gettext('XPath du type du lien'),gettext('Valeur "final" vers une entrée, et "axi" vers une axie')),
+		'lang' => array('*'.gettext('XPath de la langue de la cible'),''),
+		'label' => array(gettext('XPath de l\'étiquette du lien'),gettext('Valeur libre')),
+		'weight' => array(gettext('XPath du poids du lien'),gettext('Entier ou réel'))
 	);
 
+	$CDMLink = array(
+		'name' => 'translation',
+		'volume' => 'target-volume-name',
+		'xpath' => '/volume/entry/translation-ref',
+		'value' => '@id',
+		'type' => '@type',
+		'lang' => '@lang',
+		'label' => '@label',
+		'weight' => '@weight'
+	);
+
+	
 	define ('DML_PREFIX','http://www-clips.imag.fr/geta/services/dml');
 	define ('XLINK_PREFIX','http://www.w3.org/1999/xlink');
 	define ('DefaultResultFormatter','');
@@ -184,6 +206,29 @@
   	  	$res .= '<'.$nom.' xpath="'.$valeur.'" index="true"  />	
   ';}
   }
+  $res .= '<links>
+  ';
+  if (!empty($params['CDMLinks'])) {
+  	foreach ($params['CDMLinks'] as $link) {
+  		if (!empty($link['name']) && !empty($link['xpath'])) {
+  		$res .= '<link name="'.$link['name'].'" xpath="'.$link['xpath'].'">
+  		';
+  		 foreach ($link as $name => $value) {
+  		 	if ($name != 'name' && $name != 'xpath') {
+  		 		if (!empty($link[$name])) {
+				$res .='<'.$name.' xpath="'.$link[$name].'"/>
+  ';  		 	
+  		 		}
+  			}
+  		}
+  		  $res .= '</link>
+  		';
+  		}
+	}
+  }
+  $res .= '</links>
+	';  
+ 
  $res .= '</cdm-elements>
  <administrators>
   <user-ref name="'.$params['Administrators'].'"/>
@@ -300,8 +345,7 @@
 	}
 	
 	function restrictAccess($dirname, $users) {
-		$filename = DICTIONNAIRES_SITE.'/'.$dirname.'/.htaccess';
-		
+		$filename = DICTIONNAIRES_SITE.'/'.$dirname.'/.htaccess';		
 		$htaccess = '<LimitExcept GET HEAD OPTIONS POST PROPFIND>
         Require user ';
         foreach ($users as $user) {
@@ -313,7 +357,5 @@
 		$fh = fopen($filename, 'w') or die("impossible d'ouvrir le fichier ".$myFile);
 		fwrite($fh, $htaccess);
 		fclose($fh);
-		
 	}
-
 ?>

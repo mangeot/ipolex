@@ -9,18 +9,20 @@
 
 	define('LANG_COOKIE','LANG_COOKIE');
 	define('SEP_NOM',"#");
-	define('DICTIONNAIRES_SITE','/opt/www/html-ssl/dictionnaires');
-//	define('DICTIONNAIRES_SITE','/Data/papillon-data/Purgatory');
+//	define('DICTIONNAIRES_SITE','/opt/www/html-ssl/dictionnaires');
+	define('DICTIONNAIRES_SITE','/Data/ipolex');
 	define('DICTIONNAIRES_DAV','https://papillon.imag.fr/DAV/dictionnaires');
 	require_once(RACINE_SITE.'include/language_negociation.php');
-	$lang = negotiate_language();
+	$locale = negotiate_language();
 	$filename = 'default';
-	putenv("LANGUAGE=$lang");
-	setlocale(LC_COLLATE, $lang);
-	setlocale(LC_ALL, $lang);
+	putenv("LANGUAGE=$locale");
+	setlocale(LC_COLLATE, $locale);
+	setlocale(LC_ALL, $locale);
 
 	bindtextdomain($filename, RACINE_SITE . 'locale');
 	bind_textdomain_codeset($filename, "UTF-8");
 	textdomain($filename);
-	
+	require_once(RACINE_SITE.'include/lang_'.$LANG.'.php');
+	require_once(RACINE_SITE.'include/fonctions.php');
+
 ?>

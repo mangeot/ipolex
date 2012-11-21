@@ -1,7 +1,5 @@
 <?php
 	require_once('../init.php');
-	require_once(RACINE_SITE.'include/langues.php');
-	require_once(RACINE_SITE.'include/fonctions.php');
 	include(RACINE_SITE.'include/header.php');
 ?>
 <header id="enTete">

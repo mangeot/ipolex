@@ -95,7 +95,7 @@
 		$Params['Dirname'] = creerDictionnaire($Params);
 	}
 	if (!empty($Params['Dirname']) && !empty($Params['NameC']) && file_exists(DICTIONNAIRES_SITE.'/'.$Params['Dirname']."/".$Params['NameC'].'-metadata.xml')) {
-		echo '<p>',gettext('Adresse WebDAV pour accès aux données'),gettext(' : '),'<a href="',DICTIONNAIRES_WEB,'/',$Params['Dirname'],'">',DICTIONNAIRES_WEB,'/',$Params['Dirname'],'</a></p>';
+		echo '<p>',gettext('Adresse WebDAV pour accès aux données'),gettext(' : '),'<a href="',DICTIONNAIRES_WEB,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
 	}
 ?>
 <form action="?" method="post">
