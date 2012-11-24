@@ -64,3 +64,8 @@ footer {
 a img {
 	border:none;
 }
+.erreur {
+	color: #D8000C;
+	background-color: #FFBABA;
+	border: 1px solid;	
+}

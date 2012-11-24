@@ -20,7 +20,6 @@
   		$Params['Type'] = $dict->getAttribute('type');
   		$Params['CreationDate'] = $dict->getAttribute('creation-date');
   		$Params['InstallationDate'] = $dict->getAttribute('installation-date');
-  		$Params['NameC'] = $dict->getAttribute('fullname');
   		$Params['Contents'] = $dict->getElementsByTagName('contents')->item(0)->nodeValue;
   		$Params['Domain'] = $dict->getElementsByTagName('domain')->item(0)->nodeValue;
   		$Params['Source'] = $dict->getElementsByTagName('source')->item(0)->nodeValue;
@@ -273,6 +272,10 @@
 	function creerDictionnaire($params) {
 		$admins = preg_split("/[\s,;]+/", $params['Administrators']);		
 		$name = $params['Name'];
+		if (!preg_match('/^[a-zA-Z0-9]$/',$name)) {
+			echo '<p class="erreur">',gettext('Le nom abrégé du dictionnaire contient des caractères non autorisés !'),'</p>';
+			return '';
+		}
 		$sources = recupSources($params);
 		$cibles = recupCibles($params);
 		$langs=array_unique(array_merge($sources,$cibles));
