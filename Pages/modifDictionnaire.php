@@ -9,11 +9,12 @@
 	if (!empty($_REQUEST['Dirname']) && !empty($_REQUEST['Name'])) {
 		$myFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$_REQUEST['Name'].'-metadata.xml';
 		$display = file_exists($myFile);
+		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';
+		$admins = array($user);
 		if (!empty($params['Administrators'])) {
 			$admins = preg_split("/[\s,;]+/", $params['Administrators']);
-			$u=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';
-			$save = in_array($u, $admins);
 		}
+		$save = in_array($u, $admins);
 	}
 	if ((!empty($_REQUEST['Modifier']) || !empty($_REQUEST['Consulter'])) && $display) {
 		$doc = new DOMDocument();
