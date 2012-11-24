@@ -119,6 +119,8 @@
 	
 	$adresseDonnees = $modif?gettext('Adresse WebDAV pour modification des données'):gettext('Adresse WebDAV pour accès aux données');
 	echo '<p>',$adresseDonnees,gettext(' : '),'<a href="',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
+	echo '<p><a href="modifDictionnaire.php?Dirname=',$params['Dirname'],'&Name=',$params['Dictname'],'">',gettext('Gestion du dictionnaire'),'</a>.</p>';
+
 
 ?>
 <form action="?" method="post">
@@ -316,8 +318,8 @@
 			<a href="',DICTIONNAIRES_DAV,'/',$params['Dirname'],'/">',DICTIONNAIRES_DAV,'/',$params['Dirname'],'/</a>
 			 (',gettext('seuls les admin ont les droits d\'écriture sur ce dossier'),').</p>
 			<p>',gettext('Téléversez ensuite le fichier de données du volume en le renommant avec le nom suivant'),gettext(' : '),'<code><strong>',$dataFileName,'</strong></code>.</p>
-			<p>',gettext('Une fois que vous avez terminé, retournez sur'),' ',' 
-			<a href="modifDictionnaire.php?Modifier=on&Dirname=',$params['Dirname'],'&Name=',$params['Dictname'],'">',gettext('page de modification du dictionnaire'),'</a>.</p>';
+			<p>',gettext('Une fois que vous avez terminé, retournez sur la'),' ',' 
+			<a href="modifDictionnaire.php?Dirname=',$params['Dirname'],'&Name=',$params['Dictname'],'">',gettext('page de modification du dictionnaire'),'</a>.</p>';
 		}
 	}
 ?>
