@@ -115,7 +115,7 @@
 <legend><?php echo gettext('Gestion d\'un dictionnaire');?></legend>
 <div>
 	<p>*<?php echo gettext('Nom complet'); echo gettext(' : ');?><input type="text" required="required" size="50" id="NameC" name="NameC" value="<?php affichep('NameC')?>" /></p>
-	<p>*<?php echo gettext('Nom abrégé'); echo gettext(' : ');?><input type="text" required="required"  pattern="[A-Z][a-zA-Z0-9\-]+"  id="Name" name="Name" onfocus="copyifempty(this,'NameC');" value="<?php affichep('Name')?>"/>[A-Z][a-zA-Z0-9\-]+</p>
+	<p>*<?php echo gettext('Nom abrégé'); echo gettext(' : ');?><input type="text" required="required"  pattern="[A-Z][a-zA-Z0-9\-]+"  id="Name" name="Name" onfocus="copyifempty(this,'NameC');" value="<?php affichep('Name')?>"/> <?php echo gettext('Caractères ASCII alphanumériques et tiret uniquement !');?></p>
 	<p><?php echo gettext('Propriétaire'); echo gettext(' : ');?><input type="text" id="Owner"  onfocus="copyifempty(this,'Name');" name="Owner"  value="<?php affichep('Owner')?>"/></p>
 	<p>*<?php echo gettext('Catégorie'); echo gettext(' : ');?><select id="Category"  required="required" name="Category" onchange="this.form.submit()">
 		<option value="">choisir...</option>
@@ -272,7 +272,7 @@
 	function creerDictionnaire($params) {
 		$admins = preg_split("/[\s,;]+/", $params['Administrators']);		
 		$name = $params['Name'];
-		if (!preg_match('/^[a-zA-Z0-9]+$/',$name)) {
+		if (!preg_match('/^[a-zA-Z0-9\-]+$/',$name)) {
 			echo '<p class="erreur">',gettext('Le nom abrégé du dictionnaire contient des caractères non autorisés !'),'</p>';
 			return '';
 		}

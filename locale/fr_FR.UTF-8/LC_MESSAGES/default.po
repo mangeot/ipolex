@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ipotruc v1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-24 21:15+0100\n"
-"PO-Revision-Date: 2012-11-24 21:15+0100\n"
+"POT-Creation-Date: 2012-11-24 21:30+0100\n"
+"PO-Revision-Date: 2012-11-24 21:30+0100\n"
 "Last-Translator: Mathieu MANGEOT <mathieu.mangeot@imag.fr>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -304,6 +304,10 @@ msgstr "Nom complet"
 #: Pages/modifDictionnaire.php:118
 msgid "Nom abrégé"
 msgstr "Nom abrégé"
+
+#: Pages/modifDictionnaire.php:118
+msgid "Caractères ASCII alphanumériques et tiret uniquement !"
+msgstr "Caractères ASCII alphanumériques et tiret uniquement !"
 
 #: Pages/modifDictionnaire.php:119
 msgid "Propriétaire"
