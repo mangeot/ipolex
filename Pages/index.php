@@ -201,7 +201,7 @@ if (is_dir(DICTIONNAIRES_SITE)) {
   		if (empty($infos['Domain'])) {echo 'domaine vide : ',$dico;}
   		$infos['Source'] = $dict->getElementsByTagName('source')->item(0)->nodeValue;
   		$infos['Authors'] = $dict->getElementsByTagName('authors')->item(0)->nodeValue;
-  		if (empty($infos['Authors'])) {echo 'auteurs vides : ',$dico;}
+  		//if (empty($infos['Authors'])) {echo 'auteurs vides : ',$dico;}
   		$infos['Legal'] = $dict->getElementsByTagName('legal')->item(0)->nodeValue;
   		$tmp = $dict->getElementsByTagName('comments');
   		if ($tmp->length>0) {$infos['Comments'] = $tmp->item(0)->nodeValue;}
