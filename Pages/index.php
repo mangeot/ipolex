@@ -3,9 +3,7 @@
 	include(RACINE_SITE.'include/header.php');
 ?>
 <header id="enTete">
-	<div id="langMenu">
-		<?php print_lang_menu();?>
-	</div>
+	<?php print_lang_menu();?>
     <h1><?php echo gettext('iPoLex : entrepôt de données lexicales');?></h1>
 	<h2><?php echo gettext('Accueil');?></h2>
 	<hr />

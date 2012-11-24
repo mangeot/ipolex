@@ -4,12 +4,18 @@
 	require_once(RACINE_SITE.'include/fonctions.php');
 	$Params = array();
 
-	$modif = false;	
+	$display = false;	
+	$save = false;	
 	if (!empty($_REQUEST['Dirname']) && !empty($_REQUEST['Name'])) {
 		$myFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$_REQUEST['Name'].'-metadata.xml';
-		$modif = empty($_REQUEST['Consulter']) && file_exists($myFile);
+		$display = file_exists($myFile);
+		if (!empty($params['Administrators'])) {
+			$admins = preg_split("/[\s,;]+/", $params['Administrators']);
+			$u=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';
+			$save = in_array($u, $admins);
+		}
 	}
-	if ((!empty($_REQUEST['Modifier']) || !empty($_REQUEST['Consulter'])) && $modif) {
+	if ((!empty($_REQUEST['Modifier']) || !empty($_REQUEST['Consulter'])) && $display) {
 		$doc = new DOMDocument();
   		$doc->load($myFile);
   		$dicts = $doc->getElementsByTagName("dictionary-metadata");
@@ -28,8 +34,14 @@
   		$Params['Source'] = $dict->getElementsByTagName('source')->item(0)->nodeValue;
   		$Params['Authors'] = $dict->getElementsByTagName('authors')->item(0)->nodeValue;
   		$Params['Legal'] = $dict->getElementsByTagName('legal')->item(0)->nodeValue;
+  		$Params['Access'] = ($dict->getElementsByTagName('access')->item(0))?$dict->getElementsByTagName('access')->item(0)->nodeValue:'restricted';
   		$Params['Comments'] = $dict->getElementsByTagName('comments')->item(0)->nodeValue;
-  		$Params['Administrators'] = $dict->getElementsByTagName('user-ref')->item(0)->getAttribute('name');
+		$administrators = $dict->getElementsByTagName('user-ref');
+		$adminString = '';
+		foreach ($administrators as $user) {
+			$adminString .= $user->getAttribute('name') . ',';
+		}
+		$Params['Administrators'] = trim($adminString,',');
 
 		$nodeList = $dict->getElementsByTagName('links');
   		$Params['Links'] = $nodeList->length==1?$doc->saveXML($nodeList->item(0)):'';
@@ -77,25 +89,29 @@
 		$volume = intval($matches[0]);
 		$source = $Params['Volume'.$volume.'Source'];
 		$targets = recupciblesVolume($Params,$volume);
-		header('Location:modifVolume.php?Editer=on&Dirname='.$Params['Dirname'].'&Dictname='.$Params['Name'].'&Source='.$source.'&Targets='.$targets.'&Authors='.$Params['Authors'].'&Administrators='.$Params['Administrators']);
+		$edit = $save?'Editer=on':'';
+		
+		header('Location:modifVolume.php?'.$edit.'&Dirname='.$Params['Dirname'].'&Dictname='.$Params['Name'].'&Source='.$source.'&Targets='.$targets.'&Authors='.$Params['Authors'].'&Administrators='.$Params['Administrators']);
 	}
 	include(RACINE_SITE.'include/header.php');
 ?>
 <header id="enTete">
-	<div id="langMenu">
-		<?php print_lang_menu();?>
-	</div>
+	<?php print_lang_menu();?>
 	<h1><?php echo gettext('iPoLex : entrepôt de données lexicales');?></h1>
 	<h2><?php echo gettext('Ajout/Modification d\'un dictionnaire');?></h3>
 	<hr />
 </header>
 <div id="partieCentrale">
 <?php
-	if (!empty($_REQUEST['Enregistrer']) && !empty($_REQUEST['Name'])) {
+	if (!empty($_REQUEST['Enregistrer']) && !empty($_REQUEST['Name']) && $save) {
 		$Params['Dirname'] = creerDictionnaire($Params);
 	}
 	if (!empty($Params['Dirname']) && !empty($Params['NameC']) && file_exists(DICTIONNAIRES_SITE.'/'.$Params['Dirname']."/".$Params['NameC'].'-metadata.xml')) {
-		echo '<p>',gettext('Adresse WebDAV pour accès aux données'),gettext(' : '),'<a href="',DICTIONNAIRES_WEB,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
+		$adresseDonnees = $save?gettext('Adresse WebDAV pour modification des données'):gettext('Adresse WebDAV pour accès aux données');
+		echo '<p>',$adresseDonnees,gettext(' : '),'<a href="',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
+		if (!empty($Params['Access']) && $Params['Access'] == 'public' && file_exists(DICTIONNAIRES_SITE_PUBLIC.'/'.$Params['Dirname'])) {
+			echo '<p>',gettext('Adresse Web pour accès public aux données'),gettext(' : '),'<a href="',DICTIONNAIRES_WEB,'/',$Params['Dirname'],'">',DICTIONNAIRES_WEB,'/',$Params['Dirname'],'</a></p>';
+		}
 	}
 ?>
 <form action="?" method="post">
@@ -132,9 +148,17 @@
 	<p><?php echo gettext('Domaine');?> <input type="text" id="Domain" name="Domain" value="<?php affichep('Domain','général');?>"/></p>	
 	<p><?php echo gettext('Source');?> <input type="text" id="Source" name="Source" value="<?php affichep('Source','GETALP');?>"/></p>	
 	<p><?php echo gettext('Auteurs');?> <input type="text" id="Authors" name="Authors" onfocus="copyifempty(this,'Owner');"  value="<?php affichep('Authors');?>"/></p>	
-	<p><?php echo gettext('Licence');?> <input type="text"  size="50" id="Legal" name="Legal" value="<?php affichep('Legal','Creative Commons, certains droits réservés');?>"/></p>	
+	<p><?php echo gettext('Licence');?> <input type="text"  size="50" id="Legal" name="Legal" value="<?php affichep('Legal','Creative Commons, CC by SA');?>"/></p>
+	<p>*<?php echo gettext('Accès'); echo gettext(' : ');?><select id="Access"  required="required" name="Access">
+		<option value="">choisir...</option>
+		<?php afficheo('Access',"public")?><?php echo gettext('public = web');?></option>
+		<?php afficheo('Access',"restricted")?><?php echo gettext('réservé = labo');?></option>
+		<?php afficheo('Access',"private")?><?php echo gettext('privé = admin');?></option>
+	</select>
+	</p>
+
 	<p><?php echo gettext('Commentaires');?> <input type="text"  size="50" id="Comments" name="Comments" value="<?php affichep('Comments');?>"/></p>	
-	<p><?php echo gettext('Administrateur');?> <input type="text" id="Administrators" name="Administrators" value="<?php $u=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';affichep('Administrators',$u);?>"/></p>	
+	<p><?php echo gettext('Administrateurs');?> <input type="text" id="Administrators" name="Administrators" value="<?php $u=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';affichep('Administrators',$u);?>"/></p>	
 	<p><?php echo gettext('Domaine');?><?php echo gettext(' : ');?><ol>
 		<?php $volumes = getNumVolumes($Params);
 			$i=1;
@@ -176,7 +200,7 @@
 	?>
 	</div>
 	<?php
-		if (empty($Params['Consulter']) || (!empty($Params['Name']) && !empty($Params['Type']) && !empty($Params['Volume1Source']))) {
+		if ($save && !empty($Params['Name']) && !empty($Params['Type']) && !empty($Params['Volume1Source'])) {
 			echo '<p style="text-align:center;"><input type="submit" name="Enregistrer" value="',gettext('Enregistrer'),'" /></p>';
 		}
 	?>
@@ -186,9 +210,7 @@
 <?php
 
 	function affichep ($param, $default='') {
-		global $modif;
 		global $Params;
-		$default = $modif?'':$default;
 		echo !empty($Params[$param])?stripslashes($Params[$param]):$default;
 	}
 	function afficheo ($param, $option) {
@@ -199,7 +221,7 @@
 	}
 	
 	function ajouteVolume($num) {
-		global $Params;
+		global $Params, $save;
 		echo '<li>',gettext('Langue source'),gettext(' : '),'<select id="Volume'.$num.'Source" name="Volume'.$num.'Source" onchange="this.form.submit()">';
 		echo '<option value="">',gettext('Choisir...'),'</option>';
 		$source='';
@@ -217,7 +239,8 @@
 		}
 		ajouteCiblePlus($num,$t);
 		if (!empty($Params['Name']) && !empty($Params['Type']) && !empty($source) && !empty($Params['Dirname'])) {
-			echo '<input type="submit" id="ManageVolume',$num,'" name="ManageVolume" value="',gettext('Gérer le volume'),' ',$num,'" />';
+			$manageVolumeString = $save?gettext('Gérer le volume'):gettext('Voir le volume');
+			echo '<input type="submit" id="ManageVolume',$num,'" name="ManageVolume" value="',$manageVolumeString,' ',$num,'" />';
 		}
 		echo '</li>';
 	}
@@ -251,6 +274,7 @@
 	}
 	
 	function creerDictionnaire($params) {
+		$admins = preg_split("/[\s,;]+/", $params['Administrators']);		
 		$name = $params['Name'];
 		$sources = recupSources($params);
 		$cibles = recupCibles($params);
@@ -261,19 +285,25 @@
 			$olddirname = $params['Dirname'];
 			if ($dirname !== $olddirname) {
 				rename(DICTIONNAIRES_SITE.'/'.$olddirname,DICTIONNAIRES_SITE.'/'.$dirname);
+				@unlink(DICTIONNAIRES_SITE_PUBLIC.'/'.$olddirname);
 			}
 		}
 		else {
 			@mkdir(DICTIONNAIRES_SITE.'/'.$dirname);
+		}
+		if (!empty($params['Access'])) {
+			if ($params['Access'] == 'public') {
+				link(DICTIONNAIRES_SITE.'/'.$dirname,DICTIONNAIRES_SITE_PUBLIC.'/'.$dirname);
+			}
+			else {
+				@unlink(DICTIONNAIRES_SITE_PUBLIC.'/'.$dirname);
+			}
 		}
 		$dictmetadata = creerDictMetadata($params,$sources,$cibles);
 		$myFile = DICTIONNAIRES_SITE.'/'.$dirname."/".$name.'-metadata.xml';
 		$fh = fopen($myFile, 'w') or die("impossible d'ouvrir le fichier ".$myFile);
 		fwrite($fh, $dictmetadata);
 		fclose($fh);
-		$admins = array();
-		// le jour où je veux mettre plusieurs admins
-		array_push($admins,$params['Administrators']);
 		restrictAccess($dirname,$admins);
 		
 		echo '<p>',gettext('Le fichier de métadonnées du dictionnaire a été enregistré.

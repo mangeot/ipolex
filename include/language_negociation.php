@@ -57,7 +57,6 @@ function negotiate_language() {
 function print_lang_menu() {
 echo '   
 	<form id="LangForm" action="?">
-        <div>
         <img src="',RACINE_WEB,'images/multilingual_logo.png" alt="lang/语言/言語/لُغة/..." height="20px" style="vertical-align: middle;"/>
          <select name="lang" id="lang" onchange="this.form.submit()">
           <option label="lang go" selected="selected" value="">lang/语言/لُغة/...</option>
@@ -72,8 +71,7 @@ echo '
           <option value="rus">Русский</option>
           <option value="zho">简体中文</option-->
         </select>
-        <noscript><div><input type="submit" value="Go" /></div></noscript>
-      </div>
+        <noscript><input type="submit" value="Go" /></noscript>
       </form>';
 }
 

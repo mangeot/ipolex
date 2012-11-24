@@ -6,12 +6,23 @@
 	if (empty($_REQUEST['Dirname']) || empty($_REQUEST['Dictname']) || empty($_REQUEST['Source'])) {
 		header('Location:index.php');
 	}
+	
 	$source = $_REQUEST['Source'];
 	$targets = array_filter(explode(' ',$_REQUEST['Targets']));
 	$name = makeName($_REQUEST['Dictname'],$source,$targets);
 	$doc = new DOMDocument();
 	$metadataFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$name.'-metadata.xml';
-	if (empty($_REQUEST['Editer']) || !file_exists($metadataFile)) {creerVolume($_REQUEST);}
+	
+	$display = false;	
+	$save = false;	
+	$display = file_exists($metadataFile);
+	if (!empty($_REQUEST['Administrators'])) {
+		$admins = preg_split("/[\s,;]+/", $_REQUEST['Administrators']);
+		$u=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';
+		$save = in_array($u, $admins);
+	}
+	
+	if (!file_exists($metadataFile) && $save) {creerVolume($_REQUEST);}
 	$doc->load($metadataFile);
 	$dicts = $doc->getElementsByTagName("volume-metadata");
 	$dict = $dicts->item(0);
@@ -27,7 +38,12 @@
 	$Params['HwNumber'] = $dict->getAttribute('hw-number'); 
 	$Params['Authors'] = $dict->getElementsByTagName('authors')->item(0)->nodeValue;
 	$Params['Comments'] = $dict->getElementsByTagName('comments')->item(0)->nodeValue;
-	$Params['Administrators'] = $dict->getElementsByTagName('user-ref')->item(0)->getAttribute('name');
+	$administrators = $dict->getElementsByTagName('user-ref');
+	$adminString = '';
+	foreach ($administrators as $user) {
+		$adminString .= $user->getAttribute('name') . ',';
+	}
+	$Params['Administrators'] = trim($adminString,',');
 	$cdmElements = $dict->getElementsByTagName('cdm-elements')->item(0)->childNodes;
 	foreach ($cdmElements as $node) {
 		if ($node->nodeType == XML_ELEMENT_NODE) {
@@ -83,9 +99,7 @@
 	include(RACINE_SITE.'include/header.php');
 ?>
 <header id="enTete">
-	<div id="langMenu">
-		<?php print_lang_menu();?>
-	</div>
+	<?php print_lang_menu();?>
 	<h1><?php echo gettext('iPoLex : entrepôt de données lexicales');?></h1>
 	<h2><?php echo gettext('Ajout/modification d\'un volume');?></h3>
 	<hr />
@@ -93,7 +107,7 @@
 
 <div id="partieCentrale">
 <?php
-	if (!empty($_REQUEST['Enregistrer']) || !empty($_REQUEST['AjoutLien'])) {
+	if ($save) {
 		enregistrerVolume($Params);
 		if (!empty($_REQUEST['AjoutLien'])) {
 			$LinkCopy = $CDMLink;
@@ -103,9 +117,10 @@
 			array_push($Params['CDMLinks'],$LinkCopy);
 		}
 	}
-	else {
-		echo '<p>',gettext('Adresse WebDAV pour accès aux données'),gettext(' : '),'<a href="',DICTIONNAIRES_WEB,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
-	}
+	
+	$adresseDonnees = (!empty($_REQUEST['Editer']))?gettext('Adresse WebDAV pour modification des données'):gettext('Adresse WebDAV pour accès aux données');
+	echo '<p>',$adresseDonnees,gettext(' : '),'<a href="',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
+
 ?>
 <form action="?" method="post">
 <fieldset name="Gérer un volume">
@@ -212,7 +227,7 @@
 	<?php echo gettext('Commentaires'), gettext(' : ');?><input type="text" size="100" name="Comments" value="<?php affichep('Comments')?>" /><br/>
 	</div>
 	<?php
-		if (!empty($Params['Dictname']) && !empty($Params['Format']) && !empty($Params['Source'])) {
+		if (!empty($Params['Dictname']) && !empty($Params['Format']) && !empty($Params['Source']) && $save) {
 			echo '<p style="text-align:center;"><input type="submit" name="Enregistrer" value="',gettext('Enregistrer'),'" /></p>';
 		}
 	?>
@@ -298,7 +313,7 @@
 			gettext('Vous pouvez maintenant ouvrir le dossier du volume sur votre bureau en <a href="http://fr.wikipedia.org/wiki/WebDAV">WebDav</a> avec l\'adresse URL suivante'),
 			gettext(' : '),'
 			<a href="',DICTIONNAIRES_DAV,'/',$params['Dirname'],'/">',DICTIONNAIRES_DAV,'/',$params['Dirname'],'/</a>
-			 (',gettext('vous seul avez les droits d\'écriture sur ce dossier'),').</p>
+			 (',gettext('seuls les admin ont les droits d\'écriture sur ce dossier'),').</p>
 			<p>',gettext('Téléversez ensuite le fichier de données du volume en le renommant avec le nom suivant'),gettext(' : '),'<code><strong>',$dataFileName,'</strong></code>.</p>
 			<p>',gettext('Une fois que vous avez terminé, retournez sur'),' ',' 
 			<a href="modifDictionnaire.php?Modifier=on&Dirname=',$params['Dirname'],'&Name=',$params['Dictname'],'">',gettext('page de modification du dictionnaire'),'</a>.</p>';

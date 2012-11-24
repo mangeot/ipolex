@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xml:lang="<?php echo $lang?>" lang="<?php echo $lang?>">
+<html xml:lang="<?php echo $LANG?>" lang="<?php echo $LANG?>">
 <head>
 	<meta charset="utf-8" />
 	<meta name="author" content="Mathieu MANGEOT" />

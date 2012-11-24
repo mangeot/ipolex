@@ -78,9 +78,15 @@
  <source>'.htmlspecialchars($params['Source']).'</source>
  <authors>'.$params['Authors'].'</authors>
  <legal>'.$params['Legal'].'</legal>
+ <access>'.$params['Access'].'</access>
  <comments>'.htmlspecialchars($params['Comments']).'</comments>
- <administrators>
-  <user-ref name="'.$params['Administrators'].'"/>
+ <administrators>';
+	$admins = preg_split("/[\s,;]+/", $params['Administrators']);
+	foreach ($admins as $admin) {
+		  $res .= '
+		  <user-ref name="'.$admin.'"/>';
+	}
+ $res .= '
  </administrators>
  <volumes>
 ';
@@ -230,8 +236,13 @@
 	';  
  
  $res .= '</cdm-elements>
- <administrators>
-  <user-ref name="'.$params['Administrators'].'"/>
+<administrators>';
+	$admins = preg_split("/[\s,;]+/", $params['Administrators']);
+	foreach ($admins as $admin) {
+		  $res .= '
+		  <user-ref name="'.$admin.'"/>';
+	}
+ $res .= '
  </administrators>
  <volume-ref xlink:href="'.$dataFileName.'" source-language="'.$source.'"/>
  ';
