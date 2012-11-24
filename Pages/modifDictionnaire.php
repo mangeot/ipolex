@@ -272,7 +272,7 @@
 	function creerDictionnaire($params) {
 		$admins = preg_split("/[\s,;]+/", $params['Administrators']);		
 		$name = $params['Name'];
-		if (!preg_match('/^[a-zA-Z0-9]$/',$name)) {
+		if (!preg_match('/^[a-zA-Z0-9]+$/',$name)) {
 			echo '<p class="erreur">',gettext('Le nom abrégé du dictionnaire contient des caractères non autorisés !'),'</p>';
 			return '';
 		}
