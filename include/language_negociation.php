@@ -14,10 +14,12 @@ function negotiate_language() {
     global $default_language;
     global $supported_languages;
 
-	$LANG = (!empty($_COOKIE[LANG_COOKIE]))?$_COOKIE[LANG_COOKIE]:$default_language;
+	$LANG = (!empty($_COOKIE[LANG_COOKIE]))?$_COOKIE[LANG_COOKIE]:'';
+	echo 'lang0;',$LANG;
 
 	if (!empty($_REQUEST['lang'])) {
 		$LANG = $_REQUEST['lang'];
+		echo 'lang1;',$LANG;
 	}
     /* If the client has sent an Accept-Language: header, 
      * see if it is for a language we support. 
@@ -28,6 +30,7 @@ function negotiate_language() {
     		$LANG = $accepted[$i];
     		$LANG = substr($LANG,0,2);
         } 
+		echo 'lang2;',$LANG;
     } 
 
     /* One last desperate try: check for a valid language code in the 
@@ -35,11 +38,14 @@ function negotiate_language() {
      */ 
     else if (preg_match('/\\.[^\\.]+$/', $_SERVER['REMOTE_HOST'], $arr)) { 
         $LANG = strtolower($arr[1]); 
+		echo 'lang3;',$LANG;
     } 
 
 	$LANG = (!empty ($supported_languages[$LANG]))?$LANG:$default_language;
+	echo 'lang4;',$LANG;
 	if (!empty($_REQUEST['lang'])) {
 		setcookie(LANG_COOKIE, $LANG, time()+3600*24*365*5);  /* expire dans 5 ans */
+		echo 'setcookie;',$LANG;
 	}
     return $supported_languages[$LANG]; 
 } 
