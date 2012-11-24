@@ -88,6 +88,7 @@
 	}
 	else {
 		$Params = $_REQUEST;
+		$Params['Name'] = $name;
 	}
 	include(RACINE_SITE.'include/header.php');
 ?>
