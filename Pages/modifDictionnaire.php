@@ -290,7 +290,7 @@
 		}
 		if (!empty($params['Access'])) {
 			if ($params['Access'] == 'public') {
-				link(DICTIONNAIRES_SITE.'/'.$dirname,DICTIONNAIRES_SITE_PUBLIC.'/'.$dirname);
+				symlink(DICTIONNAIRES_SITE.'/'.$dirname,DICTIONNAIRES_SITE_PUBLIC.'/'.$dirname);
 			}
 			else {
 				@unlink(DICTIONNAIRES_SITE_PUBLIC.'/'.$dirname);
