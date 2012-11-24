@@ -32,7 +32,7 @@ function negotiate_language() {
     /* One last desperate try: check for a valid language code in the 
      * top-level domain of the client's source address. 
      */ 
-    else if (preg_match('/\\.[^\\.]+$/', $_SERVER['REMOTE_HOST'], &$arr)) { 
+    else if (preg_match('/\\.[^\\.]+$/', $_SERVER['REMOTE_HOST'], $arr)) { 
         $LANG = strtolower($arr[1]); 
     } 
 
