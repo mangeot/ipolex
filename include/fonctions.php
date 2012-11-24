@@ -138,7 +138,7 @@
 		return $res;
 	}
 	
-	function creerVolumeMetadata($params, $name) {
+	function creerVolumeMetadata($params) {
 		if (empty($params['Format'])) {
 			$params['Format'] = '';
 		}
@@ -160,6 +160,7 @@
 		$langs = $targets;
 		array_push($langs,$source);
 		sort($langs,SORT_LOCALE_STRING);
+		$name = $Params['Name'];
 		$dbname = preg_replace('/[_\-]/','',strtolower($name));
 		$dataFileName = strtolower($name);
 		$templateFileName = $dataFileName . '-template.xml';

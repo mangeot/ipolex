@@ -264,9 +264,8 @@
 	}
 		
 	function creerVolume($params) {
-		$cibles = array_filter(explode(' ',$params['Targets']));
-		$name = makeName($params['Dictname'],$params['Source'],$cibles);
-		$volumeMetadata = creerVolumeMetadata($params,$name,$cibles);
+		$name = $params['Name'];
+		$volumeMetadata = creerVolumeMetadata($params,$cibles);
 		$myFile = DICTIONNAIRES_SITE.'/'.$params['Dirname']."/".$name.'-metadata.xml';
 		$fh = fopen($myFile, 'w') or die("impossible d'ouvrir le fichier ".$myFile);
 		fwrite($fh, $volumeMetadata);
@@ -289,8 +288,11 @@
 			echo '<p style="color:red;">',gettext('Attention, vous devez impérativement remplir les pointeurs CDM précédés d\'un astérisque *'),'</p>';
 		}
 		else {
-			$cibles = array_filter(explode(' ',$params['Targets']));
-			$name = makeName($params['Dictname'],$params['Source'],$cibles);
+			$name = $params['Name'];
+			$metadataFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$name.'-metadata.xml';	
+			if (!file_exists($metadataFile)) {
+				creerVolume($params);
+			}
 			if ($params['Format']=='xml' && empty($params['XslStylesheet'])) {
 				$filepath = DICTIONNAIRES_SITE.'/' . $params['Dirname'] . '/' . $name;
 				$pron = !empty($params['cdm-pronunciation'])?$params['cdm-pronunciation']:'';
