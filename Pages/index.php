@@ -239,7 +239,7 @@ if (is_dir(DICTIONNAIRES_SITE)) {
 		$infos['Format'] = $dict->getAttribute('format');
 		$infos['HwNumber'] = $dict->getAttribute('hw-number'); 
 		$infos['Authors'] = $dict->getElementsByTagName('authors')->item(0)->nodeValue;
-  		if (empty($infos['Authors'])) {echo 'auteurs vides : ',$volume;}
+  		//if (empty($infos['Authors'])) {echo 'auteurs vides : ',$volume;}
   		$adminNodes = $dict->getElementsByTagName('user-ref');
   		$admins = array();
   		foreach ($adminNodes as $admin) {
