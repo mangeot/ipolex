@@ -13,11 +13,9 @@ function negotiate_language() {
 	GLOBAL $LANG;
 	$LANG = (!empty($_COOKIE[LANG_COOKIE]))?$_COOKIE[LANG_COOKIE]:'';
 
-	if (empty($LANG) && !empty($_REQUEST['lang'])) {
+	if (!empty($_REQUEST['lang'])) {
 		$LANG = $_REQUEST['lang'];
-		if (!empty($LANG)) {
-			setcookie(LANG_COOKIE, $LANG, time()+3600*24*365*5);  /* expire dans 5 ans */
-		}
+		setcookie(LANG_COOKIE, $LANG, time()+3600*24*365*5);  /* expire dans 5 ans */
 	}
 
     global $supported_languages; 
