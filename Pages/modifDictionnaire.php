@@ -14,7 +14,7 @@
 		if (!empty($_REQUEST['Administrators'])) {
 			$admins = preg_split("/[\s,;]+/", $_REQUEST['Administrators']);
 		}
-		$save = in_array($u, $admins);
+		$save = in_array($user, $admins);
 	}
 	if ((!empty($_REQUEST['Modifier']) || !empty($_REQUEST['Consulter'])) && $display) {
 		$doc = new DOMDocument();
