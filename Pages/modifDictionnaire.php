@@ -11,8 +11,8 @@
 		$display = file_exists($myFile);
 		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';
 		$admins = array($user);
-		if (!empty($params['Administrators'])) {
-			$admins = preg_split("/[\s,;]+/", $params['Administrators']);
+		if (!empty($_REQUEST['Administrators'])) {
+			$admins = preg_split("/[\s,;]+/", $_REQUEST['Administrators']);
 		}
 		$save = in_array($u, $admins);
 	}
