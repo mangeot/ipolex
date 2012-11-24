@@ -265,7 +265,7 @@
 		
 	function creerVolume($params) {
 		$name = $params['Name'];
-		$volumeMetadata = creerVolumeMetadata($params,$cibles);
+		$volumeMetadata = creerVolumeMetadata($params);
 		$myFile = DICTIONNAIRES_SITE.'/'.$params['Dirname']."/".$name.'-metadata.xml';
 		$fh = fopen($myFile, 'w') or die("impossible d'ouvrir le fichier ".$myFile);
 		fwrite($fh, $volumeMetadata);
