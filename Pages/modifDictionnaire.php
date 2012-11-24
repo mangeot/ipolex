@@ -3,22 +3,13 @@
 	require_once(RACINE_SITE.'include/lang_'.$LANG.'.php');
 	require_once(RACINE_SITE.'include/fonctions.php');
 	$Params = array();
-
-	$display = false;	
-	$save = false;	
+	$metadataFile = '';
 	if (!empty($_REQUEST['Dirname']) && !empty($_REQUEST['Name'])) {
-		$myFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$_REQUEST['Name'].'-metadata.xml';
-		$display = file_exists($myFile);
-		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';
-		$admins = array($user);
-		if (!empty($_REQUEST['Administrators'])) {
-			$admins = preg_split("/[\s,;]+/", $_REQUEST['Administrators']);
-		}
-		$save = in_array($user, $admins);
+		$metadataFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$_REQUEST['Name'].'-metadata.xml';
 	}
-	if ((!empty($_REQUEST['Modifier']) || !empty($_REQUEST['Consulter'])) && $display) {
+	if (file_exists($metadataFile)) {
 		$doc = new DOMDocument();
-  		$doc->load($myFile);
+  		$doc->load($metadataFile);
   		$dicts = $doc->getElementsByTagName("dictionary-metadata");
   		$dict = $dicts->item(0);
   		$Params['Dirname'] = $_REQUEST['Dirname'];
@@ -89,10 +80,8 @@
 		preg_match('/ ([0-9]+)$/',$volume,$matches);
 		$volume = intval($matches[0]);
 		$source = $Params['Volume'.$volume.'Source'];
-		$targets = recupciblesVolume($Params,$volume);
-		$edit = $save?'Editer=on':'';
-		
-		header('Location:modifVolume.php?'.$edit.'&Dirname='.$Params['Dirname'].'&Dictname='.$Params['Name'].'&Source='.$source.'&Targets='.$targets.'&Authors='.$Params['Authors'].'&Administrators='.$Params['Administrators']);
+		$targets = recupciblesVolume($Params,$volume);		
+		header('Location:modifVolume.php?Dirname='.$Params['Dirname'].'&Dictname='.$Params['Name'].'&Source='.$source.'&Targets='.$targets.'&Authors='.$Params['Authors'].'&Administrators='.$Params['Administrators']);
 	}
 	include(RACINE_SITE.'include/header.php');
 ?>
@@ -104,11 +93,18 @@
 </header>
 <div id="partieCentrale">
 <?php
-	if (!empty($_REQUEST['Enregistrer']) && !empty($_REQUEST['Name']) && $save) {
-		$Params['Dirname'] = creerDictionnaire($Params);
+	$modif = false;
+	if (!empty($_REQUEST['Enregistrer']) && !empty($_REQUEST['Name']) && !empty($_REQUEST['Administrators'])) {
+		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';
+		$admins = preg_split("/[\s,;]+/", $_REQUEST['Administrators']);
+		$modif = in_array($user, $admins);
+		if ($modif) {
+			$Params['Dirname'] = creerDictionnaire($Params);
+		}
 	}
-	if (!empty($Params['Dirname']) && !empty($Params['NameC']) && file_exists(DICTIONNAIRES_SITE.'/'.$Params['Dirname']."/".$Params['NameC'].'-metadata.xml')) {
-		$adresseDonnees = $save?gettext('Adresse WebDAV pour modification des données'):gettext('Adresse WebDAV pour accès aux données');
+	
+	if (file_exists($metadataFile)) {
+		$adresseDonnees = $modif?gettext('Adresse WebDAV pour modification des données'):gettext('Adresse WebDAV pour accès aux données');
 		echo '<p>',$adresseDonnees,gettext(' : '),'<a href="',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
 		if (!empty($Params['Access']) && $Params['Access'] == 'public' && file_exists(DICTIONNAIRES_SITE_PUBLIC.'/'.$Params['Dirname'])) {
 			echo '<p>',gettext('Adresse Web pour accès public aux données'),gettext(' : '),'<a href="',DICTIONNAIRES_WEB,'/',$Params['Dirname'],'">',DICTIONNAIRES_WEB,'/',$Params['Dirname'],'</a></p>';
@@ -201,7 +197,7 @@
 	?>
 	</div>
 	<?php
-		if ($save && !empty($Params['Name']) && !empty($Params['Type']) && !empty($Params['Volume1Source'])) {
+		if ($modif && !empty($Params['Name']) && !empty($Params['Type']) && !empty($Params['Volume1Source'])) {
 			echo '<p style="text-align:center;"><input type="submit" name="Enregistrer" value="',gettext('Enregistrer'),'" /></p>';
 		}
 	?>
@@ -222,7 +218,7 @@
 	}
 	
 	function ajouteVolume($num) {
-		global $Params, $save;
+		global $Params, $modif;
 		echo '<li>',gettext('Langue source'),gettext(' : '),'<select id="Volume'.$num.'Source" name="Volume'.$num.'Source" onchange="this.form.submit()">';
 		echo '<option value="">',gettext('Choisir...'),'</option>';
 		$source='';
@@ -240,7 +236,7 @@
 		}
 		ajouteCiblePlus($num,$t);
 		if (!empty($Params['Name']) && !empty($Params['Type']) && !empty($source) && !empty($Params['Dirname'])) {
-			$manageVolumeString = $save?gettext('Gérer le volume'):gettext('Voir le volume');
+			$manageVolumeString = $modif?gettext('Gérer le volume'):gettext('Voir le volume');
 			echo '<input type="submit" id="ManageVolume',$num,'" name="ManageVolume" value="',$manageVolumeString,' ',$num,'" />';
 		}
 		echo '</li>';

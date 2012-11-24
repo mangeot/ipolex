@@ -10,19 +10,9 @@
 	$source = $_REQUEST['Source'];
 	$targets = array_filter(explode(' ',$_REQUEST['Targets']));
 	$name = makeName($_REQUEST['Dictname'],$source,$targets);
+	$metadataFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$name.'-metadata.xml';	
+	if (file_exists($metadataFile)) {
 	$doc = new DOMDocument();
-	$metadataFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$name.'-metadata.xml';
-	
-	$display = false;	
-	$save = false;	
-	$display = file_exists($metadataFile);
-	if (!empty($_REQUEST['Administrators'])) {
-		$admins = preg_split("/[\s,;]+/", $_REQUEST['Administrators']);
-		$u=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';
-		$save = in_array($u, $admins);
-	}
-	
-	if (!file_exists($metadataFile) && $save) {creerVolume($_REQUEST);}
 	$doc->load($metadataFile);
 	$dicts = $doc->getElementsByTagName("volume-metadata");
 	$dict = $dicts->item(0);
@@ -95,7 +85,10 @@
                 $Params['XslStylesheet'] = $sheets;
 
 	}
-	$modif = !empty($Params['Template']);
+	}
+	else {
+		$Params = $_REQUEST;
+	}
 	include(RACINE_SITE.'include/header.php');
 ?>
 <header id="enTete">
@@ -104,21 +97,26 @@
 	<h2><?php echo gettext('Ajout/modification d\'un volume');?></h3>
 	<hr />
 </header>
-
 <div id="partieCentrale">
 <?php
-	if ($save) {
-		enregistrerVolume($Params);
-		if (!empty($_REQUEST['AjoutLien'])) {
-			$LinkCopy = $CDMLink;
-			if (empty($Params['CDMLinks'])) {
-				$Params['CDMLinks'] = array();
+	$modif = false;
+	if (!empty($Params['Administrators'])) {
+		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';
+		$admins = preg_split("/[\s,;]+/", $Params['Administrators']);
+		$modif = in_array($user, $admins);
+		if ($modif) {
+			enregistrerVolume($Params);
+			if (!empty($_REQUEST['AjoutLien'])) {
+				$LinkCopy = $CDMLink;
+				if (empty($Params['CDMLinks'])) {
+					$Params['CDMLinks'] = array();
+				}
+				array_push($Params['CDMLinks'],$LinkCopy);
 			}
-			array_push($Params['CDMLinks'],$LinkCopy);
 		}
 	}
 	
-	$adresseDonnees = (!empty($_REQUEST['Editer']))?gettext('Adresse WebDAV pour modification des données'):gettext('Adresse WebDAV pour accès aux données');
+	$adresseDonnees = $modif?gettext('Adresse WebDAV pour modification des données'):gettext('Adresse WebDAV pour accès aux données');
 	echo '<p>',$adresseDonnees,gettext(' : '),'<a href="',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
 
 ?>
@@ -227,7 +225,7 @@
 	<?php echo gettext('Commentaires'), gettext(' : ');?><input type="text" size="100" name="Comments" value="<?php affichep('Comments')?>" /><br/>
 	</div>
 	<?php
-		if (!empty($Params['Dictname']) && !empty($Params['Format']) && !empty($Params['Source']) && $save) {
+		if (!empty($Params['Dictname']) && !empty($Params['Format']) && !empty($Params['Source']) && $modif) {
 			echo '<p style="text-align:center;"><input type="submit" name="Enregistrer" value="',gettext('Enregistrer'),'" /></p>';
 		}
 	?>
