@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ipotruc v1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-24 21:06+0100\n"
-"PO-Revision-Date: 2012-11-24 21:07+0100\n"
+"POT-Creation-Date: 2012-11-24 21:15+0100\n"
+"PO-Revision-Date: 2012-11-24 21:15+0100\n"
 "Last-Translator: Mathieu MANGEOT <mathieu.mangeot@imag.fr>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -349,7 +349,7 @@ msgstr "mixé"
 msgid "Contenu"
 msgstr "Contenu"
 
-#: Pages/modifDictionnaire.php:144 Pages/modifDictionnaire.php:158
+#: Pages/modifDictionnaire.php:144
 msgid "Domaine"
 msgstr "Domaine"
 
@@ -384,6 +384,10 @@ msgstr "Commentaires"
 #: Pages/modifDictionnaire.php:157 Pages/modifVolume.php:217
 msgid "Administrateurs"
 msgstr "Administrateurs"
+
+#: Pages/modifDictionnaire.php:158
+msgid "Volumes"
+msgstr "Volumes"
 
 #: Pages/modifDictionnaire.php:170 Pages/modifVolume.php:208
 msgid "Plus d'infos"

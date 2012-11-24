@@ -155,7 +155,7 @@
 
 	<p><?php echo gettext('Commentaires');?> <input type="text"  size="50" id="Comments" name="Comments" value="<?php affichep('Comments');?>"/></p>	
 	<p><?php echo gettext('Administrateurs');?> <input type="text" id="Administrators" name="Administrators" value="<?php $u=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';affichep('Administrators',$u);?>"/></p>	
-	<p><?php echo gettext('Domaine');?><?php echo gettext(' : ');?><ol>
+	<p><?php echo gettext('Volumes');?><?php echo gettext(' : ');?><ol>
 		<?php $volumes = getNumVolumes($Params);
 			$i=1;
 			while ($i<=$volumes) {
