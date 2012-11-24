@@ -104,15 +104,15 @@
 		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';
 		$admins = preg_split("/[\s,;]+/", $Params['Administrators']);
 		$modif = in_array($user, $admins);
-		if ($modif) {
+		if ($modif && $_REQUEST['Enregistrer']) {
 			enregistrerVolume($Params);
-			if (!empty($_REQUEST['AjoutLien'])) {
-				$LinkCopy = $CDMLink;
-				if (empty($Params['CDMLinks'])) {
-					$Params['CDMLinks'] = array();
-				}
-				array_push($Params['CDMLinks'],$LinkCopy);
+		}
+		if ($modif && !empty($_REQUEST['AjoutLien'])) {
+			$LinkCopy = $CDMLink;
+			if (empty($Params['CDMLinks'])) {
+				$Params['CDMLinks'] = array();
 			}
+			array_push($Params['CDMLinks'],$LinkCopy);
 		}
 	}
 	
