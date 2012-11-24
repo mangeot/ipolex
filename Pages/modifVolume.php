@@ -119,7 +119,7 @@
 	
 	$adresseDonnees = $modif?gettext('Adresse WebDAV pour modification des données'):gettext('Adresse WebDAV pour accès aux données');
 	echo '<p>',$adresseDonnees,gettext(' : '),'<a href="',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
-	echo '<p><a href="modifDictionnaire.php?Dirname=',$params['Dirname'],'&Name=',$params['Dictname'],'">',gettext('Gestion du dictionnaire'),'</a>.</p>';
+	echo '<p><a href="modifDictionnaire.php?Dirname=',$Params['Dirname'],'&Name=',$Params['Dictname'],'">',gettext('Gestion du dictionnaire'),'</a>.</p>';
 
 
 ?>
