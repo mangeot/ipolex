@@ -61,13 +61,13 @@ echo '
         <img src="',RACINE_WEB,'images/multilingual_logo.png" alt="lang/语言/言語/لُغة/..." height="20px" style="vertical-align: middle;"/>
          <select name="lang" id="lang" onchange="this.form.submit()">
           <option label="lang go" selected="selected" value="">lang/语言/لُغة/...</option>
-          <!-option label="arabiya" value="ara">عربية</option>
+          <!--option label="arabiya" value="ara">عربية</option>
           <option label="Catala" value="cat">Català</option>
           <option label="Deutsch" value="deu">Deutsch</option-->
           <option label="English" value="eng">English</option>
-          <!-option label="espanol" value="esp">español</option-->
+          <!--option label="espanol" value="esp">español</option-->
           <option label="francais" value="fra">français</option>
-          <!-option label="nihongo" value="jpn">日本語</option>
+          <!--option label="nihongo" value="jpn">日本語</option>
           <option label="Melayu" value="msa">Melayu</option>
           <option label="Russian" value="rus">Русский</option>
           <option label="jiantizhongwen" value="zho">简体中文</option-->
