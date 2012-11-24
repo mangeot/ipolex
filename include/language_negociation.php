@@ -41,7 +41,9 @@ function negotiate_language() {
 		echo 'lang3;',$LANG;
     } 
 
-	$LANG = (!empty ($supported_languages[$LANG]))?$LANG:$default_language;
+	$LANG = (!empty($supported_languages[$LANG]))?$LANG:$default_language;
+	echo 'supl:',$supported_languages[$LANG];
+	echo 'nesupl:',!empty($supported_languages[$LANG]);
 	echo 'lang4;',$LANG;
 	if (!empty($_REQUEST['lang'])) {
 		setcookie(LANG_COOKIE, $LANG, time()+3600*24*365*5);  /* expire dans 5 ans */
