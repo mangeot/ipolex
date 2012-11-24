@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ipotruc v1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-21 11:17+0100\n"
-"PO-Revision-Date: 2012-11-24 13:17+0100\n"
+"POT-Creation-Date: 2012-11-24 13:22+0100\n"
+"PO-Revision-Date: 2012-11-24 13:23+0100\n"
 "Last-Translator: Mathieu MANGEOT <mathieu.mangeot@imag.fr>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -177,20 +177,21 @@ msgstr "Partie centrale"
 #: index-general.php:41 index-general.php:42 Pages/index.php:181
 #: Pages/modifDictionnaire.php:98 Pages/modifDictionnaire.php:105
 #: Pages/modifDictionnaire.php:106 Pages/modifDictionnaire.php:107
-#: Pages/modifDictionnaire.php:108 Pages/modifDictionnaire.php:152
-#: Pages/modifDictionnaire.php:153 Pages/modifDictionnaire.php:155
-#: Pages/modifDictionnaire.php:156 Pages/modifDictionnaire.php:203
-#: Pages/modifDictionnaire.php:211 Pages/modifVolume.php:107
-#: Pages/modifVolume.php:114 Pages/modifVolume.php:115
-#: Pages/modifVolume.php:116 Pages/modifVolume.php:117
-#: Pages/modifVolume.php:135 Pages/modifVolume.php:142
-#: Pages/modifVolume.php:150 Pages/modifVolume.php:161
-#: Pages/modifVolume.php:167 Pages/modifVolume.php:174
-#: Pages/modifVolume.php:194 Pages/modifVolume.php:195
-#: Pages/modifVolume.php:196 Pages/modifVolume.php:198
-#: Pages/modifVolume.php:199 Pages/modifVolume.php:200
-#: Pages/modifVolume.php:201 Pages/modifVolume.php:212
-#: Pages/modifVolume.php:299 Pages/modifVolume.php:302
+#: Pages/modifDictionnaire.php:108 Pages/modifDictionnaire.php:138
+#: Pages/modifDictionnaire.php:152 Pages/modifDictionnaire.php:153
+#: Pages/modifDictionnaire.php:155 Pages/modifDictionnaire.php:156
+#: Pages/modifDictionnaire.php:203 Pages/modifDictionnaire.php:211
+#: Pages/modifVolume.php:107 Pages/modifVolume.php:114
+#: Pages/modifVolume.php:115 Pages/modifVolume.php:116
+#: Pages/modifVolume.php:117 Pages/modifVolume.php:135
+#: Pages/modifVolume.php:142 Pages/modifVolume.php:150
+#: Pages/modifVolume.php:161 Pages/modifVolume.php:167
+#: Pages/modifVolume.php:174 Pages/modifVolume.php:194
+#: Pages/modifVolume.php:195 Pages/modifVolume.php:196
+#: Pages/modifVolume.php:198 Pages/modifVolume.php:199
+#: Pages/modifVolume.php:200 Pages/modifVolume.php:201
+#: Pages/modifVolume.php:212 Pages/modifVolume.php:299
+#: Pages/modifVolume.php:302
 msgid " : "
 msgstr " : "
 
@@ -208,6 +209,7 @@ msgid "Catégorie"
 msgstr "Catégorie"
 
 #: Pages/index.php:65 Pages/index.php:71 Pages/index.php:75
+#: Pages/modifDictionnaire.php:137
 msgid "Administrateur"
 msgstr "Administrateur"
 
@@ -235,7 +237,7 @@ msgstr "Langue"
 msgid "Langues"
 msgstr "Langues"
 
-#: Pages/index.php:72 Pages/index.php:75
+#: Pages/index.php:72 Pages/index.php:75 Pages/modifDictionnaire.php:133
 msgid "Source"
 msgstr "Source"
 
@@ -332,6 +334,26 @@ msgstr "pivot (x volumes Lx reliés à 1 volume pivot)"
 #: Pages/modifDictionnaire.php:124
 msgid "mixé"
 msgstr "mixé"
+
+#: Pages/modifDictionnaire.php:131
+msgid "Contenu"
+msgstr "Contenu"
+
+#: Pages/modifDictionnaire.php:132 Pages/modifDictionnaire.php:138
+msgid "Domaine"
+msgstr "Domaine"
+
+#: Pages/modifDictionnaire.php:134 Pages/modifVolume.php:200
+msgid "Auteurs"
+msgstr "Auteurs"
+
+#: Pages/modifDictionnaire.php:135
+msgid "Licence"
+msgstr "Licence"
+
+#: Pages/modifDictionnaire.php:136 Pages/modifVolume.php:212
+msgid "Commentaires"
+msgstr "Commentaires"
 
 #: Pages/modifDictionnaire.php:150 Pages/modifVolume.php:192
 msgid "Plus d'infos"
@@ -442,17 +464,9 @@ msgstr "Lien"
 msgid "Article XML modèle (vide)"
 msgstr "Article XML modèle (vide)"
 
-#: Pages/modifVolume.php:200
-msgid "Auteurs"
-msgstr "Auteurs"
-
 #: Pages/modifVolume.php:201
 msgid "Administrateurs"
 msgstr "Administrateurs"
-
-#: Pages/modifVolume.php:212
-msgid "Commentaires"
-msgstr "Commentaires"
 
 #: Pages/modifVolume.php:275
 msgid ""

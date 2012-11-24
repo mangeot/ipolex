@@ -128,14 +128,14 @@
 			</p>';
 	}
 	?>
-	<p>Contenu <input type="text" id="Contents" name="Contents" value="<?php affichep('Contents','vocabulaire général');?>" /></p>	
-	<p>Domaine <input type="text" id="Domain" name="Domain" value="<?php affichep('Domain','général');?>"/></p>	
-	<p>Source <input type="text" id="Source" name="Source" value="<?php affichep('Source','GETALP');?>"/></p>	
-	<p>Auteurs <input type="text" id="Authors" name="Authors" onfocus="copyifempty(this,'Owner');"  value="<?php affichep('Authors');?>"/></p>	
-	<p>Licence <input type="text"  size="50" id="Legal" name="Legal" value="<?php affichep('Legal','Creative Commons, certains droits réservés');?>"/></p>	
-	<p>Commentaires <input type="text"  size="50" id="Comments" name="Comments" value="<?php affichep('Comments');?>"/></p>	
-	<p>Administrateur <input type="text" id="Administrators" name="Administrators" value="<?php $u=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';affichep('Administrators',$u);?>"/></p>	
-	<p>Volumes :<ol>
+	<p><?php echo gettext('Contenu');?> <input type="text" id="Contents" name="Contents" value="<?php affichep('Contents','vocabulaire général');?>" /></p>	
+	<p><?php echo gettext('Domaine');?> <input type="text" id="Domain" name="Domain" value="<?php affichep('Domain','général');?>"/></p>	
+	<p><?php echo gettext('Source');?> <input type="text" id="Source" name="Source" value="<?php affichep('Source','GETALP');?>"/></p>	
+	<p><?php echo gettext('Auteurs');?> <input type="text" id="Authors" name="Authors" onfocus="copyifempty(this,'Owner');"  value="<?php affichep('Authors');?>"/></p>	
+	<p><?php echo gettext('Licence');?> <input type="text"  size="50" id="Legal" name="Legal" value="<?php affichep('Legal','Creative Commons, certains droits réservés');?>"/></p>	
+	<p><?php echo gettext('Commentaires');?> <input type="text"  size="50" id="Comments" name="Comments" value="<?php affichep('Comments');?>"/></p>	
+	<p><?php echo gettext('Administrateur');?> <input type="text" id="Administrators" name="Administrators" value="<?php $u=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';affichep('Administrators',$u);?>"/></p>	
+	<p><?php echo gettext('Domaine');?><?php echo gettext(' : ');?><ol>
 		<?php $volumes = getNumVolumes($Params);
 			$i=1;
 			while ($i<=$volumes) {
