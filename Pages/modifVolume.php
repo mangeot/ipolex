@@ -152,7 +152,7 @@
 		  	if ($nom=='cdm-translation'||$nom=='cdm-translation-ref') {$langs= $targets;}
 		  	if ($nom=='cdm-example'||$nom=='cdm-idiom'||$nom=='cdm-translation'||$nom=='cdm-translation-ref') {
 				foreach ($langs as $cible) {
-					echo '<li>',$element[0],$LANGUES[$cible], gettext(' : '),'<input type="text" size="70" id="',$nom,'_',$cible,'" name="',$nom,'_',$cible,'"  value="', affichep($nom.'_'.$cible,$element[1]),'"/> ',$element[2],"\n";
+					echo '<li>',$element[0],' ',$LANGUES[$cible], gettext(' : '),'<input type="text" size="70" id="',$nom,'_',$cible,'" name="',$nom,'_',$cible,'"  value="', affichep($nom.'_'.$cible,$element[1]),'"/> ',$element[2],"\n";
 				}
 		  	}
 		  	else {

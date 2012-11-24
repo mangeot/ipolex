@@ -94,11 +94,11 @@
 <div id="partieCentrale">
 <?php
 	$modif = false;
-	if (!empty($_REQUEST['Enregistrer']) && !empty($_REQUEST['Name']) && !empty($_REQUEST['Administrators'])) {
+	if (!empty($Params['Administrators'])) {
 		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';
-		$admins = preg_split("/[\s,;]+/", $_REQUEST['Administrators']);
+		$admins = preg_split("/[\s,;]+/", $Params['Administrators']);
 		$modif = in_array($user, $admins);
-		if ($modif) {
+		if ($modif && !empty($_REQUEST['Enregistrer']) && !empty($Params['Name'])) {
 			$Params['Dirname'] = creerDictionnaire($Params);
 		}
 	}
