@@ -104,7 +104,7 @@
 		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';
 		$admins = preg_split("/[\s,;]+/", $Params['Administrators']);
 		$modif = in_array($user, $admins);
-		if ($modif && $_REQUEST['Enregistrer']) {
+		if ($modif && !empty($_REQUEST['Enregistrer'])) {
 			enregistrerVolume($Params);
 		}
 		if ($modif && !empty($_REQUEST['AjoutLien'])) {
@@ -128,7 +128,7 @@
 	<?php echo gettext('langue source'), gettext(' : ');?><?php echo $LANGUES[$source]?>; 
 	<?php echo gettext('langues cible'), gettext(' : ');?><?php foreach ($targets as $cible) {echo $LANGUES[$cible],', ';}?></p>
 	<p><?php echo gettext('Nombre d\'entrées'), gettext(' : ');?><input type="text" id="HwNumber" name="HwNumber"  value="<?php affichep('HwNumber')?>"/></p>
-	<p>*Format : <select id="Format" name="Format" onchange="this.form.submit()">
+	<p>*<?php echo gettext('Format'), gettext(' : ');?><select id="Format" name="Format" onchange="this.form.submit()">
 		<option value=""><?php echo gettext('Choisir...');?></option>
 		<?php afficheo('Format',"xml")?>xml</option>
 		<?php afficheo('Format',"txt")?><?php echo gettext('texte');?></option>
@@ -140,7 +140,7 @@
 		<?php afficheo('Format',"other")?><?php echo gettext('autre');?></option>
 	</select>
 	</p>
-	<p>Encodage : <input type="text" id="Encoding" name="Encoding"  value="<?php affichep('Encoding','UTF-8')?>"/></p>
+	<p><?php echo gettext('Encodage'), gettext(' : ');?><input type="text" id="Encoding" name="Encoding"  value="<?php affichep('Encoding','UTF-8')?>"/></p>
 	<?php if (!empty($Params['Format']) && $Params['Format']=='xml') {
 		$langs = $targets;
 		array_push($langs,$source);

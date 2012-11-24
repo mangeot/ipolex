@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ipotruc v1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-24 20:01+0100\n"
-"PO-Revision-Date: 2012-11-24 17:03+0100\n"
+"POT-Creation-Date: 2012-11-24 20:03+0100\n"
+"PO-Revision-Date: 2012-11-24 20:03+0100\n"
 "Last-Translator: Mathieu MANGEOT <mathieu.mangeot@imag.fr>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -184,7 +184,8 @@ msgstr "Partie centrale"
 #: Pages/modifDictionnaire.php:222 Pages/modifDictionnaire.php:230
 #: Pages/modifVolume.php:120 Pages/modifVolume.php:127
 #: Pages/modifVolume.php:128 Pages/modifVolume.php:129
-#: Pages/modifVolume.php:130 Pages/modifVolume.php:148
+#: Pages/modifVolume.php:130 Pages/modifVolume.php:131
+#: Pages/modifVolume.php:143 Pages/modifVolume.php:148
 #: Pages/modifVolume.php:155 Pages/modifVolume.php:163
 #: Pages/modifVolume.php:174 Pages/modifVolume.php:180
 #: Pages/modifVolume.php:187 Pages/modifVolume.php:207
@@ -214,6 +215,7 @@ msgid "Administrateur"
 msgstr "Administrateur"
 
 #: Pages/index.php:64 Pages/index.php:69 Pages/index.php:73
+#: Pages/modifVolume.php:131
 msgid "Format"
 msgstr "Format"
 
@@ -467,6 +469,10 @@ msgstr "texte"
 #: Pages/modifVolume.php:140
 msgid "autre"
 msgstr "autre"
+
+#: Pages/modifVolume.php:143
+msgid "Encodage"
+msgstr "Encodage"
 
 #: Pages/modifVolume.php:148
 msgid "Pointeurs CDM <a href=\"http://fr.wikipedia.org/wiki/XPath\">XPath</a>"
