@@ -11,6 +11,7 @@ $default_language = 'fr';
 */ 
 function negotiate_language() { 
 	GLOBAL $LANG;
+    global $default_language;
     global $supported_languages;
 
 	$LANG = (!empty($_COOKIE[LANG_COOKIE]))?$_COOKIE[LANG_COOKIE]:$default_language;
