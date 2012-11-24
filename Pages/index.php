@@ -212,7 +212,7 @@ if (is_dir(DICTIONNAIRES_SITE)) {
   		}
 		$infos['Administrators'] = $admins; 
   		$volumes = $dict->getElementsByTagName('volume-metadata-ref');
-		$infos['Volumes'] = array(); 
+		$infos['Volumes'] = array();
   		foreach ($volumes as $volume) {
   			$source = $volume->getAttribute('source-language');
 			$volumeRef = $volume->getAttributeNS(XLINK_PREFIX,'href');

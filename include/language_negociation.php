@@ -11,44 +11,35 @@ $default_language = 'fr';
 */ 
 function negotiate_language() { 
 	GLOBAL $LANG;
-	$LANG = (!empty($_COOKIE[LANG_COOKIE]))?$_COOKIE[LANG_COOKIE]:'';
+    global $supported_languages;
+
+	$LANG = (!empty($_COOKIE[LANG_COOKIE]))?$_COOKIE[LANG_COOKIE]:$default_language;
 
 	if (!empty($_REQUEST['lang'])) {
 		$LANG = $_REQUEST['lang'];
-		setcookie(LANG_COOKIE, $LANG, time()+3600*24*365*5);  /* expire dans 5 ans */
 	}
-
-    global $supported_languages; 
-
-    if (isset($supported_languages[$LANG])) { 
-        return $supported_languages[$LANG]; 
-    } 
-
     /* If the client has sent an Accept-Language: header, 
      * see if it is for a language we support. 
      */ 
-    if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) { 
+    else if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) { 
         $accepted = explode( ",", $_SERVER['HTTP_ACCEPT_LANGUAGE']); 
         for ($i = 0; $i < count($accepted); $i++) { 
     		$LANG = $accepted[$i];
     		$LANG = substr($LANG,0,2);
-            if (!empty($supported_languages[$LANG])) { 
-                return $supported_languages[$LANG]; 
-            } 
         } 
     } 
 
     /* One last desperate try: check for a valid language code in the 
      * top-level domain of the client's source address. 
      */ 
-    if (preg_match('/\\.[^\\.]+$/', $_SERVER['REMOTE_HOST'], &$arr)) { 
+    else if (preg_match('/\\.[^\\.]+$/', $_SERVER['REMOTE_HOST'], &$arr)) { 
         $LANG = strtolower($arr[1]); 
-        if (!empty($supported_languages[$LANG])) { 
-           return $supported_languages[$LANG]; 
-        } 
     } 
 
-    $LANG = $default_language;
+	$LANG = (!empty ($supported_languages[$LANG]))?$LANG:$default_language;
+	if (!empty($_REQUEST['lang'])) {
+		setcookie(LANG_COOKIE, $LANG, time()+3600*24*365*5);  /* expire dans 5 ans */
+	}
     return $supported_languages[$LANG]; 
 } 
 
