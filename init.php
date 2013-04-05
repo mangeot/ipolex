@@ -15,7 +15,7 @@
 	define('DICTIONNAIRES_SITE_PUBLIC','/opt/www/html/dictionnaires');
 //	define('DICTIONNAIRES_SITE_PUBLIC','/Data/ipolexPub');
 	define('DICTIONNAIRES_WEB','http://papillon.imag.fr/dictionnaires');
-	require_once(RACINE_SITE.'include/language_negociation.php');
+	require_once(RACINE_SITE.'include/language_negotiation.php');
 	$locale = negotiate_language();
 	$filename = 'default';
 	putenv("LANGUAGE=$locale");

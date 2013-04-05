@@ -14,11 +14,15 @@ function negotiate_language() {
     global $default_language;
     global $supported_languages;
 
-	$LANG = (!empty($_COOKIE[LANG_COOKIE]))?$_COOKIE[LANG_COOKIE]:'';
+	$LANG = '';
 
 	if (!empty($_REQUEST['lang'])) {
 		$LANG = $_REQUEST['lang'];
 	}
+        else if (!empty($_COOKIE[LANG_COOKIE])) {
+                $LANG= $_COOKIE[LANG_COOKIE];
+        }
+
     /* If the client has sent an Accept-Language: header, 
      * see if it is for a language we support. 
      */ 
