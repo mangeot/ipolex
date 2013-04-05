@@ -7,7 +7,7 @@
 	if (!empty($_REQUEST['Dirname']) && !empty($_REQUEST['Name'])) {
 		$metadataFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$_REQUEST['Name'].'-metadata.xml';
 	}
-	if (file_exists($metadataFile)) {
+	if (empty($_REQUEST['Enregistrer']) && file_exists($metadataFile)) {
 		$doc = new DOMDocument();
   		$doc->load($metadataFile);
   		$dicts = $doc->getElementsByTagName("dictionary-metadata");

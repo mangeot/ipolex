@@ -106,6 +106,7 @@ $LANGUES = array(
 'din' => 'Dinka',
 'div' => 'Divehi',
 'doi' => 'Dogri',
+'dje' => 'Zarma',
 'dra' => 'Dravidian (Other)',
 'dua' => 'Duala',
 'dum' => 'Dutch, Middle (ca. 1050-1350)',
