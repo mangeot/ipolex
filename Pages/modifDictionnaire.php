@@ -94,7 +94,7 @@
 <?php
 	$modif = false;
 	if (!empty($Params['Administrators'])) {
-		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';
+		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:DEFAULT_TEST_USER;
 		$admins = preg_split("/[\s,;]+/", $Params['Administrators']);
 		$modif = in_array($user, $admins);
 		if ($modif && !empty($_REQUEST['Enregistrer']) && !empty($Params['Name'])) {
@@ -278,7 +278,7 @@
 		}
 		$sources = recupSources($params);
 		$cibles = recupCibles($params);
-		$langs=array_unique(array_merge($sources,$cibles));
+		$langs=array_filter(array_unique(array_merge($sources,$cibles)));
 		sort($langs,SORT_LOCALE_STRING);
 		$dirname = makeDictName($name,$langs);
 		if (!empty($params['Dirname'])) {
@@ -329,7 +329,7 @@
 				array_push($cibles,$value);
 			}
 		}
-		$cibles = array_unique($cibles);
+		$cibles = array_filter(array_unique($cibles));
 		sort($cibles,SORT_LOCALE_STRING);
 		return $cibles;
 	}

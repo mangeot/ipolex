@@ -9,12 +9,14 @@
 
 	define('LANG_COOKIE','LANG_COOKIE');
 	define('SEP_NOM',"#");
-	define('DICTIONNAIRES_SITE','/opt/www/html-ssl/dictionnaires');
-//	define('DICTIONNAIRES_SITE','/Data/ipolex');
+//	define('DICTIONNAIRES_SITE','/opt/www/html-ssl/dictionnaires');
+	define('DICTIONNAIRES_SITE','/Data/ipolex');
 	define('DICTIONNAIRES_DAV','https://papillon.imag.fr/DAV/dictionnaires');
-	define('DICTIONNAIRES_SITE_PUBLIC','/opt/www/html/dictionnaires');
-//	define('DICTIONNAIRES_SITE_PUBLIC','/Data/ipolexPub');
+//	define('DICTIONNAIRES_SITE_PUBLIC','/opt/www/html/dictionnaires');
+	define('DICTIONNAIRES_SITE_PUBLIC','/Data/ipolexPub');
 	define('DICTIONNAIRES_WEB','http://papillon.imag.fr/dictionnaires');
+	
+	define('DEFAULT_TEST_USER','mangeot');
 	require_once(RACINE_SITE.'include/language_negotiation.php');
 	$locale = negotiate_language();
 	$filename = 'default';

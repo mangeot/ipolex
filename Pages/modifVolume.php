@@ -102,10 +102,18 @@
 <?php
 	$modif = false;
 	if (!empty($Params['Administrators'])) {
-		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';
+		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:DEFAULT_TEST_USER;
 		$admins = preg_split("/[\s,;]+/", $Params['Administrators']);
 		$modif = in_array($user, $admins);
 		if ($modif && !empty($_REQUEST['Enregistrer'])) {
+			$Params = $_REQUEST;
+			$Params['Name'] = $name;
+			enregistrerVolume($Params);
+		}
+		if ($modif && !empty($_REQUEST['CompterEntrees'])) {
+			$Params = $_REQUEST;
+			$Params['Name'] = $name;
+			$Params['HwNumber'] = compterEntrees($Params);
 			enregistrerVolume($Params);
 		}
 		if ($modif && !empty($_REQUEST['AjoutLien'])) {
@@ -130,7 +138,12 @@
 	<p><?php echo gettext('Nom du dictionnaire'), gettext(' : ');?><?php affichep('Dictname')?>; 
 	<?php echo gettext('langue source'), gettext(' : ');?><?php echo $LANGUES[$source]?>; 
 	<?php echo gettext('langues cible'), gettext(' : ');?><?php foreach ($targets as $cible) {echo $LANGUES[$cible],', ';}?></p>
-	<p><?php echo gettext('Nombre d\'entrées'), gettext(' : ');?><input type="text" id="HwNumber" name="HwNumber"  value="<?php affichep('HwNumber')?>"/></p>
+	<p><?php echo gettext('Nombre d\'entrées'), gettext(' : ');?><input type="text" id="HwNumber" name="HwNumber"  value="<?php affichep('HwNumber')?>"/>
+	<?php if (!empty($Params['Format']) && $Params['Format']=='xml' && !empty($CDMElements['cdm-entry'])) {
+		echo '<input type="submit" name="CompterEntrees" value="', gettext('Calculer'), '" /><br/>
+	<span style="font-size: smaller;color:red;">', gettext('Attention : le pointeur CDM de l\'article doit être correct et le fichier de données présent sur le serveur'),'</span>';
+	} ?>
+	</p>
 	<p>*<?php echo gettext('Format'), gettext(' : ');?><select id="Format" name="Format" onchange="this.form.submit()">
 		<option value=""><?php echo gettext('Choisir...');?></option>
 		<?php afficheo('Format',"xml")?>xml</option>
@@ -283,6 +296,7 @@
 	}
 	
 	function enregistrerVolume($params) {
+		echo 'ev:',$params['cdm-volume'];
 		if ($params['Format']=='xml' && (empty($params['cdm-volume'])
 											|| empty($params['cdm-entry'])
 											|| empty($params['cdm-entry-id'])
@@ -292,9 +306,6 @@
 		else {
 			$name = $params['Name'];
 			$metadataFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$name.'-metadata.xml';	
-			if (!file_exists($metadataFile)) {
-				creerVolume($params);
-			}
 			if ($params['Format']=='xml' && empty($params['XslStylesheet'])) {
 				$filepath = DICTIONNAIRES_SITE.'/' . $params['Dirname'] . '/' . $name;
 				$pron = !empty($params['cdm-pronunciation'])?$params['cdm-pronunciation']:'';
@@ -306,11 +317,10 @@
 				$sheets = array();
 				array_push($sheets,$name);
 				$params['XslStylesheet'] = $sheets;
-				creerVolume($params);
 			}
+			creerVolume($params);
 			
-			$dataFileName = strtolower($name);
-			$dataFileName .= '.'.$params['Format'];			
+			$dataFileName = strtolower($name). '.'.$params['Format'];			
 			
 			echo '<p>',gettext('Le fichier de métadonnées du volume est créé.'),' ',
 			gettext('Vous pouvez maintenant ouvrir le dossier du volume sur votre bureau en <a href="http://fr.wikipedia.org/wiki/WebDAV">WebDav</a> avec l\'adresse URL suivante'),
@@ -321,6 +331,17 @@
 			<p>',gettext('Une fois que vous avez terminé, retournez sur la'),' ',' 
 			<a href="modifDictionnaire.php?Dirname=',$params['Dirname'],'&Name=',$params['Dictname'],'">',gettext('page de modification du dictionnaire'),'</a>.</p>';
 		}
+	}
+	
+	function compterEntrees($params) {
+		$dataFileName = strtolower($params['Name']). '.'.$params['Format'];
+		$filepath = DICTIONNAIRES_SITE.'/' . $params['Dirname'] . '/' . $dataFileName;
+		$pointeurCDMEntree = $params['cdm-entry'];
+		$baliseEntree = substr($pointeurCDMEntree,strrpos($pointeurCDMEntree,'/')+1);
+		$baliseEntree = '</'.$baliseEntree.'>';
+		$result = `grep -c '$baliseEntree' $filepath`;
+		echo "je compte $baliseEntree dans $filepath";
+		return $result;			
 	}
 ?>
 </div>
