@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ipotruc v1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-08 17:06+0900\n"
-"PO-Revision-Date: 2013-08-08 17:08+0900\n"
+"POT-Creation-Date: 2013-08-08 17:24+0900\n"
+"PO-Revision-Date: 2013-08-08 17:24+0900\n"
 "Last-Translator: Mathieu MANGEOT <mathieu.mangeot@imag.fr>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -192,8 +192,8 @@ msgstr "Partie centrale"
 #: Pages/modifVolume.php:224 Pages/modifVolume.php:225
 #: Pages/modifVolume.php:227 Pages/modifVolume.php:228
 #: Pages/modifVolume.php:229 Pages/modifVolume.php:230
-#: Pages/modifVolume.php:241 Pages/modifVolume.php:327
-#: Pages/modifVolume.php:330
+#: Pages/modifVolume.php:241 Pages/modifVolume.php:326
+#: Pages/modifVolume.php:329
 msgid " : "
 msgstr " : "
 
@@ -487,8 +487,8 @@ msgid ""
 "Attention : le pointeur CDM de l'article doit être correct et le fichier de "
 "données présent sur le serveur"
 msgstr ""
-"Beware: the entry CDM pointer must be correct and the data file uploaded on "
-"the server"
+"Attention : le pointeur CDM de l'article doit être correct et le fichier de "
+"données présent sur le serveur"
 
 #: Pages/modifVolume.php:150
 msgid "texte"
@@ -530,7 +530,7 @@ msgstr "Lien"
 msgid "Article XML modèle (vide)"
 msgstr "Article XML modèle (vide)"
 
-#: Pages/modifVolume.php:304
+#: Pages/modifVolume.php:303
 msgid ""
 "Attention, vous devez impérativement remplir les pointeurs CDM précédés d'un "
 "astérisque *"
@@ -538,11 +538,11 @@ msgstr ""
 "Attention, vous devez impérativement remplir les pointeurs CDM précédés d'un "
 "astérisque *"
 
-#: Pages/modifVolume.php:325
+#: Pages/modifVolume.php:324
 msgid "Le fichier de métadonnées du volume est créé."
 msgstr "Le fichier de métadonnées du volume est créé."
 
-#: Pages/modifVolume.php:326
+#: Pages/modifVolume.php:325
 msgid ""
 "Vous pouvez maintenant ouvrir le dossier du volume sur votre bureau en <a "
 "href=\"http://fr.wikipedia.org/wiki/WebDAV\">WebDav</a> avec l'adresse URL "
@@ -552,11 +552,11 @@ msgstr ""
 "href=\"http://fr.wikipedia.org/wiki/WebDAV\">WebDav</a> avec l'adresse URL "
 "suivante"
 
-#: Pages/modifVolume.php:329
+#: Pages/modifVolume.php:328
 msgid "seuls les admin ont les droits d'écriture sur ce dossier"
 msgstr "seuls les admin ont les droits d'écriture sur ce dossier"
 
-#: Pages/modifVolume.php:330
+#: Pages/modifVolume.php:329
 msgid ""
 "Téléversez ensuite le fichier de données du volume en le renommant avec le "
 "nom suivant"
@@ -564,10 +564,10 @@ msgstr ""
 "Téléversez ensuite le fichier de données du volume en le renommant avec le "
 "nom suivant"
 
-#: Pages/modifVolume.php:331
+#: Pages/modifVolume.php:330
 msgid "Une fois que vous avez terminé, retournez sur la"
 msgstr "Une fois que vous avez terminé, retournez sur la"
 
-#: Pages/modifVolume.php:332
+#: Pages/modifVolume.php:331
 msgid "page de modification du dictionnaire"
 msgstr "page de modification du dictionnaire"

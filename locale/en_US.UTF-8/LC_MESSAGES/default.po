@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ipotruc v1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-08 17:06+0900\n"
-"PO-Revision-Date: 2013-08-08 17:07+0900\n"
+"POT-Creation-Date: 2013-08-08 17:24+0900\n"
+"PO-Revision-Date: 2013-08-08 17:24+0900\n"
 "Last-Translator: Mathieu MANGEOT <mathieu.mangeot@imag.fr>\n"
 "Language-Team: GETALP <mathieu.mangeot@imag.fr>\n"
 "Language: en\n"
@@ -190,8 +190,8 @@ msgstr "Central part"
 #: Pages/modifVolume.php:224 Pages/modifVolume.php:225
 #: Pages/modifVolume.php:227 Pages/modifVolume.php:228
 #: Pages/modifVolume.php:229 Pages/modifVolume.php:230
-#: Pages/modifVolume.php:241 Pages/modifVolume.php:327
-#: Pages/modifVolume.php:330
+#: Pages/modifVolume.php:241 Pages/modifVolume.php:326
+#: Pages/modifVolume.php:329
 msgid " : "
 msgstr ": "
 
@@ -528,17 +528,17 @@ msgstr "Link"
 msgid "Article XML modèle (vide)"
 msgstr "Template XML article (empty)"
 
-#: Pages/modifVolume.php:304
+#: Pages/modifVolume.php:303
 msgid ""
 "Attention, vous devez impérativement remplir les pointeurs CDM précédés d'un "
 "astérisque *"
 msgstr "Attention, you must fill in the CMD pointers preceeded by a star *"
 
-#: Pages/modifVolume.php:325
+#: Pages/modifVolume.php:324
 msgid "Le fichier de métadonnées du volume est créé."
 msgstr "The metadata file of the volume was created."
 
-#: Pages/modifVolume.php:326
+#: Pages/modifVolume.php:325
 msgid ""
 "Vous pouvez maintenant ouvrir le dossier du volume sur votre bureau en <a "
 "href=\"http://fr.wikipedia.org/wiki/WebDAV\">WebDav</a> avec l'adresse URL "
@@ -548,11 +548,11 @@ msgstr ""
 "remote folder using the <a href=\"http://en.wikipedia.org/wiki/WebDAV"
 "\">WebDav</a> protocol and the following URL"
 
-#: Pages/modifVolume.php:329
+#: Pages/modifVolume.php:328
 msgid "seuls les admin ont les droits d'écriture sur ce dossier"
 msgstr "only the admin have writing permission on this folder"
 
-#: Pages/modifVolume.php:330
+#: Pages/modifVolume.php:329
 msgid ""
 "Téléversez ensuite le fichier de données du volume en le renommant avec le "
 "nom suivant"
@@ -560,10 +560,10 @@ msgstr ""
 "Afterwards, upload the volume's data file and rename it using the following "
 "name"
 
-#: Pages/modifVolume.php:331
+#: Pages/modifVolume.php:330
 msgid "Une fois que vous avez terminé, retournez sur la"
 msgstr "Once you have finished, go back to the"
 
-#: Pages/modifVolume.php:332
+#: Pages/modifVolume.php:331
 msgid "page de modification du dictionnaire"
 msgstr "dictionary modification page"
