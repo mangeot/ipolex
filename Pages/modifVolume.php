@@ -296,7 +296,6 @@
 	}
 	
 	function enregistrerVolume($params) {
-		echo 'ev:',$params['cdm-volume'];
 		if ($params['Format']=='xml' && (empty($params['cdm-volume'])
 											|| empty($params['cdm-entry'])
 											|| empty($params['cdm-entry-id'])
