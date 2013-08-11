@@ -137,8 +137,9 @@
 ';
 		return $res;
 	}
+		
 	
-	function creerVolumeMetadata($params) {
+	function enregistrerVolumeMetadata($params) {
 		if (empty($params['Format'])) {
 			$params['Format'] = '';
 		}
@@ -341,9 +342,7 @@
 		$stylesheet = preg_replace('/##idiom_element##/',$idiom,$stylesheet);
 		
 		$myFile = $name . '-view.xsl';
-		$fh = fopen($myFile, 'w') or die("impossible d'ouvrir le fichier ".$myFile);
-		fwrite($fh, $stylesheet);
-		fclose($fh);
+		file_put_contents($myFile,$stylesheet);
 	}
 	
 	function makeName($dictname, $source, $cibles) {

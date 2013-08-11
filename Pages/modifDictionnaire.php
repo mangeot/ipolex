@@ -93,8 +93,8 @@
 <div id="partieCentrale">
 <?php
 	$modif = false;
+	$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:DEFAULT_TEST_USER;
 	if (!empty($Params['Administrators'])) {
-		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:DEFAULT_TEST_USER;
 		$admins = preg_split("/[\s,;]+/", $Params['Administrators']);
 		$modif = in_array($user, $admins);
 		if ($modif && !empty($_REQUEST['Enregistrer']) && !empty($Params['Name'])) {
@@ -154,7 +154,7 @@
 	</p>
 
 	<p><?php echo gettext('Commentaires');?> <input type="text"  size="50" id="Comments" name="Comments" value="<?php affichep('Comments');?>"/></p>	
-	<p><?php echo gettext('Administrateurs');?> <input type="text" id="Administrators" name="Administrators" value="<?php $u=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';affichep('Administrators',$u);?>"/></p>	
+	<p><?php echo gettext('Administrateurs');?> <input type="text" id="Administrators" name="Administrators" value="<?php affichep('Administrators',$user);?>"/></p>	
 	<p><?php echo gettext('Volumes');?><?php echo gettext(' : ');?><ol>
 		<?php $volumes = getNumVolumes($Params);
 			$i=1;

@@ -65,6 +65,15 @@ a img {
 	border:none;
 }
 
+.notice {
+	background-color:  yellow;
+}
+
+.note {
+	color:  pink;
+	font-size: smaller;
+}
+
 .erreur {
 	color: #D8000C;
 	background-color: #FFBABA;

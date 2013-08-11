@@ -11,6 +11,9 @@
 	$targets = array_filter(explode(' ',$_REQUEST['Targets']));
 	$name = makeName($_REQUEST['Dictname'],$source,$targets);
 	$metadataFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$name.'-metadata.xml';	
+	$parameters = 'Dirname='.$_REQUEST['Dirname'].'&Dictname='.$_REQUEST['Dictname'].'&Source='.$_REQUEST['Source'];
+	$parameters .= '&Targets='.$_REQUEST['Targets'].'&Authors='.$_REQUEST['Authors'].'&Administrators='.$_REQUEST['Administrators'];
+
 	if (file_exists($metadataFile)) {
 	$doc = new DOMDocument();
 	$doc->load($metadataFile);
@@ -83,19 +86,17 @@
                         array_push($sheets,$xslsheet->getAttribute('name'));
                 }
                 $Params['XslStylesheet'] = $sheets;
-
 	}
 	}
 	else {
-		$Params = $_REQUEST;
-		$Params['Name'] = $name;
+		header('Location:creerVolume.php?'.$parameters);
 	}
 	include(RACINE_SITE.'include/header.php');
 ?>
 <header id="enTete">
 	<?php print_lang_menu();?>
 	<h1><?php echo gettext('iPoLex : entrepôt de données lexicales');?></h1>
-	<h2><?php echo gettext('Ajout/modification d\'un volume');?></h3>
+	<h2><?php echo gettext('Modification des métadonnées d\'un volume');?></h3>
 	<hr />
 </header>
 <div id="partieCentrale">
@@ -105,30 +106,26 @@
 		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:DEFAULT_TEST_USER;
 		$admins = preg_split("/[\s,;]+/", $Params['Administrators']);
 		$modif = in_array($user, $admins);
-		if ($modif && !empty($_REQUEST['Enregistrer'])) {
+		if ($modif && (!empty($_REQUEST['Enregistrer']) || !empty($_REQUEST['AjoutLien']))) {
 			$Params = $_REQUEST;
 			$Params['Name'] = $name;
-			enregistrerVolume($Params);
-		}
-		if ($modif && !empty($_REQUEST['CompterEntrees'])) {
-			$Params = $_REQUEST;
-			$Params['Name'] = $name;
-			$Params['HwNumber'] = compterEntrees($Params);
-			enregistrerVolume($Params);
-		}
-		if ($modif && !empty($_REQUEST['AjoutLien'])) {
-			$LinkCopy = $CDMLink;
-			if (empty($Params['CDMLinks'])) {
-				$Params['CDMLinks'] = array();
+			if (!empty($_REQUEST['AjoutLien'])) {
+				$LinkCopy = $CDMLink;
+				if (empty($Params['CDMLinks'])) {
+					$Params['CDMLinks'] = array();
+				}
+				array_push($Params['CDMLinks'],$LinkCopy);
 			}
-			array_push($Params['CDMLinks'],$LinkCopy);
+			enregistrerVolume($Params);
 		}
 	}
 	
 	$adresseDonnees = $modif?gettext('Adresse WebDAV pour modification des données'):gettext('Adresse WebDAV pour accès aux données');
 	echo '<p>',$adresseDonnees,gettext(' : '),'<a href="',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
-	echo '<p><a href="modifDictionnaire.php?Dirname=',$Params['Dirname'],'&Name=',$Params['Dictname'],'">',gettext('Gestion du dictionnaire'),'</a>.</p>';
-
+	if ($modif) {
+		echo '<p><img src="',RACINE_WEB,'images/assets/b_back.png" alt="back"/><a href="creerVolume.php?',$parameters,'">',gettext('Modification des données par formulaire'),'</a>.</p>';
+	}
+	echo '<p><img src="',RACINE_WEB,'images/assets/b_back.png" alt="back"/><a href="modifDictionnaire.php?Dirname=',$Params['Dirname'],'&Name=',$Params['Dictname'],'">',gettext('Gestion du dictionnaire'),'</a>.</p>';
 
 ?>
 <form action="?" method="post">
@@ -139,10 +136,6 @@
 	<?php echo gettext('langue source'), gettext(' : ');?><?php echo $LANGUES[$source]?>; 
 	<?php echo gettext('langues cible'), gettext(' : ');?><?php foreach ($targets as $cible) {echo $LANGUES[$cible],', ';}?></p>
 	<p><?php echo gettext('Nombre d\'entrées'), gettext(' : ');?><input type="text" id="HwNumber" name="HwNumber"  value="<?php affichep('HwNumber')?>"/>
-	<?php if (!empty($Params['Format']) && $Params['Format']=='xml' && !empty($CDMElements['cdm-entry'])) {
-		echo '<input type="submit" name="CompterEntrees" value="', gettext('Calculer'), '" /><br/>
-	<span style="font-size: smaller;color:red;">', gettext('Attention : le pointeur CDM de l\'article doit être correct et le fichier de données présent sur le serveur'),'</span>';
-	} ?>
 	</p>
 	<p>*<?php echo gettext('Format'), gettext(' : ');?><select id="Format" name="Format" onchange="this.form.submit()">
 		<option value=""><?php echo gettext('Choisir...');?></option>
@@ -279,26 +272,23 @@
 	}
 		
 	function creerVolume($params) {
+		echo 'cv:1';
 		$name = $params['Name'];
-		$volumeMetadata = creerVolumeMetadata($params);
+		$volumeMetadata = enregistrerVolumeMetadata($params);
 		$myFile = DICTIONNAIRES_SITE.'/'.$params['Dirname']."/".$name.'-metadata.xml';
-		$fh = fopen($myFile, 'w') or die("impossible d'ouvrir le fichier ".$myFile);
-		fwrite($fh, $volumeMetadata);
-		fclose($fh);
+		file_put_contents($myFile,$volumeMetadata);
 		$dataFileName = strtolower($name);
 		$templateFileName = $dataFileName . '-template.xml';
 		if (!empty($params['Format']) && $params['Format']=='xml' && !empty($params['Template'])) {
 			$myFile = DICTIONNAIRES_SITE.'/'.$params['Dirname']."/".$templateFileName;
-			$fh = fopen($myFile, 'w') or die("impossible d'ouvrir le fichier ".$myFile);
-			fwrite($fh, stripslashes($params['Template']));
-			fclose($fh);
+			file_put_contents($myFile,stripslashes($params['Template']));
 		}
 	}
 	
 	function enregistrerVolume($params) {
+		echo 'ev:1';
 		if ($params['Format']=='xml' && (empty($params['cdm-volume'])
 											|| empty($params['cdm-entry'])
-											|| empty($params['cdm-entry-id'])
 											|| empty($params['cdm-headword']))) {
 			echo '<p style="color:red;">',gettext('Attention, vous devez impérativement remplir les pointeurs CDM précédés d\'un astérisque *'),'</p>';
 		}
@@ -313,23 +303,12 @@
 				$idiom = !empty($params['cdm-idiom'])?$params['cdm-idiom']:'';
 				createXslStylesheet($filepath,$params['cdm-entry'],$params['cdm-entry-id'],$params['cdm-headword'],
 					$pron,$pos,$example,$idiom);
-				$sheets = array();
-				array_push($sheets,$name);
-				$params['XslStylesheet'] = $sheets;
+				$params['XslStylesheet'] = array();
+				array_push($params['XslStylesheet'],$name);				
 			}
 			creerVolume($params);
-			
 			$dataFileName = strtolower($name). '.'.$params['Format'];			
-			
-			echo '<p>',gettext('Le fichier de métadonnées du volume est créé.'),' ',
-			gettext('Vous pouvez maintenant ouvrir le dossier du volume sur votre bureau en <a href="http://fr.wikipedia.org/wiki/WebDAV">WebDav</a> avec l\'adresse URL suivante'),
-			gettext(' : '),'
-			<a href="',DICTIONNAIRES_DAV,'/',$params['Dirname'],'/">',DICTIONNAIRES_DAV,'/',$params['Dirname'],'/</a>
-			 (',gettext('seuls les admin ont les droits d\'écriture sur ce dossier'),').</p>
-			<p>',gettext('Téléversez ensuite le fichier de données du volume en le renommant avec le nom suivant'),gettext(' : '),'<code><strong>',$dataFileName,'</strong></code>.</p>
-			<p>',gettext('Une fois que vous avez terminé, retournez sur la'),' ',' 
-			<a href="modifDictionnaire.php?Dirname=',$params['Dirname'],'&Name=',$params['Dictname'],'">',gettext('page de modification du dictionnaire'),'</a>.</p>';
-		}
+			}
 	}
 	
 	function compterEntrees($params) {
@@ -339,7 +318,6 @@
 		$baliseEntree = substr($pointeurCDMEntree,strrpos($pointeurCDMEntree,'/')+1);
 		$baliseEntree = '</'.$baliseEntree.'>';
 		$result = `grep -c '$baliseEntree' $filepath`;
-		echo "je compte $baliseEntree dans $filepath";
 		return $result;			
 	}
 ?>

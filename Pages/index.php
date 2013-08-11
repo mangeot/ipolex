@@ -39,12 +39,14 @@ if (is_dir(DICTIONNAIRES_SITE)) {
 						$lang[$infos['Name']] = $infos;
 						$langs[$key] = $lang;
 					}
+					if (!empty($volume['Targets'])) {
 					foreach ($volume['Targets'] as $key) {
 						$lang = empty($langs[$key])?array():$langs[$key];
 						if (empty($lang[$infos['Name']])) {
 							$lang[$infos['Name']] = $infos;
 							$langs[$key] = $lang;
 						}
+					}
 					}
 				}
 			}
@@ -140,17 +142,19 @@ if (is_dir(DICTIONNAIRES_SITE)) {
 				echo '<td rowspan="',count($volumes),'">',$dict['Category'],'</td>';
 				echo '<td rowspan="',count($volumes),'">',$dict['Type'],'</td>';
 				echo '<td rowspan="',count($volumes),'">',implode(',',$dict['Administrators']),'</td>';
-				echo '<td rowspan="',count($volumes),'">',$volume['Format'],'</td>';
+				$format= !empty($volume['Format'])?$volume['Format']:'?';
+				echo '<td rowspan="',count($volumes),'">',$format,'</td>';
 			}
 			echo '<td><abbr title="',$LANGUES[$src],'">',$src,'</abbr></td>';
-			$trgs = $volume['Targets'];
+			$trgs = !empty($volume['Targets'])?$volume['Targets']:array();
 			echo '<td>';
 			foreach ($trgs as $trg) {
 				echo '<abbr title="',$LANGUES[$trg],'">',$trg,'</abbr>, ';
 			}
 			echo '</td>';
-			echo '<td style="text-align:right">',$volume['HwNumber'],'</td>';
-			$entrees += intval($volume['HwNumber']);
+			$HwNumber= !empty($volume['HwNumber'])?$volume['HwNumber']:'?';
+			echo '<td style="text-align:right">',$HwNumber,'</td>';
+			$entrees += intval($HwNumber);
 			if ($j++==0) {
 				echo '<td rowspan="',count($volumes),'">';
 				if (in_array($user, $dict['Administrators'])) {
