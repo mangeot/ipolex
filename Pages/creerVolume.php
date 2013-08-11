@@ -242,10 +242,14 @@ $(document).ready(function() {
 			$HwNumber = $dict->getAttribute('hwnumber'); 
 			$CDMElements = $dict->getElementsByTagName('cdm-elements');
 			$CDMElements = $CDMElements->item(0);
-			$CDMVolume = $CDMElements->getElementsByTagName('cdm-volume');
-			$CDMVolume = $CDMVolume->item(0)->getAttribute('xpath');
-			$CDMVolume = preg_replace('/.*\/([^\/]+)$/','$1',$CDMVolume);
-			$TemplateEntry = $doc->getElementsByTagName($CDMVolume)->item(0);
+			$TemplateEntry = $doc->getElementsByTagName("template-entry")->item(0);
+			$children = $TemplateEntry->childNodes; 
+ 			for($i = 0; $i < $children->length; $i++) { 
+        		$child = $children->item($i); 
+	    	    if ($child->nodeType == XML_ELEMENT_NODE) { 
+	    	    	$TemplateEntry = $child;
+				}
+			}
 			$TemplateEntry = $doc->saveXML($TemplateEntry);
 			$CDMElements = $doc->saveXML($CDMElements);
     	}

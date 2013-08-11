@@ -151,7 +151,9 @@ print '	</cdm-elements>
 </volume-metadata>
 ';
 
+print "<template-entry>\n";
 &print_template($root,0);
+print "\n</template-entry>\n";
 
 print "\n</html>";
 
