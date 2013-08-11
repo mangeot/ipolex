@@ -11,6 +11,9 @@
 	$targets = array_filter(explode(' ',$_REQUEST['Targets']));
 	$name = makeName($_REQUEST['Dictname'],$source,$targets);
 	$metadataFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$name.'-metadata.xml';	
+	$analysisFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$name.'-analysis.html';	
+	$analysisLink = DICTIONNAIRES_WEB.'/'.$_REQUEST['Dirname']."/".$name.'-analysis.html';	
+
 	$parameters = 'Dirname='.$_REQUEST['Dirname'].'&Dictname='.$_REQUEST['Dictname'].'&Source='.$_REQUEST['Source'];
 	$parameters .= '&Targets='.$_REQUEST['Targets'].'&Authors='.$_REQUEST['Authors'].'&Administrators='.$_REQUEST['Administrators'];
 
@@ -241,6 +244,13 @@
 
 </fieldset>
 </form>
+<?php
+   		 	if (file_exists($analysisFile)) {
+	 			echo '
+   				<p><a href="',$analysisLink,'">', gettext('Résultat de l\'analyse'),'</a></p>';
+   				}
+?>
+
 <?php
 	
 	//require_once(RACINE_SITE . 'include/connexion.php');
