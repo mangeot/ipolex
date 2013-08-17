@@ -89,6 +89,14 @@
                         array_push($sheets,$xslsheet->getAttribute('name'));
                 }
                 $Params['XslStylesheet'] = $sheets;
+        $schema = $dict->getElementsByTagName('xmlschema-ref');
+        if ($schema->length>0) {
+        	$Params['XmlschemaRef']=$schema->item(0)->getAttribute('xlink:href');
+        }
+        $itf = $dict->getElementsByTagName('template-interface-ref');
+        if ($itf->length>0) {
+        	$Params['TemplateInterfaceRef']=$itf->item(0)->getAttribute('xlink:href');
+        }
 	}
 	}
 	else {
@@ -121,6 +129,12 @@
 			}
 			enregistrerVolume($Params);
 		}
+		if ($modif && !empty($_REQUEST['CompterEntrees'])) {
+			$Params = $_REQUEST;
+			$Params['Name'] = $name;
+			$Params['HwNumber'] = compterEntrees($Params);
+			enregistrerVolume($Params);
+		}
 	}
 	
 	$adresseDonnees = $modif?gettext('Adresse WebDAV pour modification des données'):gettext('Adresse WebDAV pour accès aux données');
@@ -139,7 +153,7 @@
 	<?php echo gettext('langue source'), gettext(' : ');?><?php echo $LANGUES[$source]?>; 
 	<?php echo gettext('langues cible'), gettext(' : ');?><?php foreach ($targets as $cible) {echo $LANGUES[$cible],', ';}?></p>
 	<p><?php echo gettext('Nombre d\'entrées'), gettext(' : ');?><input type="text" id="HwNumber" name="HwNumber"  value="<?php affichep('HwNumber')?>"/>
-	</p>
+	<?php if ($Params['Format']=='xml') {echo ' <input type="submit" name="CompterEntrees" value="',gettext('Recompter'),'"/>';};?></p>
 	<p>*<?php echo gettext('Format'), gettext(' : ');?><select id="Format" name="Format" onchange="this.form.submit()">
 		<option value=""><?php echo gettext('Choisir...');?></option>
 		<?php afficheo('Format',"xml")?>xml</option>
@@ -282,7 +296,6 @@
 	}
 		
 	function creerVolume($params) {
-		echo 'cv:1';
 		$name = $params['Name'];
 		$volumeMetadata = enregistrerVolumeMetadata($params);
 		$myFile = DICTIONNAIRES_SITE.'/'.$params['Dirname']."/".$name.'-metadata.xml';
@@ -296,7 +309,6 @@
 	}
 	
 	function enregistrerVolume($params) {
-		echo 'ev:1';
 		if ($params['Format']=='xml' && (empty($params['cdm-volume'])
 											|| empty($params['cdm-entry'])
 											|| empty($params['cdm-headword']))) {
@@ -316,9 +328,23 @@
 				$params['XslStylesheet'] = array();
 				array_push($params['XslStylesheet'],$name);				
 			}
+			if ($params['Format']=='xml' && empty($params['XmlschemaRef'])  && !empty($params['Template'])) {
+				$filepath = DICTIONNAIRES_SITE.'/' . $params['Dirname'] . '/' . strtolower($name);
+				$template = $filepath.'-template.xml';
+				$filepath .= '.xsd';
+				creerXmlschema($filepath,$template);
+				$params['XmlschemaRef'] = $filepath;
+			}
 			creerVolume($params);
 			$dataFileName = strtolower($name). '.'.$params['Format'];			
 			}
+	}
+	
+	function creerXmlschema($schema, $xmlTemplate) {
+		$bugMAMP = "export DYLD_LIBRARY_PATH=\"\"; ";
+		$commande = 'java -jar ' . RACINE_SITE . 'jar/trang.jar ' .  $xmlTemplate . ' ' . $schema;
+		//echo 'commande: ',$bugMAMP,$commande;
+		echo exec($bugMAMP.$commande);
 	}
 	
 	function compterEntrees($params) {
