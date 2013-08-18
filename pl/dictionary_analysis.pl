@@ -95,25 +95,40 @@ print '					</tbody>
 my @tableauEntry;
 &guess_entry($root,0,'',0);
 @tableauEntry = reverse sort { $a->{ match } <=> $b->{ match } } @tableauEntry;
+my $entry = $tableauEntry[0]->{ element };
 my $entryXpath = $tableauEntry[0]->{ xpath };
 my $entryCompte = $tableauEntry[0]->{ count };
 my $volumeXpath = $entryXpath;
 $volumeXpath =~ s/\/[^\/]+$//;
 
+my @tableauEntryId;
+&guess_entry_id($entry,$entryXpath);
+@tableauEntryId = reverse sort { $a->{ match } <=> $b->{ match } } @tableauEntryId;
+#foreach my $ligne (@tableauEntryId) {
+#	print "hypothesis EID: \n";
+#	foreach my $key (keys %$ligne) {
+#		print "\t",'- ', $key, ': ',$ligne->{ $key }, "\n";
+#	}
+#}
 my @tableauHeadword;
-&guess_headword($root,1,'',$entryXpath, $entryCompte);
+&guess_headword($entry,0,$entryXpath,$entryCompte);
 @tableauHeadword = reverse sort { $a->{ match } <=> $b->{ match } } @tableauHeadword;
+my $headword = $tableauHeadword[0]->{ element };
+my $headwordName =  $tableauHeadword[0]->{ name };
+my @tableauHeadwordHn;
+&guess_headword_hn($headword,$tableauHeadword[0]->{ xpath });
+@tableauHeadwordHn = reverse sort { $a->{ match } <=> $b->{ match } } @tableauHeadwordHn;
 my @tableauPronun;
-&guess_pronun($root,0,'',$entryXpath, $entryCompte);
+&guess_pronun($entry,0,$entryXpath, $entryCompte, $headwordName);
 @tableauPronun = reverse sort { $a->{ match } <=> $b->{ match } } @tableauPronun;
 my @tableauPos;
-&guess_pos($root,0,'',$entryXpath, $entryCompte);
+&guess_pos($entry,0,$entryXpath, $entryCompte);
 @tableauPos = reverse sort { $a->{ match } <=> $b->{ match } } @tableauPos;
 my @tableauDef;
-&guess_def($root,0,'',$entryXpath, $entryCompte);
+&guess_def($entry,0,$entryXpath, $entryCompte, $headwordName);
 @tableauDef = reverse sort { $a->{ match } <=> $b->{ match } } @tableauDef;
 my @tableauSens;
-&guess_sense($root,0,'',$entryXpath, $entryCompte);
+&guess_sense($entry,0,$entryXpath, $entryCompte);
 @tableauSens = reverse sort { $a->{ match } <=> $b->{ match } } @tableauSens;
 
 print '		<section id="CDMElements">
@@ -124,7 +139,16 @@ print '			<table><thead><th>Nom</th><th>XPath</th></thead>
 			';
 print "\t\t\t<tr><td>cdm-volume</td><td>$volumeXpath</td></tr>\n";
 print "\t\t\t<tr><td>cdm-entry</td><td>$tableauEntry[0]->{ xpath }</td></tr>\n";
+if (@tableauEntryId) {
+	print "\t\t\t<tr><td>cdm-entry-id</td><td>$tableauEntryId[0]->{ xpath }</td></tr>\n";
+}
+else {
+	print "\t\t\t<tr><td>cdm-entry-id</td><td>$tableauEntry[0]->{ xpath }/\@id</td></tr>\n";
+}
 print "\t\t\t<tr><td>cdm-headword</td><td>$tableauHeadword[0]->{ xpath }</td></tr>\n";
+if (@tableauHeadwordHn) {
+	print "\t\t\t<tr><td>cdm-homograph-number</td><td>$tableauHeadwordHn[0]->{ xpath }</td></tr>\n";
+}
 print "\t\t\t<tr><td>cdm-pronunciation</td><td>$tableauPronun[0]->{ xpath }</td></tr>\n";
 print "\t\t\t<tr><td>cdm-pos</td><td>$tableauPos[0]->{ xpath }</td></tr>\n";
 print "\t\t\t<tr><td>cdm-definition</td><td>$tableauDef[0]->{ xpath }</td></tr>\n";
@@ -142,10 +166,19 @@ print '<volume-metadata encoding="',$Encoding,'" hwnumber="',$elementsArray{$ent
 ';
 print "\t\t\t<cdm-volume xpath='$volumeXpath' />\n";
 print "\t\t\t<cdm-entry xpath='$tableauEntry[0]->{ xpath }' />\n";
-print "\t\t\t<cdm-headword xpath='$tableauHeadword[0]->{ xpath }' />\n";
-print "\t\t\t<cdm-pronunciation xpath='$tableauPronun[0]->{ xpath }' />\n";
-print "\t\t\t<cdm-pos xpath='$tableauPos[0]->{ xpath }' />\n";
-print "\t\t\t<cdm-definition xpath='$tableauDef[0]->{ xpath }' />\n";
+if (@tableauEntryId) {
+	print "\t\t\t<cdm-entry-id xpath='$tableauEntryId[0]->{ xpath }' />\n";
+}
+else {
+	print "\t\t\t<cdm-entry-id xpath='$tableauEntry[0]->{ xpath }/\@id' />\n";
+}
+print "\t\t\t<cdm-headword xpath='$tableauHeadword[0]->{ xpath }/text()' />\n";
+if (@tableauHeadwordHn) {
+	print "\t\t\t<cdm-homograph-number xpath='$tableauHeadwordHn[0]->{ xpath }' />\n";
+}
+print "\t\t\t<cdm-pronunciation xpath='$tableauPronun[0]->{ xpath }/text()' />\n";
+print "\t\t\t<cdm-pos xpath='$tableauPos[0]->{ xpath }/text()' />\n";
+print "\t\t\t<cdm-definition xpath='$tableauDef[0]->{ xpath }/text()' />\n";
 print "\t\t\t<cdm-sense xpath='$tableauSens[0]->{ xpath }' />\n";
 print '	</cdm-elements>
 </volume-metadata>
@@ -339,6 +372,7 @@ sub guess_entry {
 				$match = 1;
 			}
 			my $tableau_elt;
+			$tableau_elt->{ element } = $elt;
 			$tableau_elt->{ level } = $level;
 			$tableau_elt->{ name } = $elt->{ name };
 			$tableau_elt->{ count } = $elt->{ count };
@@ -355,46 +389,110 @@ sub guess_entry {
 }
 
 
+sub guess_entry_id {
+	my $elt = $_[0];
+	my $xpath = $_[1];
+	foreach my $attribute (keys %{ $elt->{ attribute }}) {
+		my $match = 0;
+		my $attr = $elt->{ attribute }{ $attribute };
+		my $diff = keys %{$attr->{ values }};
+		my $sup = $attr->{ sup } || '';
+		my $count = $attr->{ count };
+		if ($attribute =~ /id/) {
+			$match += 0.3
+		}
+		if ($diff<$maxAffichageListeValeurs) {
+			if ($diff == ($attr->{ count } -1)) {
+				$match += 0.5
+			}
+		}
+		else {
+				$match += 0.2
+		}
+		my $tableau_elt;
+		$tableau_elt->{ element } = $attr;
+		$tableau_elt->{ name } = $attribute;
+		$tableau_elt->{ count } = $attr->{ count };
+		$tableau_elt->{ match } = $match;
+		$tableau_elt->{ xpath } = $xpath . '/@' . $attribute;
+
+		push @tableauEntryId, $tableau_elt;
+	}
+}
+
 
 sub guess_headword {
 	my $elt = $_[0];
 	my $level = $_[1];
 	my $xpath = $_[2];
-	my $entryXpath = $_[3];
-	my $compte = $_[4];     # 'count' of entry
+	my $compte = $_[3];     # 'count' of entry
 	my $word = $elt->{ words };
 	my $char = $elt->{ charnumber };
 	
 	my $match = 0;
-	$xpath .= '/' . $elt->{ name };
+	
+	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
 
-	if ($xpath =~ /^$entryXpath\/.+/  && $char) {       #  descendant de entry && nombre d'entry == nombre d'element
-	 		
-			if ($elt->{ count } == $compte){
-				$match += 0.45;
-			}
-			if (($elt->{ name } =~ /headword/) || ($elt->{ name } =~ /vedette/)){
-				# print " match nom; \n";
-				$match += 0.45;
-			}
-			
-			 if (($word/$char >= 1.0) && ($word/$char <= 3.0)){
-				# print " match number of words; \n";
-				$match += 0.3;
-			 }
-
-			my $tableau_elt;
-			$tableau_elt->{ level } = $level;
-			$tableau_elt->{ name } = $elt->{ name };
-			$tableau_elt->{ count } = $elt->{ count };
-			$tableau_elt->{ match } = $match / $level;	 # se trouve en priorité dans le début de l'arbre	
-			$tableau_elt->{ xpath } = $xpath;
-
-			push @tableauHeadword, $tableau_elt;
-
+	if ($level >0 && $char) {       #  descendant de entry && nombre d'entry == nombre d'element
+		
+		if ($elt->{ count } == $compte){
+			$match += 0.45;
 		}
+		if (($elt->{ name } =~ /headword/) || ($elt->{ name } =~ /vedette/)){
+			# print " match nom; \n";
+			$match += 0.45;
+		}
+		
+		 if (($word/$char >= 1.0) && ($word/$char <= 3.0)){
+			# print " match number of words; \n";
+			$match += 0.3;
+		 }
+
+		my $tableau_elt;
+		$tableau_elt->{ element } = $elt;
+		$tableau_elt->{ level } = $level;
+		$tableau_elt->{ name } = $elt->{ name };
+		$tableau_elt->{ count } = $elt->{ count };
+		$tableau_elt->{ match } = $match / $level;	 # se trouve en priorité dans le début de l'arbre	
+		$tableau_elt->{ xpath } = $xpath;
+
+		push @tableauHeadword, $tableau_elt;
+
+	}
 	foreach my $child (reverse sort { $a->{ count } <=> $b->{ count } } values %{$elt->{ child }}) {
-		&guess_headword($child, $level+1, $xpath, $entryXpath, $compte);
+		&guess_headword($child, $level+1, $xpath, $compte);
+	}
+}
+
+sub guess_headword_hn {
+	my $elt = $_[0];
+	my $xpath = $_[1];
+	foreach my $attribute (keys %{ $elt->{ attribute }}) {
+		my $match = 0;
+		my $attr = $elt->{ attribute }{ $attribute };
+		my $diff = keys %{$attr->{ values }};
+		my $sup = $attr->{ sup } || '';
+		my $count = $attr->{ count };
+		if ($attribute =~ /hn/) {
+			$match += 0.1
+		}
+		$match += 5/$diff;
+		my $num = 0.3;
+		foreach my $key (keys %{$attr->{ values }}) {
+			if ($attr->{ values }{ $key } !~ /^\d+\z/) {
+				$num = 0;
+			}
+		}
+		$match += $num;
+		
+		my $tableau_elt;
+		$tableau_elt->{ element } = $attr;
+		$tableau_elt->{ name } = $attribute;
+		$tableau_elt->{ count } = $attr->{ count };
+		$tableau_elt->{ match } = $match;
+		$tableau_elt->{ xpath } = $xpath . '/@' . $attribute;
+
+		push @tableauHeadwordHn, $tableau_elt;
 	}
 }
 
@@ -403,16 +501,17 @@ sub guess_pronun {
 	my $elt = $_[0];
 	my $level = $_[1];
 	my $xpath = $_[2];
-	my $entryXpath = $_[3];
-	my $compte = $_[4];    # 'count' of entry
+	my $compte = $_[3];    # 'count' of entry
+	my $headword = $_[4];
 	my $match = 0;
-	$xpath .= '/' . $elt->{ name };
 	
 	my $charnumber = $elt->{ charnumber };
 	my $charsize = $elt->{ charsize };
 	my $words = $elt->{ words };
 
-	if ($xpath =~ /^$entryXpath\/.+/ && $charnumber && $words) { # descendant de entry
+	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
+
+	if ($level >0 && $elt->{ name } ne $headword && $charnumber && $words) { # descendant de entry
 		if (($elt->{ count } > ($compte - $compte*0.02)) && ($elt->{ count } < ($compte + $compte*0.02))) {       #  nombre de pronunciation soit proche de celui de headword
 			$match += 0.2;
 		}
@@ -434,7 +533,7 @@ sub guess_pronun {
 	
 	}
 	foreach my $child (reverse sort { $a->{ count } <=> $b->{ count } } values %{$elt->{ child }}) {
-		&guess_pronun($child, $level+1, $xpath, $entryXpath, $compte);
+		&guess_pronun($child, $level+1, $xpath, $compte, $headword);
 	}
 }
 
@@ -443,9 +542,7 @@ sub guess_pos {
 	my $elt = $_[0];
 	my $level = $_[1];
 	my $xpath = $_[2];
-	my $entryXpath = $_[3];
-	my $compte = $_[4];    # 'count' of entry
-	$xpath .= '/' . $elt->{ name };
+	my $compte = $_[3];    # 'count' of entry
 
 	my $charnumber = $elt->{ charnumber };
 	my $charsize = $elt->{ charsize };
@@ -453,7 +550,8 @@ sub guess_pos {
 	
 	my $match = 0;
 	my $diff = keys %{$elt->{ values }};
-	if ($xpath =~ /^$entryXpath\/.+/ && $charnumber) {
+	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
+	if ($level >0 && $charnumber) {
 		if  ($diff > 3 && $diff <= 40) { # descendant de entry
 			$match += 0.4;
 		}
@@ -478,9 +576,8 @@ sub guess_pos {
 			push @tableauPos, $tableau_elt;
 		}
 	}
-#	foreach my $child (reverse sort { $a->{ count } <=> $b->{ count } } values %{$elt->{ child }}) {
 	foreach my $child (values %{$elt->{ child }}) {
-		&guess_pos($child, $level+1, $xpath, $entryXpath, $compte);
+		&guess_pos($child, $level+1, $xpath, $compte);
 	}
 }
 
@@ -490,15 +587,20 @@ sub guess_def {
 	my $elt = $_[0];
 	my $level = $_[1];
 	my $xpath = $_[2];
-	my $entryXpath = $_[3];
-	my $compte = $_[4];    # 'count' of entry
+	my $compte = $_[3];    # 'count' of entry
+	my $headword = $_[4];
 	my $match = 0;
-	$xpath .= '/' . $elt->{ name };
 		
 	my $charnumber = $elt->{ charnumber };
 	#my $charsize = $elt->{ charsize };
 	my $words = $elt->{ words };
-	if ($xpath =~ /^$entryXpath\/.+/ && $charnumber) {
+	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
+	if ($level >0 && $elt->{ name } ne $headword && $charnumber && ($words >= 2)) {
+       
+       	if (($elt->{ count } > ($compte - $compte*0.02)) && ($elt->{ count } < ($compte + $compte*0.02))) {       #  nombre de pronunciation soit proche de celui de headword
+			$match += 0.3;
+		}
+
        
 		if($words/$charnumber >= 3.0){
 			$match += 0.2;
@@ -506,7 +608,7 @@ sub guess_def {
 
 		if ($elt->{ name } =~ /def/){
 			# print " match nom; \n";
-			$match += 0.75;
+			$match += 0.5;
 		}
 	
 		my $tableau_elt;
@@ -518,24 +620,24 @@ sub guess_def {
 		push @tableauDef, $tableau_elt;
 	}
 	foreach my $child (reverse sort { $a->{count} <=> $b->{count} } values %{$elt->{ child }}) {
-		&guess_def($child, $level+1, $xpath, $entryXpath, $compte);
+		&guess_def($child, $level+1, $xpath, $compte, $headword);
 	}
 }
+
 
 sub guess_sense {
 	my $elt = $_[0];
 	my $level = $_[1];
 	my $xpath = $_[2];
-	my $entryXpath = $_[3];
-	my $compte = $_[4];    # 'count' of entry
-	$xpath .= '/' . $elt->{ name };
+	my $compte = $_[3];    # 'count' of entry
 
 	my $charnumber = $elt->{ charnumber };
 	#my $charsize = $elt->{ charsize };
 	my $words = $elt->{ words };
 	
 	my $match = 0;
-	if ($xpath =~ /^$entryXpath\/.+/ ){#&& $charnumber){  	
+	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
+	if ($level >0 && !$charnumber){  	
 
 		if ($elt->{ count } >= 2*$compte) {       
 			$match += 0.2;
@@ -554,6 +656,6 @@ sub guess_sense {
 		push @tableauSens, $tableau_elt;
 	}
 	foreach my $child (reverse sort { $a->{count} <=> $b->{count} } values %{$elt->{ child }}) {
-		&guess_sense($child, $level+1, $xpath, $entryXpath, $compte);
+		&guess_sense($child, $level+1, $xpath, $compte);
 	}
 }

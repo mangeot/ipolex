@@ -12,6 +12,7 @@
 	'cdm-pronunciation' => array(gettext('Prononciation'),'/volume/entry/pron/text()',gettext('en API si possible')),
 	'cdm-pos' => array(gettext('Classe grammaticale'),'/volume/entry/pos/text()',''),
 	'cdm-definition' => array(gettext('Définition'),'/volume/entry/definition/text()',gettext('non indexé')),
+	'cdm-sense' => array(gettext('Sens'),'/volume/entry/sense',gettext('non indexé')),
 	'cdm-translation' => array(gettext('Traduction en '),'/volume/entry/translation/text()',''),
 	'cdm-example' => array(gettext('Exemple en '),'/volume/entry/examples/example/text()',''),
 	'cdm-idiom' => array(gettext('Expression idiomatique en '),'/volume/entry/idioms/idiom/text()','')

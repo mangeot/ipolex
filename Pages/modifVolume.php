@@ -17,7 +17,38 @@
 	$parameters = 'Dirname='.$_REQUEST['Dirname'].'&Dictname='.$_REQUEST['Dictname'].'&Source='.$_REQUEST['Source'];
 	$parameters .= '&Targets='.$_REQUEST['Targets'].'&Authors='.$_REQUEST['Authors'].'&Administrators='.$_REQUEST['Administrators'];
 
-	if (file_exists($metadataFile)) {
+	if (!file_exists($metadataFile)) {
+		header('Location:creerVolume.php?'.$parameters);
+	}
+	
+	$modif = false;
+	if (!empty($_REQUEST['Administrators'])) {
+		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:DEFAULT_TEST_USER;
+		$admins = preg_split("/[\s,;]+/", $_REQUEST['Administrators']);
+		$modif = in_array($user, $admins);
+		if ($modif && (!empty($_REQUEST['Enregistrer']) || !empty($_REQUEST['AjoutLien']))) {
+			$Params = $_REQUEST;
+			$Params['Name'] = $name;
+			if (!empty($_REQUEST['AjoutLien'])) {
+				$LinkCopy = $CDMLink;
+				if (empty($Params['CDMLinks'])) {
+					$Params['CDMLinks'] = array();
+				}
+				array_push($Params['CDMLinks'],$LinkCopy);
+			}
+			enregistrerVolume($Params);
+		}
+		if ($modif && !empty($_REQUEST['CompterEntrees'])) {
+			$Params = $_REQUEST;
+			$Params['Name'] = $name;
+			$Params['HwNumber'] = compterEntrees($Params);
+			enregistrerVolume($Params);
+		}
+	}
+	
+	$Params = array();
+
+
 	$doc = new DOMDocument();
 	$doc->load($metadataFile);
 	$dicts = $doc->getElementsByTagName("volume-metadata");
@@ -98,10 +129,6 @@
         	$Params['TemplateInterfaceRef']=$itf->item(0)->getAttribute('xlink:href');
         }
 	}
-	}
-	else {
-		header('Location:creerVolume.php?'.$parameters);
-	}
 	include(RACINE_SITE.'include/header.php');
 ?>
 <header id="enTete">
@@ -112,35 +139,11 @@
 </header>
 <div id="partieCentrale">
 <?php
-	$modif = false;
-	if (!empty($Params['Administrators'])) {
-		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:DEFAULT_TEST_USER;
-		$admins = preg_split("/[\s,;]+/", $Params['Administrators']);
-		$modif = in_array($user, $admins);
-		if ($modif && (!empty($_REQUEST['Enregistrer']) || !empty($_REQUEST['AjoutLien']))) {
-			$Params = $_REQUEST;
-			$Params['Name'] = $name;
-			if (!empty($_REQUEST['AjoutLien'])) {
-				$LinkCopy = $CDMLink;
-				if (empty($Params['CDMLinks'])) {
-					$Params['CDMLinks'] = array();
-				}
-				array_push($Params['CDMLinks'],$LinkCopy);
-			}
-			enregistrerVolume($Params);
-		}
-		if ($modif && !empty($_REQUEST['CompterEntrees'])) {
-			$Params = $_REQUEST;
-			$Params['Name'] = $name;
-			$Params['HwNumber'] = compterEntrees($Params);
-			enregistrerVolume($Params);
-		}
-	}
 	
-	$adresseDonnees = $modif?gettext('Adresse WebDAV pour modification des données'):gettext('Adresse WebDAV pour accès aux données');
+	$adresseDonnees = $modif?gettext('Adresse WebDAV pour mise à jour des données'):gettext('Adresse WebDAV pour accès aux données');
 	echo '<p>',$adresseDonnees,gettext(' : '),'<a href="',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
 	if ($modif) {
-		echo '<p><img src="',RACINE_WEB,'images/assets/b_back.png" alt="back"/><a href="creerVolume.php?',$parameters,'">',gettext('Modification des données par formulaire'),'</a>.</p>';
+		echo '<p><img src="',RACINE_WEB,'images/assets/b_back.png" alt="back"/><a href="creerVolume.php?',$parameters,'">',gettext('Mise à jour des données par formulaire'),'</a>.</p>';
 	}
 	echo '<p><img src="',RACINE_WEB,'images/assets/b_back.png" alt="back"/><a href="modifDictionnaire.php?Dirname=',$Params['Dirname'],'&Name=',$Params['Dictname'],'">',gettext('Gestion du dictionnaire'),'</a>.</p>';
 
@@ -333,7 +336,7 @@
 				$template = $filepath.'-template.xml';
 				$filepath .= '.xsd';
 				creerXmlschema($filepath,$template);
-				$params['XmlschemaRef'] = $filepath;
+				$params['XmlschemaRef'] = pathinfo($filepath, PATHINFO_BASENAME);
 			}
 			creerVolume($params);
 			$dataFileName = strtolower($name). '.'.$params['Format'];			
