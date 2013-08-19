@@ -3,8 +3,7 @@
 	require_once('../init.php');
 	
 	if (empty($_REQUEST['Dirname']) || empty($_REQUEST['Dictname']) || empty($_REQUEST['Source'])) {
-		//header('Location:index.php');
-		echo 'Location:index.php';
+		header('Location:index.php');
 	}
 	$source = $_REQUEST['Source'];
 	$targets = array_filter(explode(' ',$_REQUEST['Targets']));
@@ -165,11 +164,14 @@ $(document).ready(function() {
   	<fieldset>
   	 	<h3><?php echo gettext('Téléversement du fichier de données');?></h3>
   <?php 
+  		if ($extension == '') {
+  			$dataFileName.='[.extension]';
+  		}
   		echo '<p>',gettext('Téléversez le fichier de données du volume soit en vous connectant en WebDAV au serveur, soit en utilisant le formulaire ci-dessous.');
   		echo '<br/>',gettext('Vous pouvez compresser le fichier en zip ou gzip avant de l\'envoyer.'),'</p>';
   		echo '<p>',gettext('Adresse WebDAV'),gettext(' : '),'<a href="',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
   		echo '<p class="note">',gettext('Attention, si vous téléversez votre fichier en WebDAV, renommez-le avec le nom suivant'),gettext(' : ');
-  		echo '<strong><code>',$dataFileName,'.[extension]</code></strong></p>';
+  		echo '<strong><code>',$dataFileName,'</code></strong></p>';
   	?>
    <?php echo gettext('Sélectionner le fichier de données à téléverser');?><br />
 
@@ -196,6 +198,13 @@ $(document).ready(function() {
 <!---->
 
     <input name="Send" type="submit" id="submit" value="<?php echo gettext('Envoyer');?>" /><br/>
+   <?php    if (file_exists($dataFile)) {
+       			$file_creation_time = filemtime($dataFile);
+       			$file_size = filesize($dataFile);
+       			echo '<p>',gettext('Fichier de données actuel'),gettext(' : '),number_format($file_size,0,FORMAT_NOMBRE_DECIMAL,FORMAT_NOMBRE_MILLE), ' ',gettext('octets'), gettext(','),' ',gettext('versé le'),gettext(' : '),date (FORMAT_DATE,$file_creation_time),'</p>';
+  		}
+  		?>
+
     </fieldset><br/>
     <?php
     	if (file_exists($dataFile)) {

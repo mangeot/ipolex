@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ipotruc v1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-18 15:55+0900\n"
-"PO-Revision-Date: 2013-08-18 15:55+0900\n"
+"POT-Creation-Date: 2013-08-19 11:40+0900\n"
+"PO-Revision-Date: 2013-08-19 11:41+0900\n"
 "Last-Translator: Mathieu MANGEOT <mathieu.mangeot@imag.fr>\n"
 "Language-Team: GETALP <mathieu.mangeot@imag.fr>\n"
 "Language: en\n"
@@ -160,8 +160,8 @@ msgid "tous droits réservés"
 msgstr "all rights reserved"
 
 #: include/header.php:6 include/header.php:7 include/header.php:8
-#: Pages/creerVolume.php:108 Pages/creerVolume.php:109
-#: Pages/creerVolume.php:110 Pages/creerVolume.php:153 Pages/index.php:7
+#: Pages/creerVolume.php:107 Pages/creerVolume.php:108
+#: Pages/creerVolume.php:109 Pages/creerVolume.php:152 Pages/index.php:7
 #: Pages/modifDictionnaire.php:89 Pages/modifVolume.php:136
 msgid "iPoLex : entrepôt de données lexicales"
 msgstr "iPoLex: Linguistic data warehouse"
@@ -178,8 +178,8 @@ msgstr "GETALP linguistic data warehouse"
 msgid "Partie centrale"
 msgstr "Central part"
 
-#: index-general.php:41 index-general.php:42 Pages/creerVolume.php:170
-#: Pages/creerVolume.php:171 Pages/index.php:183
+#: index-general.php:41 index-general.php:42 Pages/creerVolume.php:172
+#: Pages/creerVolume.php:173 Pages/creerVolume.php:204 Pages/index.php:183
 #: Pages/modifDictionnaire.php:107 Pages/modifDictionnaire.php:109
 #: Pages/modifDictionnaire.php:117 Pages/modifDictionnaire.php:118
 #: Pages/modifDictionnaire.php:119 Pages/modifDictionnaire.php:120
@@ -209,23 +209,35 @@ msgstr "Lexical data warehouse (dictionaries, lexicons, terminologies)"
 msgid "Entrepôt de données corporales (corpus textuels)"
 msgstr "Corpora data warehouse (corpora)"
 
-#: Pages/creerVolume.php:154
+#: init.php:34
+msgid "FORMAT_DATE"
+msgstr "d/m/Y H:i:s"
+
+#: init.php:35
+msgid "FORMAT_NOMBRE_MILLE"
+msgstr ","
+
+#: init.php:36
+msgid "FORMAT_NOMBRE_DECIMAL"
+msgstr "."
+
+#: Pages/creerVolume.php:153
 msgid "Ajout d'un volume"
 msgstr "Add a volume"
 
-#: Pages/creerVolume.php:159
+#: Pages/creerVolume.php:158
 msgid "Votre fichier de données a été téléversé."
 msgstr "The data file is uploaded."
 
-#: Pages/creerVolume.php:162 Pages/modifVolume.php:148
+#: Pages/creerVolume.php:161 Pages/modifVolume.php:148
 msgid "Gestion du dictionnaire"
 msgstr "Management of the dictionary"
 
-#: Pages/creerVolume.php:166
+#: Pages/creerVolume.php:165
 msgid "Téléversement du fichier de données"
 msgstr "Uploading the data file"
 
-#: Pages/creerVolume.php:168
+#: Pages/creerVolume.php:170
 msgid ""
 "Téléversez le fichier de données du volume soit en vous connectant en WebDAV "
 "au serveur, soit en utilisant le formulaire ci-dessous."
@@ -233,15 +245,15 @@ msgstr ""
 "Upload the volume data file either by connecting via WebDAV or by using the "
 "following form. "
 
-#: Pages/creerVolume.php:169
+#: Pages/creerVolume.php:171
 msgid "Vous pouvez compresser le fichier en zip ou gzip avant de l'envoyer."
 msgstr "You can gip or zip our file before sending it."
 
-#: Pages/creerVolume.php:170
+#: Pages/creerVolume.php:172
 msgid "Adresse WebDAV"
 msgstr "WebDAV address"
 
-#: Pages/creerVolume.php:171
+#: Pages/creerVolume.php:173
 msgid ""
 "Attention, si vous téléversez votre fichier en WebDAV, renommez-le avec le "
 "nom suivant"
@@ -249,19 +261,35 @@ msgstr ""
 "Attention, upload the volume's data file and rename it using the following "
 "name"
 
-#: Pages/creerVolume.php:174
+#: Pages/creerVolume.php:176
 msgid "Sélectionner le fichier de données à téléverser"
 msgstr "Choose the data file to upload"
 
-#: Pages/creerVolume.php:198
+#: Pages/creerVolume.php:200
 msgid "Envoyer"
 msgstr "Send"
 
 #: Pages/creerVolume.php:204
+msgid "Fichier de données actuel"
+msgstr "Uploaded data file"
+
+#: Pages/creerVolume.php:204
+msgid "octets"
+msgstr "bytes"
+
+#: Pages/creerVolume.php:204
+msgid ","
+msgstr ","
+
+#: Pages/creerVolume.php:204
+msgid "versé le"
+msgstr "uploaded on"
+
+#: Pages/creerVolume.php:213
 msgid "Analyse du fichier de données"
 msgstr "Analyse of the data file"
 
-#: Pages/creerVolume.php:205
+#: Pages/creerVolume.php:214
 msgid ""
 "Le serveur va analyser le fichier de données pour générer une première "
 "version du fichier de métadonnées."
@@ -269,23 +297,23 @@ msgstr ""
 "The server will analyze the data file in order to generate a first version "
 "of the metadata file."
 
-#: Pages/creerVolume.php:208
+#: Pages/creerVolume.php:217
 msgid "Analyser"
 msgstr "Analyze"
 
-#: Pages/creerVolume.php:216 Pages/modifVolume.php:267
+#: Pages/creerVolume.php:225 Pages/modifVolume.php:267
 msgid "Résultat de l'analyse"
 msgstr "Results of the analysis"
 
-#: Pages/creerVolume.php:222
+#: Pages/creerVolume.php:231
 msgid "Génération du fichier de métadonnées"
 msgstr "Generate the metatada file"
 
-#: Pages/creerVolume.php:223
+#: Pages/creerVolume.php:232
 msgid "Vous pourrez ensuite modifier ce fichier en ligne."
 msgstr "You will then be able to modify this file online."
 
-#: Pages/creerVolume.php:224
+#: Pages/creerVolume.php:233
 msgid "Générer"
 msgstr "Generate"
 
@@ -615,6 +643,24 @@ msgid ""
 "Attention, vous devez impérativement remplir les pointeurs CDM précédés d'un "
 "astérisque *"
 msgstr "Attention, you must fill in the CMD pointers preceeded by a star *"
+
+#~ msgid "FORMAT_MILLE"
+#~ msgstr ","
+
+#~ msgid "mille2"
+#~ msgstr "千"
+
+#~ msgid "mille"
+#~ msgstr "thousand"
+
+#~ msgid "mille3"
+#~ msgstr "sen3"
+
+#~ msgid "Taille"
+#~ msgstr "Size"
+
+#~ msgid "Date"
+#~ msgstr "Date"
 
 #~ msgid "Calculer"
 #~ msgstr "Compute"

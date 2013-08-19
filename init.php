@@ -17,6 +17,7 @@
 	define('DICTIONNAIRES_WEB','http://papillon.imag.fr/dictionnaires');
 	
 	define('DEFAULT_TEST_USER','mangeot');
+		
 	require_once(RACINE_SITE.'include/language_negotiation.php');
 	$locale = negotiate_language();
 	$filename = 'default';
@@ -29,5 +30,10 @@
 	textdomain($filename);
 	require_once(RACINE_SITE.'include/lang_'.$LANG.'.php');
 	require_once(RACINE_SITE.'include/fonctions.php');
+
+	define('FORMAT_DATE',gettext('FORMAT_DATE')); //d/m/Y H:i:s
+	define('FORMAT_NOMBRE_MILLE',gettext('FORMAT_NOMBRE_MILLE'));
+	define('FORMAT_NOMBRE_DECIMAL',gettext('FORMAT_NOMBRE_DECIMAL'));
+
 
 ?>
