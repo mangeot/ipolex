@@ -106,7 +106,7 @@
 		$adresseDonnees = $modif?gettext('Adresse WebDAV pour modification des données'):gettext('Adresse WebDAV pour accès aux données');
 		echo '<p>',$adresseDonnees,gettext(' : '),'<a href="',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
 		if (!empty($Params['Access']) && $Params['Access'] == 'public' && file_exists(DICTIONNAIRES_SITE_PUBLIC.'/'.$Params['Dirname'])) {
-			echo '<p>',gettext('Adresse Web pour accès public aux données'),gettext(' : '),'<a href="',DICTIONNAIRES_WEB,'/',$Params['Dirname'],'">',DICTIONNAIRES_WEB,'/',$Params['Dirname'],'</a></p>';
+			echo '<p>',gettext('Adresse Web pour accès public aux données'),gettext(' : '),'<a href="',DICTIONNAIRES_WEB_PUBLIC,'/',$Params['Dirname'],'">',DICTIONNAIRES_WEB_PUBLIC,'/',$Params['Dirname'],'</a></p>';
 		}
 	}
 ?>

@@ -39,7 +39,7 @@ if (!empty($_REQUEST['Send'])) {
 	if ($extension == 'zip') {
 		exec("unzip $uploaded_file_name -d $folder -x '__MACOSX/*'");
 		unlink($uploaded_file_name);
-		$uploaded_file_name = pathinfo($uploaded_file_name, PATHINFO_DIRNAME) . '/'. pathinfo($uploaded_file_name, PATHINFO_FILENAME);
+		$uploaded_file_name = pathinfo($uploaded_file_name, PATHINFO_DIRNAME) . '/'. pathinfo_filename($uploaded_file_name);
 		$extension = pathinfo($uploaded_file_name, PATHINFO_EXTENSION);
 		$dataFileName .='.'.$extension;
 		$dataFile .='.'.$extension;
@@ -47,14 +47,14 @@ if (!empty($_REQUEST['Send'])) {
 	}
 	else if ($extension == 'gz') {
 		exec("gunzip $uploaded_file_name");
-		$uploaded_file_name = pathinfo($uploaded_file_name, PATHINFO_DIRNAME) . '/'. pathinfo($uploaded_file_name, PATHINFO_FILENAME);
+		$uploaded_file_name = pathinfo($uploaded_file_name, PATHINFO_DIRNAME) . '/'. pathinfo_filename($uploaded_file_name);
 		$extension = pathinfo($uploaded_file_name, PATHINFO_EXTENSION);
 		$dataFileName .='.'.$extension;
 		$dataFile .='.'.$extension;
 		rename($uploaded_file_name,$dataFile);
 	}
 	else if ($extension == 'rar') {
-		$temp_file_name = pathinfo($uploaded_file_name, PATHINFO_DIRNAME) . '/'. pathinfo($uploaded_file_name, PATHINFO_FILENAME);
+		$temp_file_name = pathinfo($uploaded_file_name, PATHINFO_DIRNAME) . '/'. pathinfo_filename($uploaded_file_name);
 		$extension = pathinfo($temp_file_name, PATHINFO_EXTENSION);
 		$dataFileName .='.'.$extension;
 		$dataFile .='.'.$extension;
@@ -169,7 +169,7 @@ $(document).ready(function() {
   		}
   		echo '<p>',gettext('Téléversez le fichier de données du volume soit en vous connectant en WebDAV au serveur, soit en utilisant le formulaire ci-dessous.');
   		echo '<br/>',gettext('Vous pouvez compresser le fichier en zip ou gzip avant de l\'envoyer.'),'</p>';
-  		echo '<p>',gettext('Adresse WebDAV'),gettext(' : '),'<a href="',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
+  		echo '<p>',gettext('Adresse WebDAV'),gettext(' : '),'<a href="',DICTIONNAIRES_DAV,'/',$_REQUEST['Dirname'],'">',DICTIONNAIRES_DAV,'/',$_REQUEST['Dirname'],'</a></p>';
   		echo '<p class="note">',gettext('Attention, si vous téléversez votre fichier en WebDAV, renommez-le avec le nom suivant'),gettext(' : ');
   		echo '<strong><code>',$dataFileName,'</code></strong></p>';
   	?>

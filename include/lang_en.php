@@ -137,7 +137,6 @@ $LANGUES = array(
 'fiu' => 'Finno-Ugrian (Other)',
 'fon' => 'Fon',
 'fra' => 'French',
-'fre' => 'French',
 'frm' => 'French, Middle (ca. 1400-1600)',
 'fro' => 'French, Old (842- ca. 1400)',
 'fry' => 'Frisian',
