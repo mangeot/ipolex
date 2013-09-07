@@ -428,6 +428,7 @@ sub guess_headword {
 	my $compte = $_[3];     # 'count' of entry
 	my $word = $elt->{ words };
 	my $char = $elt->{ charnumber };
+	my $diff = keys %{$elt->{ values }};
 	
 	my $match = 0;
 	
@@ -447,6 +448,22 @@ sub guess_headword {
 			# print " match number of words; \n";
 			$match += 0.3;
 		 }
+		 
+		 if ($elt->{ count }  < $maxMemoireListeValeurs) {
+			if ($elt->{ count } / $diff < 1.5) {
+				# beaucoup de valeurs différentes
+				$match += 0.3 
+			}
+		}
+		else {
+			if ($maxMemoireListeValeurs / $diff < 1.5) {
+				# beaucoup de valeurs différentes
+				$match += 0.3 
+			}
+		}
+		 
+		 # le headword est souvent le premier de ses frères
+		 $match += 0.1 / $elt->{ order };
 
 		my $tableau_elt;
 		$tableau_elt->{ element } = $elt;
@@ -522,7 +539,20 @@ sub guess_pronun {
 		if ($words<2) {
 			$match += 0.2;
 		}
-			
+		
+		if ($elt->{ count }  < $maxMemoireListeValeurs) {
+			if ($elt->{ count } / $diff < 1.5) {
+				# beaucoup de valeurs différentes
+				$match += 0.3 
+			}
+		}
+		else {
+			if ($maxMemoireListeValeurs / $diff < 1.5) {
+				# beaucoup de valeurs différentes
+				$match += 0.3 
+			}
+		}
+
 		my $tableau_elt;
 		$tableau_elt->{ level } = $level;
 		$tableau_elt->{ name } = $elt->{ name };
