@@ -463,7 +463,7 @@ sub guess_headword {
 		}
 		 
 		 # le headword est souvent le premier de ses frères
-		 $match += 0.1 / $elt->{ order };
+		 $match += 0.1 / ($elt->{ order } +1);
 
 		my $tableau_elt;
 		$tableau_elt->{ element } = $elt;
