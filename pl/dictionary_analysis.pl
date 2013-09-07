@@ -525,6 +525,7 @@ sub guess_pronun {
 	my $charnumber = $elt->{ charnumber };
 	my $charsize = $elt->{ charsize };
 	my $words = $elt->{ words };
+	my $diff = keys %{$elt->{ values }};
 
 	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
 
