@@ -630,6 +630,7 @@ sub guess_def {
 	my $compte = $_[3];    # 'count' of entry
 	my $headword = $_[4];
 	my $match = 0;
+	my $diff = keys %{$elt->{ values }};
 		
 	my $charnumber = $elt->{ charnumber };
 	#my $charsize = $elt->{ charsize };
