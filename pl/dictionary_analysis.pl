@@ -583,9 +583,7 @@ sub guess_pos {
 	my $diff = keys %{$elt->{ values }};
 	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
 	if ($level >0 && $charnumber) {
-		if  ($diff > 3 && $diff <= 40) { # descendant de entry
-			$match += 0.4;
-		}
+
 		if ($elt->{ count } >= $compte) {       # fréquence de POS est élevée >= HW
 	 		
 			$match += 0.1;
@@ -594,9 +592,20 @@ sub guess_pos {
 				$match += 0.45;
 			}
 			
+			# pas beaucoup de mots
 			if ($words <3) {
 				$match += 0.2;
 			}
+			
+			# beaucoup de valeurs différentes
+			my $ratiodiff = 0;
+			if ($elt->{ count }  < $maxMemoireListeValeurs) {
+				$ratiodiff = $elt->{ count } / $diff;
+			}
+			else {
+				$ratiodiff = $maxMemoireListeValeurs / $diff;
+			}
+			$match += 0.007 * $ratiodiff;
 			
 			my $tableau_elt;
 			$tableau_elt->{ level } = $level;
@@ -632,8 +641,7 @@ sub guess_def {
 			$match += 0.3;
 		}
 
-       
-		if($words/$charnumber >= 3.0){
+		if ($words/$charnumber >= 3.0){
 			$match += 0.2;
 		}
 
@@ -641,6 +649,19 @@ sub guess_def {
 			# print " match nom; \n";
 			$match += 0.5;
 		}
+		
+		# beaucoup de valeurs différentes
+		if ($elt->{ count }  < $maxMemoireListeValeurs) {
+			if ($elt->{ count } / $diff < 1.2) {
+				$match += 0.3 
+			}
+		}
+		else {
+			if ($maxMemoireListeValeurs / $diff < 1.2) {
+				$match += 0.3 
+			}
+		}
+
 	
 		my $tableau_elt;
 		$tableau_elt->{ level } = $level;
