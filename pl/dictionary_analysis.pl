@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# xmlelements-report.pl
+# dicitonary-analysis.pl
 #
 
 use strict;
@@ -15,7 +15,7 @@ binmode STDERR, ':utf8';
 my $maxAffichageListeValeurs = 50;
 my $maxMemoireListeValeurs = 1000;
 
-@ARGV or die "usage: xmlelements-report file.xml\n";
+@ARGV or die "usage: dictionary-analysis.pl file.xml\n";
 
 my $root;
 my $Encoding;
