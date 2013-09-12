@@ -131,6 +131,10 @@ my @tableauDef;
 &guess_def($entry,0,$entryXpath, $entryCompte, $headwordName);
 @tableauDef = reverse sort { $a->{ match } <=> $b->{ match } } @tableauDef;
 
+my @tableauEx;
+&guess_example($entry,0,$entryXpath, $entryCompte, $headwordName);
+@tableauEx = reverse sort { $a->{ match } <=> $b->{ match } } @tableauEx;
+
 print '		<section id="CDMElements">
 			<h2>Tableau des éléments CDM</h2>
 ';
@@ -155,6 +159,8 @@ print "\t\t\t<tr><td>cdm-definition</td><td>$tableauDef[0]->{ xpath }</td></tr>\
 if (@tableauSens) {
 	print "\t\t\t<tr><td>cdm-sense</td><td>$tableauSens[0]->{ xpath }</td></tr>\n";
 }
+print "\t\t\t<tr><td>cdm-example</td><td>$tableauEx[0]->{ xpath }</td></tr>\n";
+
 print '				</tbody>
 			</table>
 		</section>
@@ -184,6 +190,11 @@ print "\t\t\t<cdm-definition xpath='$tableauDef[0]->{ xpath }/text()' />\n";
 if (@tableauSens) {
 	print "\t\t\t<cdm-sense xpath='$tableauSens[0]->{ xpath }' />\n";
 }
+else {
+	print "\t\t\t<cdm-sense xpath='' />\n";
+}
+print "\t\t\t<cdm-example xpath='$tableauEx[0]->{ xpath }/text()' />\n";
+
 print '	</cdm-elements>
 </volume-metadata>
 ';
@@ -745,5 +756,73 @@ sub guess_def {
 	}
 	foreach my $child (reverse sort { $a->{count} <=> $b->{count} } values %{$elt->{ child }}) {
 		&guess_def($child, $level+1, $xpath, $compte, $headword);
+	}
+}
+
+
+sub guess_example {
+	my $elt = $_[0];
+	my $level = $_[1];
+	my $xpath = $_[2];
+	my $compte = $_[3];    # 'count' of entry
+	my $headword = $_[4];
+	my $match = 0;
+	my $diff = keys %{$elt->{ values }};
+		
+	my $charnumber = $elt->{ charnumber };
+	my $charsize = $elt->{ charsize };
+	my $words = $elt->{ words };
+	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
+	if ($level >0 && $elt->{ name } ne $headword && $charnumber && ($words >= 2)) {
+       
+       #  nombre de def proche de entry ou supérieur
+       	if ($elt->{ count } >= $compte * 0.9) {
+       			$match += 0.3;
+#       			print $elt->{ name }, " : nombre de def proche de entry ou supérieur : " .$elt->{ count } . " $compte et $match\n";
+		}
+
+		# beaucoup de mots 
+		#$match += (0.01 * $words/$charnumber);
+        #print $elt->{ name }, " : beaucoup de mots : $words et $match\n";
+		# beaucoup de caractères
+		$match += (0.001 * $charsize/$charnumber);
+#       	print $elt->{ name }, " : beaucoup de caractères : " . $charsize/$charnumber . " et $match\n";
+
+		if ($elt->{ name } =~ /ex[ea]mple/){
+			# print " match nom; \n";
+			$match += 0.5;
+		}
+		
+		# beaucoup de valeurs différentes
+		if ($elt->{ count }  < $maxMemoireListeValeurs) {
+			if ($elt->{ count } / $diff < 1.2) {
+				$match += 0.3;
+ #     			print $elt->{ name }, " : beaucoup de valeurs différentes : $match\n";
+			}
+		}
+		else {
+			if ($maxMemoireListeValeurs / $diff < 1.2) {
+				$match += 0.3; 
+#   			print $elt->{ name }, " : beaucoup de valeurs différentes : $match\n";
+			}
+		}
+
+		 # la définition est souvent avant l'exemple qui lui ressemble
+		 $match += 0.05 / ($elt->{ order } +1);
+#       	print $elt->{ name }, " : définition souvent avant l'exemple : " .$elt->{ order } . " et $match\n";
+		 # et tôt dans l'arbre
+		 $match += 0.1 / $level;
+ #      	print $elt->{ name }, " : définition tôt dans l'arbre : $level et $match\n";
+	
+		my $tableau_elt;
+		$tableau_elt->{ level } = $level;
+		$tableau_elt->{ name } = $elt->{ name };
+		$tableau_elt->{ count } = $elt->{ count };
+		$tableau_elt->{ match } = $match;			
+		$tableau_elt->{ xpath } = $xpath;
+		push @tableauDef, $tableau_elt;
+	}
+	foreach my $child (reverse sort { $a->{count} <=> $b->{count} } values %{$elt->{ child }}) {
+		&guess_example($child, $level+1, $xpath, $compte, $headword);
 	}
 }
