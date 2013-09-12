@@ -199,12 +199,14 @@
   $keys=  '|'.join("|", array_keys($params)).'|';
   foreach ($CDMElements as $nom => $element) {
   	if (!empty($params[$nom])) {
-  		$res .= '<'.$nom.' xpath="'.$params[$nom].'"/>'."\n";
+  		$valeur = preg_replace('/\/$/','',$params[$nom]);
+  		$res .= '<'.$nom.' xpath="'.$valeur.'"/>'."\n";
   	}
   	else if (preg_match('/|'.$nom.'_[a-z][a-z][a-z]|/',$keys)) {
 	  foreach($langs as $lang) {
 		if (!empty($params[$nom.'_'.$lang])) {
-			$res .= '<'.$nom.' xpath="'.$params[$nom.'_'.$lang].'"';
+  			$valeur = preg_replace('/\/$/','',$params[$nom.'_'.$lang]);
+			$res .= '<'.$nom.' xpath="'.$valeur.'"';
 			$res .= ' d:lang="'.$lang.'" />'."\n  ";
 		  }
       }
@@ -214,6 +216,7 @@
   	$i=0;
   	foreach ($params['CDMFreeElementsName'] as $nom) {
   		$valeur = $params['CDMFreeElementsValue'][$i++];
+  		$valeur = preg_replace('/\/$/','',$valeur);
   	  	$res .= '<'.$nom.' xpath="'.$valeur.'" index="true"  />	
   ';}
   }
@@ -222,6 +225,7 @@
   if (!empty($params['CDMLinks'])) {
   	foreach ($params['CDMLinks'] as $link) {
   		if (!empty($link['name']) && !empty($link['xpath'])) {
+  		$valeur = preg_replace('/\/$/','',$link['xpath']);
   		$res .= '<link name="'.$link['name'].'" xpath="'.$link['xpath'].'">
   		';
   		 foreach ($link as $name => $value) {
