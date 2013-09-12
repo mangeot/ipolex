@@ -113,8 +113,10 @@
   	$res .= '<result-postupdateprocessor class-name="'.$params['ResultPostupdateprocessor'].'"/>
   ';
   }
-  $res .= '<result-formatter class-name="'.$params['ResultFormatter'].'"/>
+  if (!empty($params['ResultFormatter'])) {
+  	$res .= '<result-formatter class-name="'.$params['ResultFormatter'].'"/>
   ';
+  }
   if (!empty($params['ResultPreprocessor'])) {
   	$res .= '<result-postupdateprocessor class-name="'.$params['ResultPostupdateprocessor'].'"/>
   ';
