@@ -333,9 +333,9 @@
 			}
 			if ($params['Format']=='xml' && empty($params['XmlschemaRef'])  && !empty($params['Template'])) {
 				$filepath = DICTIONNAIRES_SITE.'/' . $params['Dirname'] . '/' . strtolower($name);
-				$template = $filepath.'-template.xml';
+				$volume = $filepath.'.xml';
 				$filepath .= '.xsd';
-				creerXmlschema($filepath,$template);
+				creerXmlschema($filepath,$volume);
 				$params['XmlschemaRef'] = pathinfo($filepath, PATHINFO_BASENAME);
 			}
 			creerVolume($params);
@@ -343,9 +343,9 @@
 			}
 	}
 	
-	function creerXmlschema($schema, $xmlTemplate) {
+	function creerXmlschema($schema, $xmlFile) {
 		$bugMAMP = "export DYLD_LIBRARY_PATH=\"\"; ";
-		$commande = 'java -jar ' . RACINE_SITE . 'jar/trang.jar ' .  $xmlTemplate . ' ' . $schema;
+		$commande = 'java -jar ' . RACINE_SITE . 'jar/trang.jar ' .  $xmlFile . ' ' . $schema;
 		//echo 'commande: ',$bugMAMP,$commande;
 		echo exec($bugMAMP.$commande);
 	}
