@@ -36,7 +36,6 @@ if (!empty($_REQUEST['Send'])) {
 	move_uploaded_file($_FILES["file"]["tmp_name"], $uploaded_file_name);
 
 	$extension = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
-	echo 'ext:',$extension;
 	if ($extension == 'zip') {
 		exec("unzip $uploaded_file_name -d $folder -x '__MACOSX/*'");
 		unlink($uploaded_file_name);
