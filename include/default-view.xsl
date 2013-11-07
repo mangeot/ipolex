@@ -25,7 +25,7 @@
 			<a class="entry_navigation"><xsl:attribute name="href">?FACET.0=cdm-headword&amp;OPERATOR.0=0&amp;search_type=next_entry&amp;action=lookup&amp;TARGETS=*ALL*&amp;SOURCE.0=<xsl:value-of select="jbk:getEntrySourceLanguage(string($eid))"/>&amp;VOLUME=<xsl:value-of select="jbk:getEntryVolume(string($eid))"/>&amp;FACETVALUE.0=<xsl:copy-of select="jbk:getEntryHeadword(string($eid))"/></xsl:attribute>↪</a>
 			</div>&#xA0;
 	  			<div class="level"><xsl:value-of select="jbk:getEntryGroups(string($eid))"/></div>
-	  			<!--xsl:copy-of select="jbk:editingCommands(string($eid))"/-->
+	  			<xsl:copy-of select="jbk:editingCommands(string($eid))"/>
 	  		</div>
 	  	<xsl:element name="div">
 	  		<xsl:attribute name="class">motamot-entry

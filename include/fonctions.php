@@ -316,7 +316,7 @@
 
 	function createXslStylesheet($name, $entry, $id, $headword, $pron, $pos, $example, $idiom) {
 		$entry = substr($entry,strrpos($entry,'/')+1);
-		$id = substr($id,strrpos($id,'/')+1);
+		$id = empty($id)?'':substr($id,strrpos($id,'/')+1);
 		if (preg_match('/text\(\)$/',$headword)) {
 			$headword = substr($headword,0,strrpos($headword,'/'));
 		}
@@ -341,12 +341,12 @@
 		$stylesheet = file_get_contents(RACINE_SITE.'include/default-view.xsl');
 		$stylesheet = preg_replace('/##entry_xpath##/','//'.$entry,$stylesheet);
 		$stylesheet = preg_replace('/##entry_element##/',$entry,$stylesheet);
-		$stylesheet = preg_replace('/##entry_id##/',$id,$stylesheet);
-		$stylesheet = preg_replace('/##headword_element##/',$headword,$stylesheet);
-		$stylesheet = preg_replace('/##pronunciation_element##/',$pron,$stylesheet);
-		$stylesheet = preg_replace('/##pos_element##/',$pos,$stylesheet);
-		$stylesheet = preg_replace('/##example_element##/',$example,$stylesheet);
-		$stylesheet = preg_replace('/##idiom_element##/',$idiom,$stylesheet);
+		if ($id) {$stylesheet = preg_replace('/##entry_id##/',$id,$stylesheet);}
+		if ($headword) {$stylesheet = preg_replace('/##headword_element##/',$headword,$stylesheet);}
+		if ($pron) {$stylesheet = preg_replace('/##pronunciation_element##/',$pron,$stylesheet);}
+		if ($pos) {$stylesheet = preg_replace('/##pos_element##/',$pos,$stylesheet);}
+		if ($example) {$stylesheet = preg_replace('/##example_element##/',$example,$stylesheet);}
+		if ($idiom) {$stylesheet = preg_replace('/##idiom_element##/',$idiom,$stylesheet);}
 		
 		$myFile = $name . '-view.xsl';
 		file_put_contents($myFile,$stylesheet);
