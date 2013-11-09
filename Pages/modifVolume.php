@@ -326,8 +326,9 @@
 				$pos = !empty($params['cdm-pos'])?$params['cdm-pos']:'';
 				$example = !empty($params['cdm-example'])?$params['cdm-example']:'';
 				$idiom = !empty($params['cdm-idiom'])?$params['cdm-idiom']:'';
+				$sense = !empty($params['cdm-sense'])?$params['cdm-sense']:'';
 				createXslStylesheet($filepath,$params['cdm-entry'],$params['cdm-entry-id'],$params['cdm-headword'],
-					$pron,$pos,$example,$idiom);
+					$pron,$pos,$example,$idiom, $sense);
 				$params['XslStylesheet'] = array();
 				array_push($params['XslStylesheet'],$name);				
 			}
