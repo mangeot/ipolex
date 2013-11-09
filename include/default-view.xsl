@@ -16,18 +16,16 @@
 
 	<!-- Entry template -->
 	<xsl:template match="##entry_element##">
-	  <div class="contribution" >
+	  <div class="contribution">
 	  	<xsl:variable name="eid" select="##entry_id##"></xsl:variable>
-	  		<div class="collapsable">
 			<div style="float:left;">
 			<a class="entry_navigation">
 				<xsl:attribute name="href">?FACET.0=cdm-headword&amp;OPERATOR.0=0&amp;search_type=previous_entry&amp;action=lookup&amp;TARGETS=*ALL*&amp;SOURCE.0=<xsl:value-of select="jbk:getEntrySourceLanguage(string($eid))"/>&amp;VOLUME=<xsl:value-of select="jbk:getEntryVolume(string($eid))"/>&amp;FACETVALUE.0=<xsl:copy-of select="jbk:getEntryHeadword(string($eid))"/></xsl:attribute>↩</a>
 			<a class="entry_navigation"><xsl:attribute name="href">?FACET.0=cdm-headword&amp;OPERATOR.0=0&amp;search_type=next_entry&amp;action=lookup&amp;TARGETS=*ALL*&amp;SOURCE.0=<xsl:value-of select="jbk:getEntrySourceLanguage(string($eid))"/>&amp;VOLUME=<xsl:value-of select="jbk:getEntryVolume(string($eid))"/>&amp;FACETVALUE.0=<xsl:copy-of select="jbk:getEntryHeadword(string($eid))"/></xsl:attribute>↪</a>
 			</div>&#xA0;
-	  			<div class="level"><xsl:value-of select="jbk:getEntryGroups(string($eid))"/></div>
+	  			<div style="float:right;"><span class="level"><xsl:value-of select="jbk:getEntryGroups(string($eid))"/></span></div>
 	  			<xsl:copy-of select="jbk:editingCommands(string($eid))"/>
-	  		</div>
-	  	<xsl:element name="div">
+	  	<div>
 	  		<xsl:attribute name="class">motamot-entry
 	  			<!--xsl:call-template name="statusclass">
 	  				<xsl:with-param name="author"><xsl:value-of select="jbk:getEntryModificationAuthor(string($eid))"/></xsl:with-param>
@@ -44,7 +42,7 @@
 				<span class="status">created by <xsl:value-of select="//d:metadata/d:author/text()" xmlns:d="http://www-clips.imag.fr/geta/services/dml"
 					/>, last modified by <xsl:value-of select="//d:modification/d:author/text()" xmlns:d="http://www-clips.imag.fr/geta/services/dml"
 				/></span-->
-	  	</xsl:element>
+	  	</div>
     </div>
 	</xsl:template>
 		
@@ -68,6 +66,12 @@
 			<xsl:apply-templates />
 		</span>
 		</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="##sense_element##">
+	  <blockquote>
+			<xsl:apply-templates />
+		</blockquote>
 	</xsl:template>
 
 	<xsl:template match="##idiom_element##">

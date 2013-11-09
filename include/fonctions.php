@@ -314,7 +314,7 @@
 		return $targets;
 	}
 
-	function createXslStylesheet($name, $entry, $id, $headword, $pron, $pos, $example, $idiom) {
+	function createXslStylesheet($name, $entry, $id, $headword, $pron, $pos, $example, $idiom, $sense) {
 		$entry = substr($entry,strrpos($entry,'/')+1);
 		$id = empty($id)?'':substr($id,strrpos($id,'/')+1);
 		if (preg_match('/text\(\)$/',$headword)) {
@@ -338,6 +338,8 @@
 		}
 		$idiom = empty($idiom)?'':substr($idiom,strrpos($idiom,'/')+1);
 
+		$sense = empty($sense)?'':substr($sense,strrpos($sense,'/')+1);
+
 		$stylesheet = file_get_contents(RACINE_SITE.'include/default-view.xsl');
 		$stylesheet = preg_replace('/##entry_xpath##/','//'.$entry,$stylesheet);
 		$stylesheet = preg_replace('/##entry_element##/',$entry,$stylesheet);
@@ -347,6 +349,7 @@
 		if ($pos) {$stylesheet = preg_replace('/##pos_element##/',$pos,$stylesheet);}
 		if ($example) {$stylesheet = preg_replace('/##example_element##/',$example,$stylesheet);}
 		if ($idiom) {$stylesheet = preg_replace('/##idiom_element##/',$idiom,$stylesheet);}
+		if ($sense) {$stylesheet = preg_replace('/##sense_element##/',$sense,$stylesheet);}
 		
 		$myFile = $name . '-view.xsl';
 		file_put_contents($myFile,$stylesheet);
