@@ -26,7 +26,7 @@
 		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:DEFAULT_TEST_USER;
 		$admins = preg_split("/[\s,;]+/", $_REQUEST['Administrators']);
 		$modif = in_array($user, $admins);
-		if ($modif && (!empty($_REQUEST['Enregistrer']) || !empty($_REQUEST['AjoutLien']))) {
+		if ($modif && (!empty($_REQUEST['Enregistrer']) || !empty($_REQUEST['AjoutLien']) || !empty($_REQUEST['AjoutCDMFreeElement']))) {
 			$Params = $_REQUEST;
 			$Params['Name'] = $name;
 			if (!empty($_REQUEST['AjoutLien'])) {
@@ -35,6 +35,12 @@
 					$Params['CDMLinks'] = array();
 				}
 				array_push($Params['CDMLinks'],$LinkCopy);
+			}
+			if (!empty($_REQUEST['AjoutCDMFreeElement'])) {
+				if (empty($Params['CDMFreeElementsName'])) {$Params['CDMFreeElementsName']=array();}
+				if (empty($Params['CDMFreeElementsValue'])) {$Params['CDMFreeElementsValue']=array();}
+				array_push($Params['CDMFreeElementsName'],'nom');
+				array_push($Params['CDMFreeElementsValue'],'valeur');
 			}
 			enregistrerVolume($Params);
 		}
@@ -188,8 +194,10 @@
 				echo '<li>',$element[0], ' : <input type="text" size="70" id="',$nom,'" name="',$nom,'"  value="', affichep($nom,$element[1]),'"/> ',$element[2],"\n";
 		  	}
 		  }
+		echo '		  </ul>';		  
+		echo '<p>',gettext('Éléments CDM spécifiques à un volume'), gettext(' : '),' <input type="submit" name="AjoutCDMFreeElement" id="AjoutCDMFreeElement" value="+" /></p>';
 		  if (!empty($Params['CDMFreeElementsName'])) {
-			echo '<li style="list-style-type:none;">',gettext('Éléments CDM spécifiques à un volume'),gettext(' : '),'</li>';
+			echo '<ul>';
 			$Valeurs = $Params['CDMFreeElementsValue'];
 			$i=0;			
 			foreach ($Params['CDMFreeElementsName'] as $nom) {
