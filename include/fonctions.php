@@ -217,8 +217,10 @@
   	foreach ($params['CDMFreeElementsName'] as $nom) {
   		$valeur = $params['CDMFreeElementsValue'][$i++];
   		$valeur = preg_replace('/\/$/','',$valeur);
-  	  	$res .= '<'.$nom.' xpath="'.$valeur.'" index="true"  />	
-  ';}
+  		if (!empty($nom) && !empty($valeur)) {
+  	  		$res .= '<'.$nom.' xpath="'.$valeur.'" index="true"  />	
+  		';} 
+  	}
   }
   $res .= '<links>
   ';
