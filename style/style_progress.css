@@ -28,7 +28,7 @@
 	z-index:40; 
 	line-height:30px; 
 	padding-left:4px; 
-	color:#FFFFFF;
+	color:FFFFFF;
 }
 
 #analyze_frame {
@@ -47,5 +47,5 @@
 }
 #analyze_completed {
 	padding-left:4px; 
-	color:#FFFFFF;
+	color:navy;
 }
