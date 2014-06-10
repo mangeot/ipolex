@@ -7,6 +7,8 @@ use strict;
 use warnings;
 use utf8;
 
+# À faire : use of PerlSAX instead of the generic XML::Parser because of the use of line numbers
+# use XML::Parser::PerlSAX;
 use XML::Parser;
 use Unicode::Collate;
 binmode STDOUT, ':utf8'; 
@@ -281,6 +283,14 @@ sub end_element {
     $root = pop @tree_stack;
 }
 
+sub XMLEntities {
+	my $string = $_[0];
+	$string =~ s/</&lt;/g;
+	$string =~ s/>/&gt;/g;
+	$string =~ s/&/&amp;/g;
+	$string =~ s/'/&quot;/g;
+	return $string;
+}
 
 sub print_signature {
 	my $elt = $_[0];
@@ -299,7 +309,7 @@ sub print_signature {
 			my $i=0;
 			foreach my $key ($Collator->sort(keys %{$attr->{ values }})) {
 				$i++;
-				print $key,':',$attr->{ values }{ $key };
+				print XMLEntities($key),':',$attr->{ values }{ $key };
 				if ($i<$diff) {print ','};
 			}
 			print ')';
@@ -322,7 +332,7 @@ sub print_signature {
 			my $i=0;
 			foreach my $key ($Collator->sort(keys %{$elt->{ values }})) {
 				$i++;
-				print $key,':',$elt->{ values }{ $key };
+				print XMLEntities($key),':',$elt->{ values }{ $key };
 				if ($i<$diff) {print ','};
 			}
 			print ')';
