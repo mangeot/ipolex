@@ -69,7 +69,7 @@
   			$Params['Volume' . $i] = '+';
   			if (!empty($_REQUEST['Volume' . $i . 'Source'])) {
   				$Params['Volume' . $i . 'Source']  = $_REQUEST['Volume' . $i . 'Source'];
-  				$cibles = recupciblesVolume($_REQUEST,$volume);		
+  				$cibles = recupciblesVolume($_REQUEST,$i);		
   				foreach($cibles as $cible) {
   					$Params['Volume' . $i . 'Target' . $j++] = $cible;
   				}
