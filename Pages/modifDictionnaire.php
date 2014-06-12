@@ -67,10 +67,12 @@
   		$nbvol = getNumVolumes($_REQUEST);
   		if ($nbvol>=$i) {
   			$Params['Volume' . $i] = '+';
-  			$Params['Volume' . $i . 'Source']  = $_REQUEST['Volume' . $i . 'Source'];
-  			$cibles = recupciblesVolume($_REQUEST,$volume);		
-  			foreach($cibles as $cible) {
-  				$Params['Volume' . $i . 'Target' . $j++] = $cible;
+  			if (!empty($_REQUEST['Volume' . $i . 'Source'])) {
+  				$Params['Volume' . $i . 'Source']  = $_REQUEST['Volume' . $i . 'Source'];
+  				$cibles = recupciblesVolume($_REQUEST,$volume);		
+  				foreach($cibles as $cible) {
+  					$Params['Volume' . $i . 'Target' . $j++] = $cible;
+  				}
   			}
   		}
 
