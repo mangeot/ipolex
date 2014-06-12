@@ -278,7 +278,11 @@
 			return '';
 		}
 		$sources = recupSources($params);
+		$sources2 = recupSources($params);
 		$cibles = recupCibles($params);
+		$cibles2 = recupCibles($params);
+		if (count($sources)<count($sources2)) {$sources = $sources2;}
+		if (count($cibles)<count($cibles2)) {$cibles = $cibles2;}
 		$langs=array_filter(array_unique(array_merge($sources,$cibles)));
 		sort($langs,SORT_LOCALE_STRING);
 		$dirname = makeDictName($name,$langs);
