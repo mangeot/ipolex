@@ -281,6 +281,7 @@
 		$sources2 = recupSources($_REQUEST);
 		$cibles = recupCibles($params);
 		$cibles2 = recupCibles($_REQUEST);
+		echo "cs:",count($sources),"cs2",count($sources2);
 		if (count($sources)<count($sources2)) {$sources = $sources2;}
 		if (count($cibles)<count($cibles2)) {$cibles = $cibles2;}
 		$langs=array_filter(array_unique(array_merge($sources,$cibles)));
