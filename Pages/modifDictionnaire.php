@@ -65,8 +65,13 @@
 			$i++;
   		}
   		$nbvol = getNumVolumes($_REQUEST);
-  		if ($nbvol>=i) {
-  			echo "nouveau",$nbvol," ",$i;
+  		if ($nbvol>=$i) {
+  			$Params['Volume' . $i] = '+';
+  			$Params['Volume' . $i . 'Source']  = $_REQUEST['Volume' . $i . 'Source'];
+  			$cibles = recupciblesVolume($_REQUEST,$volume);		
+  			foreach($cibles as $cible) {
+  				$Params['Volume' . $i . 'Target' . $j++] = $cible;
+  			}
   		}
 
   		$xslsheets = $dict->getElementsByTagName('xsl-stylesheet');
