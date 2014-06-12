@@ -157,7 +157,7 @@
 	<p><?php echo gettext('Administrateurs');?> <input type="text" id="Administrators" name="Administrators" value="<?php affichep('Administrators',$user);?>"/></p>	
 	<p><?php echo gettext('Volumes');?><?php echo gettext(' : ');?><ol>
 		<?php 
-			$volumes = max(getNumVolumes($Param),getNumVolumes($_REQUEST));
+			$volumes = max(getNumVolumes($Params),getNumVolumes($_REQUEST));
 			$i=1;
 			while ($i<=$volumes) {
 				ajouteVolume($i++);
