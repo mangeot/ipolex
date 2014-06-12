@@ -64,6 +64,11 @@
   			}
 			$i++;
   		}
+  		$nbvol = getNumVolumes($_REQUEST);
+  		if ($nbvol>=i) {
+  			echo "nouveau",$nbvol," ",$i;
+  		}
+
   		$xslsheets = $dict->getElementsByTagName('xsl-stylesheet');
 		$sheets = array();
   		foreach ($xslsheets as $xslsheet) {
@@ -157,7 +162,7 @@
 	<p><?php echo gettext('Administrateurs');?> <input type="text" id="Administrators" name="Administrators" value="<?php affichep('Administrators',$user);?>"/></p>	
 	<p><?php echo gettext('Volumes');?><?php echo gettext(' : ');?><ol>
 		<?php 
-			$volumes = max(getNumVolumes($Params),getNumVolumes($_REQUEST));
+			$volumes = getNumVolumes($Params);
 			$i=1;
 			while ($i<=$volumes) {
 				ajouteVolume($i++);
