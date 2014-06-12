@@ -52,17 +52,17 @@
 	
 	<xsl:template match="##pronunciation_element##">
 		<xsl:if test="text()!=''">
-			/<span class="pronunciation"><xsl:apply-templates /></span>/
+			<xsl:text> </xsl:text>/<span class="pronunciation"><xsl:apply-templates /></span>/
 		</xsl:if>
 	</xsl:template>
 		
 	<xsl:template match="##pos_element##">
-		[<span class="pos"><xsl:apply-templates /></span>]
+		<xsl:text> </xsl:text>[<span class="pos"><xsl:apply-templates /></span>]
 	</xsl:template>
 		
 	<xsl:template match="##example_element##">
 	  <xsl:if test="text()!=''">
-		<span class="example">
+		<xsl:text> </xsl:text><span class="example">
 			<xsl:apply-templates />
 		</span>
 		</xsl:if>
@@ -76,7 +76,7 @@
 
 	<xsl:template match="##idiom_element##">
 	<xsl:if test="text()!=''">
-		<span class="idiom">
+		<xsl:text> </xsl:text><span class="idiom">
 			<xsl:apply-templates />
 		</span>
 		</xsl:if>
