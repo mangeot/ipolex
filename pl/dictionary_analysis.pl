@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# dicitonary-analysis.pl
+# dictionary-analysis.pl
 #
 
 use strict;
@@ -362,7 +362,14 @@ sub print_template {
 	print '<',$elt->{ name };
 	foreach my $attribute ($Collator->sort(keys %{ $elt->{ attribute }})) {
 		my $attr = $elt->{ attribute }{ $attribute };
-		print ' ',$attribute,'=""';
+        my @keys = keys %{$attr->{ values }};
+        my $diff = @keys;
+        print ' ',$attribute,'="';
+        if ($diff == 1 && $elt->{ count } == $attr->{ count }) {
+            my $firstkey = $keys[0];
+            print $firstkey;
+        }
+		print '"';
 	}	
 	print '>';
 	foreach my $child (sort { $a->{ order } <=> $b->{ order } } values %{$elt->{ child }}) {
