@@ -336,11 +336,11 @@
 				$idiom = !empty($params['cdm-idiom'])?$params['cdm-idiom']:'';
 				$sense = !empty($params['cdm-sense'])?$params['cdm-sense']:'';
 				createXslStylesheet($filepath,$params['cdm-entry'],$params['cdm-entry-id'],$params['cdm-headword'],
-					$pron,$pos,$example,$idiom, $sense);
+					$pron,$pos,$example,$idiom, $sense, $params['Template']);
 				$params['XslStylesheet'] = array();
 				array_push($params['XslStylesheet'],$name);				
 			}
-			if ($params['Format']=='xml' && empty($params['XmlschemaRef'])  && !empty($params['Template'])) {
+			if ($params['Format']=='xml' && (empty($params['XmlschemaRef']) || !file_exists($params['XmlschemaRef']))  && !empty($params['Template'])) {
 				$filepath = DICTIONNAIRES_SITE.'/' . $params['Dirname'] . '/' . strtolower($name);
 				$volume = $filepath.'.xml';
 				$filepath .= '.xsd';
@@ -354,9 +354,12 @@
 	
 	function creerXmlschema($schema, $xmlFile) {
 		$bugMAMP = "export DYLD_LIBRARY_PATH=\"\"; ";
-		$commande = 'java -jar ' . RACINE_SITE . 'jar/trang.jar ' .  $xmlFile . ' ' . $schema;
+		$commande = 'java -jar ' . RACINE_SITE . 'jar/trang.jar ' .  $xmlFile . ' ' . $schema . ' 2>&1';
 		//echo 'commande: ',$bugMAMP,$commande;
-		echo exec($bugMAMP.$commande);
+		$output = exec($bugMAMP.$commande);
+		if (!empty($output)) {
+			echo '<p style="color:red; font-size:1.2em; font-weight: bold;">Error with jar/trang.jar when generating the XSL schema: <br/><code style="color:black;">',$output,'</code></p>';
+		}
 	}
 	
 	function compterEntrees($params) {
