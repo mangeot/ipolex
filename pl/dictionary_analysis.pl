@@ -369,7 +369,7 @@ sub print_template {
             my $firstkey = $keys[0];
             print $firstkey;
         }
-        else if ($attribute =~ /^xmlns:/ || $attribute =~ /^xsi:/) {
+        elsif ($attribute =~ /^xmlns:/ || $attribute =~ /^xsi:/) {
             my $firstkey = $keys[0];
             print $firstkey;
         }
