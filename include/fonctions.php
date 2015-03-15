@@ -11,7 +11,7 @@
 	'cdm-reading' => array(gettext('Lecture'),'/volume/entry/reading/text()',gettext('ex : yomigana')),
 	'cdm-pronunciation' => array(gettext('Prononciation'),'/volume/entry/pron/text()',gettext('en API si possible')),
 	'cdm-pos' => array(gettext('Classe grammaticale'),'/volume/entry/pos/text()',''),
-	'cdm-domain' => array(gettext('Domaine'),'/volume/entry/domain/text()','')),
+	'cdm-domain' => array(gettext('Domaine'),'/volume/entry/domain/text()',''),
 	'cdm-definition' => array(gettext('Définition'),'/volume/entry/definition/text()',gettext('non indexé')),
 	'cdm-sense' => array(gettext('Sens'),'/volume/entry/sense',gettext('non indexé')),
 	'cdm-translation' => array(gettext('Traduction en '),'/volume/entry/translation/text()',''),
