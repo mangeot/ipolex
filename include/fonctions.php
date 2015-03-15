@@ -11,6 +11,7 @@
 	'cdm-reading' => array(gettext('Lecture'),'/volume/entry/reading/text()',gettext('ex : yomigana')),
 	'cdm-pronunciation' => array(gettext('Prononciation'),'/volume/entry/pron/text()',gettext('en API si possible')),
 	'cdm-pos' => array(gettext('Classe grammaticale'),'/volume/entry/pos/text()',''),
+	'cdm-domain' => array(gettext('Domaine'),'/volume/entry/domain/text()','')),
 	'cdm-definition' => array(gettext('Définition'),'/volume/entry/definition/text()',gettext('non indexé')),
 	'cdm-sense' => array(gettext('Sens'),'/volume/entry/sense',gettext('non indexé')),
 	'cdm-translation' => array(gettext('Traduction en '),'/volume/entry/translation/text()',''),
@@ -316,7 +317,7 @@
 		return $targets;
 	}
 
-	function createXslStylesheet($name, $entry, $id, $headword, $pron, $pos, $example, $idiom, $sense) {
+	function createXslStylesheet($name, $entry, $id, $headword, $pron, $pos, $example, $idiom, $sense, $template) {
 		$entry = substr($entry,strrpos($entry,'/')+1);
 		$id = empty($id)?'':substr($id,strrpos($id,'/')+1);
 		if (preg_match('/text\(\)$/',$headword)) {
@@ -341,8 +342,23 @@
 		$idiom = empty($idiom)?'':substr($idiom,strrpos($idiom,'/')+1);
 
 		$sense = empty($sense)?'':substr($sense,strrpos($sense,'/')+1);
-
+		
+		$templatexml = simplexml_load_string($template);
+		$templatenamespaces = $templatexml->getDocNamespaces();
+		
 		$stylesheet = file_get_contents(RACINE_SITE.'include/default-view.xsl');
+
+		$stylesheetxml = simplexml_load_string($stylesheet);
+		$stylesheetnamespaces = $stylesheetxml->getDocNamespaces();
+		$namespacesdiff = array_diff_assoc($templatenamespaces, $stylesheetnamespaces);
+		
+		if (count($namespacesdiff) >0) {
+			foreach ($namespacesdiff as $nsprefix => $namespace) {
+				$stylesheetxml->addAttribute("xmlns:xmlns:".$nsprefix, $namespace);
+			}
+			$stylesheet =$stylesheetxml->asXML();
+		}
+
 		$stylesheet = preg_replace('/##entry_xpath##/','//'.$entry,$stylesheet);
 		$stylesheet = preg_replace('/##entry_element##/',$entry,$stylesheet);
 		if ($id) {$stylesheet = preg_replace('/##entry_id##/',$id,$stylesheet);}

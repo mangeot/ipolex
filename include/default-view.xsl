@@ -3,6 +3,7 @@
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 	xmlns:d="http://www-clips.imag.fr/geta/services/dml"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:jbk="xalan://fr.imag.clips.papillon.business.xsl.JibikiXsltExtension"
 	extension-element-prefixes="jbk"
 	exclude-result-prefixes="xsl">    
