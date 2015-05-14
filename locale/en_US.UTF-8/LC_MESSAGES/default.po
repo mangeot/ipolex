@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ipotruc v1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-19 11:40+0900\n"
+"POT-Creation-Date: 2015-03-15 16:58+0900\n"
 "PO-Revision-Date: 2013-08-19 11:41+0900\n"
 "Last-Translator: Mathieu MANGEOT <mathieu.mangeot@imag.fr>\n"
 "Language-Team: GETALP <mathieu.mangeot@imag.fr>\n"
@@ -74,80 +74,84 @@ msgstr "in IPA if possible"
 msgid "Classe grammaticale"
 msgstr "Part of speech"
 
-#: include/fonctions.php:14
+#: include/fonctions.php:14 Pages/modifDictionnaire.php:157
+msgid "Domaine"
+msgstr "Domain"
+
+#: include/fonctions.php:15
 msgid "Définition"
 msgstr "Definition"
 
-#: include/fonctions.php:14 include/fonctions.php:15
+#: include/fonctions.php:15 include/fonctions.php:16
 msgid "non indexé"
 msgstr "non indexed"
 
-#: include/fonctions.php:15
+#: include/fonctions.php:16
 msgid "Sens"
 msgstr "Sense"
 
-#: include/fonctions.php:16
+#: include/fonctions.php:17
 msgid "Traduction en "
 msgstr "Translation in"
 
-#: include/fonctions.php:17
+#: include/fonctions.php:18
 msgid "Exemple en "
 msgstr "Example in"
 
-#: include/fonctions.php:18
+#: include/fonctions.php:19
 msgid "Expression idiomatique en "
 msgstr "Idiomatic expression in"
 
-#: include/fonctions.php:22 Pages/index.php:64 Pages/index.php:70
-#: Pages/index.php:74 Pages/modifVolume.php:237
+#: include/fonctions.php:23 Pages/index.php:64 Pages/index.php:70
+#: Pages/index.php:74 Pages/modifVolume.php:245
 msgid "Nom"
 msgstr "Name"
 
-#: include/fonctions.php:23
+#: include/fonctions.php:24
 msgid "Volume cible"
 msgstr "Target volume"
 
-#: include/fonctions.php:24
+#: include/fonctions.php:25
 msgid "XPath du lien"
 msgstr "XPath of the link"
 
-#: include/fonctions.php:24
+#: include/fonctions.php:25
 msgid "XPath de l'élément"
 msgstr "XPath of the element"
 
-#: include/fonctions.php:25
+#: include/fonctions.php:26
 msgid "XPath de la valeur du lien"
 msgstr "XPath of the link's value"
 
-#: include/fonctions.php:25
+#: include/fonctions.php:26
 msgid "Chemin relatif à l'élément"
 msgstr "Path relative to the element"
 
-#: include/fonctions.php:26
+#: include/fonctions.php:27
 msgid "XPath du type du lien"
 msgstr "XPath of the link type"
 
-#: include/fonctions.php:26
+#: include/fonctions.php:27
 msgid "Valeur \"final\" vers une entrée, et \"axi\" vers une axie"
 msgstr "Values \"final\" towards an entry, and \"axi\" towards an axie"
 
-#: include/fonctions.php:27
+#: include/fonctions.php:28
 msgid "XPath de la langue de la cible"
 msgstr "XPath of the target language"
 
-#: include/fonctions.php:28
+#: include/fonctions.php:29
 msgid "XPath de l'étiquette du lien"
 msgstr "XPath of the link's tag"
 
-#: include/fonctions.php:28
+#: include/fonctions.php:29
 msgid "Valeur libre"
 msgstr "Free value"
 
-#: include/fonctions.php:29
+#: include/fonctions.php:30
 msgid "XPath du poids du lien"
 msgstr "XPath of the link's weight"
 
-#: include/fonctions.php:29
+#: include/fonctions.php:30
 msgid "Entier ou réel"
 msgstr "Integer or real"
 
@@ -160,9 +164,9 @@ msgid "tous droits réservés"
 msgstr "all rights reserved"
 
 #: include/header.php:6 include/header.php:7 include/header.php:8
-#: Pages/creerVolume.php:107 Pages/creerVolume.php:108
-#: Pages/creerVolume.php:109 Pages/creerVolume.php:152 Pages/index.php:7
-#: Pages/modifDictionnaire.php:89 Pages/modifVolume.php:136
+#: Pages/creerVolume.php:108 Pages/creerVolume.php:109
+#: Pages/creerVolume.php:110 Pages/creerVolume.php:153 Pages/index.php:7
+#: Pages/modifDictionnaire.php:102 Pages/modifVolume.php:142
 msgid "iPoLex : entrepôt de données lexicales"
 msgstr "iPoLex: Linguistic data warehouse"
 
@@ -178,26 +182,26 @@ msgstr "GETALP linguistic data warehouse"
 msgid "Partie centrale"
 msgstr "Central part"
 
-#: index-general.php:41 index-general.php:42 Pages/creerVolume.php:172
-#: Pages/creerVolume.php:173 Pages/creerVolume.php:204 Pages/index.php:183
-#: Pages/modifDictionnaire.php:107 Pages/modifDictionnaire.php:109
-#: Pages/modifDictionnaire.php:117 Pages/modifDictionnaire.php:118
-#: Pages/modifDictionnaire.php:119 Pages/modifDictionnaire.php:120
-#: Pages/modifDictionnaire.php:148 Pages/modifDictionnaire.php:158
-#: Pages/modifDictionnaire.php:172 Pages/modifDictionnaire.php:173
-#: Pages/modifDictionnaire.php:175 Pages/modifDictionnaire.php:176
-#: Pages/modifDictionnaire.php:221 Pages/modifDictionnaire.php:229
-#: Pages/modifVolume.php:144 Pages/modifVolume.php:155
-#: Pages/modifVolume.php:156 Pages/modifVolume.php:157
-#: Pages/modifVolume.php:158 Pages/modifVolume.php:160
-#: Pages/modifVolume.php:172 Pages/modifVolume.php:177
-#: Pages/modifVolume.php:184 Pages/modifVolume.php:192
-#: Pages/modifVolume.php:203 Pages/modifVolume.php:209
-#: Pages/modifVolume.php:216 Pages/modifVolume.php:236
-#: Pages/modifVolume.php:237 Pages/modifVolume.php:238
-#: Pages/modifVolume.php:240 Pages/modifVolume.php:241
-#: Pages/modifVolume.php:242 Pages/modifVolume.php:243
-#: Pages/modifVolume.php:254
+#: index-general.php:41 index-general.php:42 Pages/creerVolume.php:173
+#: Pages/creerVolume.php:174 Pages/creerVolume.php:205 Pages/index.php:183
+#: Pages/modifDictionnaire.php:120 Pages/modifDictionnaire.php:122
+#: Pages/modifDictionnaire.php:130 Pages/modifDictionnaire.php:131
+#: Pages/modifDictionnaire.php:132 Pages/modifDictionnaire.php:133
+#: Pages/modifDictionnaire.php:161 Pages/modifDictionnaire.php:171
+#: Pages/modifDictionnaire.php:186 Pages/modifDictionnaire.php:187
+#: Pages/modifDictionnaire.php:189 Pages/modifDictionnaire.php:190
+#: Pages/modifDictionnaire.php:235 Pages/modifDictionnaire.php:243
+#: Pages/modifVolume.php:150 Pages/modifVolume.php:161
+#: Pages/modifVolume.php:162 Pages/modifVolume.php:163
+#: Pages/modifVolume.php:164 Pages/modifVolume.php:166
+#: Pages/modifVolume.php:178 Pages/modifVolume.php:183
+#: Pages/modifVolume.php:190 Pages/modifVolume.php:198
+#: Pages/modifVolume.php:211 Pages/modifVolume.php:217
+#: Pages/modifVolume.php:224 Pages/modifVolume.php:244
+#: Pages/modifVolume.php:245 Pages/modifVolume.php:246
+#: Pages/modifVolume.php:248 Pages/modifVolume.php:249
+#: Pages/modifVolume.php:250 Pages/modifVolume.php:251
+#: Pages/modifVolume.php:262
 msgid " : "
 msgstr ": "
 
@@ -209,35 +213,35 @@ msgstr "Lexical data warehouse (dictionaries, lexicons, terminologies)"
 msgid "Entrepôt de données corporales (corpus textuels)"
 msgstr "Corpora data warehouse (corpora)"
 
-#: init.php:34
+#: init.php:35
 msgid "FORMAT_DATE"
 msgstr "d/m/Y H:i:s"
 
-#: init.php:35
+#: init.php:36
 msgid "FORMAT_NOMBRE_MILLE"
 msgstr ","
 
-#: init.php:36
+#: init.php:37
 msgid "FORMAT_NOMBRE_DECIMAL"
 msgstr "."
 
-#: Pages/creerVolume.php:153
+#: Pages/creerVolume.php:154
 msgid "Ajout d'un volume"
 msgstr "Add a volume"
 
-#: Pages/creerVolume.php:158
+#: Pages/creerVolume.php:159
 msgid "Votre fichier de données a été téléversé."
 msgstr "The data file is uploaded."
 
-#: Pages/creerVolume.php:161 Pages/modifVolume.php:148
+#: Pages/creerVolume.php:162 Pages/modifVolume.php:154
 msgid "Gestion du dictionnaire"
 msgstr "Management of the dictionary"
 
-#: Pages/creerVolume.php:165
+#: Pages/creerVolume.php:166
 msgid "Téléversement du fichier de données"
 msgstr "Uploading the data file"
 
-#: Pages/creerVolume.php:170
+#: Pages/creerVolume.php:171
 msgid ""
 "Téléversez le fichier de données du volume soit en vous connectant en WebDAV "
 "au serveur, soit en utilisant le formulaire ci-dessous."
@@ -245,15 +249,15 @@ msgstr ""
 "Upload the volume data file either by connecting via WebDAV or by using the "
 "following form. "
 
-#: Pages/creerVolume.php:171
+#: Pages/creerVolume.php:172
 msgid "Vous pouvez compresser le fichier en zip ou gzip avant de l'envoyer."
 msgstr "You can gip or zip our file before sending it."
 
-#: Pages/creerVolume.php:172
+#: Pages/creerVolume.php:173
 msgid "Adresse WebDAV"
 msgstr "WebDAV address"
 
-#: Pages/creerVolume.php:173
+#: Pages/creerVolume.php:174
 msgid ""
 "Attention, si vous téléversez votre fichier en WebDAV, renommez-le avec le "
 "nom suivant"
@@ -261,35 +265,35 @@ msgstr ""
 "Attention, upload the volume's data file and rename it using the following "
 "name"
 
-#: Pages/creerVolume.php:176
+#: Pages/creerVolume.php:177
 msgid "Sélectionner le fichier de données à téléverser"
 msgstr "Choose the data file to upload"
 
-#: Pages/creerVolume.php:200
+#: Pages/creerVolume.php:201
 msgid "Envoyer"
 msgstr "Send"
 
-#: Pages/creerVolume.php:204
+#: Pages/creerVolume.php:205
 msgid "Fichier de données actuel"
 msgstr "Uploaded data file"
 
-#: Pages/creerVolume.php:204
+#: Pages/creerVolume.php:205
 msgid "octets"
 msgstr "bytes"
 
-#: Pages/creerVolume.php:204
+#: Pages/creerVolume.php:205
 msgid ","
 msgstr ","
 
-#: Pages/creerVolume.php:204
+#: Pages/creerVolume.php:205
 msgid "versé le"
 msgstr "uploaded on"
 
-#: Pages/creerVolume.php:213
+#: Pages/creerVolume.php:214
 msgid "Analyse du fichier de données"
 msgstr "Analyse of the data file"
 
-#: Pages/creerVolume.php:214
+#: Pages/creerVolume.php:215
 msgid ""
 "Le serveur va analyser le fichier de données pour générer une première "
 "version du fichier de métadonnées."
@@ -297,28 +301,28 @@ msgstr ""
 "The server will analyze the data file in order to generate a first version "
 "of the metadata file."
 
-#: Pages/creerVolume.php:217
+#: Pages/creerVolume.php:218
 msgid "Analyser"
 msgstr "Analyze"
 
-#: Pages/creerVolume.php:225 Pages/modifVolume.php:267
+#: Pages/creerVolume.php:226 Pages/modifVolume.php:275
 msgid "Résultat de l'analyse"
 msgstr "Results of the analysis"
 
-#: Pages/creerVolume.php:231
+#: Pages/creerVolume.php:232
 msgid "Génération du fichier de métadonnées"
 msgstr "Generate the metatada file"
 
-#: Pages/creerVolume.php:232
+#: Pages/creerVolume.php:233
 msgid "Vous pourrez ensuite modifier ce fichier en ligne."
 msgstr "You will then be able to modify this file online."
 
-#: Pages/creerVolume.php:233
+#: Pages/creerVolume.php:234
 msgid "Générer"
 msgstr "Generate"
 
 #: Pages/index.php:65 Pages/index.php:70 Pages/index.php:74
-#: Pages/modifDictionnaire.php:120
+#: Pages/modifDictionnaire.php:133
 msgid "Catégorie"
 msgstr "Category"
 
@@ -327,7 +331,7 @@ msgid "Administrateur"
 msgstr "Administrator"
 
 #: Pages/index.php:66 Pages/index.php:71 Pages/index.php:75
-#: Pages/modifVolume.php:160
+#: Pages/modifVolume.php:166
 msgid "Format"
 msgstr "Format"
 
@@ -351,7 +355,7 @@ msgstr "Language"
 msgid "Langues"
 msgstr "Languages"
 
-#: Pages/index.php:72 Pages/index.php:75 Pages/modifDictionnaire.php:145
+#: Pages/index.php:72 Pages/index.php:75 Pages/modifDictionnaire.php:158
 msgid "Source"
 msgstr "Source"
 
@@ -389,172 +393,168 @@ msgstr ""
 "In order to mount the folder containing all the dictionaries, use the "
 "following URL address"
 
-#: Pages/modifDictionnaire.php:90
+#: Pages/modifDictionnaire.php:103
 msgid "Ajout/Modification d'un dictionnaire"
 msgstr "Add/modify a dictionary"
 
-#: Pages/modifDictionnaire.php:106
+#: Pages/modifDictionnaire.php:119
 msgid "Adresse WebDAV pour modification des données"
 msgstr "WebDAV address to modify the data"
 
-#: Pages/modifDictionnaire.php:106 Pages/modifVolume.php:143
+#: Pages/modifDictionnaire.php:119 Pages/modifVolume.php:149
 msgid "Adresse WebDAV pour accès aux données"
 msgstr "WebDAV address to access the data"
 
-#: Pages/modifDictionnaire.php:109
+#: Pages/modifDictionnaire.php:122
 msgid "Adresse Web pour accès public aux données"
 msgstr "Web address for public access to the data"
 
-#: Pages/modifDictionnaire.php:115
+#: Pages/modifDictionnaire.php:128
 msgid "Gestion d'un dictionnaire"
 msgstr "Dictionary management"
 
-#: Pages/modifDictionnaire.php:117
+#: Pages/modifDictionnaire.php:130
 msgid "Nom complet"
 msgstr "Full name"
 
-#: Pages/modifDictionnaire.php:118
+#: Pages/modifDictionnaire.php:131
 msgid "Nom abrégé"
 msgstr "Short name"
 
-#: Pages/modifDictionnaire.php:118
+#: Pages/modifDictionnaire.php:131
 msgid "Caractères ASCII alphanumériques et tiret uniquement !"
 msgstr "ASCII alphanumeric characters and hyphen only!"
 
-#: Pages/modifDictionnaire.php:119
+#: Pages/modifDictionnaire.php:132
 msgid "Propriétaire"
 msgstr "Owner"
 
-#: Pages/modifDictionnaire.php:122
+#: Pages/modifDictionnaire.php:135
 msgid "monolingue"
 msgstr "monolingual"
 
-#: Pages/modifDictionnaire.php:123
+#: Pages/modifDictionnaire.php:136
 msgid "bilingue"
 msgstr "bilingual"
 
-#: Pages/modifDictionnaire.php:124
+#: Pages/modifDictionnaire.php:137
 msgid "multilingue"
 msgstr "mulrilingual"
 
-#: Pages/modifDictionnaire.php:130
+#: Pages/modifDictionnaire.php:143
 msgid "monodirectionnel (1 volume)"
 msgstr "monodirectional (1 volume)"
 
-#: Pages/modifDictionnaire.php:132
+#: Pages/modifDictionnaire.php:145
 msgid "monovolume (1 volume avec traductions alignées)"
 msgstr "monovolume (1 volume with aligned translations)"
 
-#: Pages/modifDictionnaire.php:133
+#: Pages/modifDictionnaire.php:146
 msgid "bidirectionnel (2 volumes La->Lb et Lb->La)"
 msgstr "bidirectional (2 volumes La->Lb and Lb->La)"
 
-#: Pages/modifDictionnaire.php:134
+#: Pages/modifDictionnaire.php:147
 msgid "direct (2 volumes La et Lb reliés)"
 msgstr "direct (2 linked volumes La and Lb)"
 
-#: Pages/modifDictionnaire.php:135
+#: Pages/modifDictionnaire.php:148
 msgid "pivot (x volumes Lx reliés à 1 volume pivot)"
 msgstr "pivot (x volumes Lx linked to 1 pivot volume)"
 
-#: Pages/modifDictionnaire.php:136
+#: Pages/modifDictionnaire.php:149
 msgid "mixé"
 msgstr "mixed"
 
-#: Pages/modifDictionnaire.php:143
+#: Pages/modifDictionnaire.php:156
 msgid "Contenu"
 msgstr "Content"
 
-#: Pages/modifDictionnaire.php:144
-msgid "Domaine"
-msgstr "Domain"
-
-#: Pages/modifDictionnaire.php:146 Pages/modifVolume.php:242
+#: Pages/modifDictionnaire.php:159 Pages/modifVolume.php:250
 msgid "Auteurs"
 msgstr "Authors"
 
-#: Pages/modifDictionnaire.php:147
+#: Pages/modifDictionnaire.php:160
 msgid "Licence"
 msgstr "License"
 
-#: Pages/modifDictionnaire.php:148
+#: Pages/modifDictionnaire.php:161
 msgid "Accès"
 msgstr "Access"
 
-#: Pages/modifDictionnaire.php:150
+#: Pages/modifDictionnaire.php:163
 msgid "public = web"
 msgstr "public = web"
 
-#: Pages/modifDictionnaire.php:151
+#: Pages/modifDictionnaire.php:164
 msgid "réservé = labo"
 msgstr "restricted = lab"
 
-#: Pages/modifDictionnaire.php:152
+#: Pages/modifDictionnaire.php:165
 msgid "privé = admin"
 msgstr "private = admin"
 
-#: Pages/modifDictionnaire.php:156 Pages/modifVolume.php:254
+#: Pages/modifDictionnaire.php:169 Pages/modifVolume.php:262
 msgid "Commentaires"
 msgstr "Comments"
 
-#: Pages/modifDictionnaire.php:157 Pages/modifVolume.php:243
+#: Pages/modifDictionnaire.php:170 Pages/modifVolume.php:251
 msgid "Administrateurs"
 msgstr "Administrators"
 
-#: Pages/modifDictionnaire.php:158
+#: Pages/modifDictionnaire.php:171
 msgid "Volumes"
 msgstr "Volumes"
 
-#: Pages/modifDictionnaire.php:170 Pages/modifVolume.php:234
+#: Pages/modifDictionnaire.php:184 Pages/modifVolume.php:242
 msgid "Plus d'infos"
 msgstr "More information"
 
-#: Pages/modifDictionnaire.php:172 Pages/modifVolume.php:236
+#: Pages/modifDictionnaire.php:186 Pages/modifVolume.php:244
 msgid "Répertoire"
 msgstr "Folder"
 
-#: Pages/modifDictionnaire.php:173 Pages/modifVolume.php:238
+#: Pages/modifDictionnaire.php:187 Pages/modifVolume.php:246
 msgid "URL des métadonnées"
 msgstr "Metadata URL"
 
-#: Pages/modifDictionnaire.php:175 Pages/modifVolume.php:240
+#: Pages/modifDictionnaire.php:189 Pages/modifVolume.php:248
 msgid "Date de création"
 msgstr "Creation date"
 
-#: Pages/modifDictionnaire.php:176 Pages/modifVolume.php:241
+#: Pages/modifDictionnaire.php:190 Pages/modifVolume.php:249
 msgid "Date d'installation"
 msgstr "Installation date"
 
-#: Pages/modifDictionnaire.php:200 Pages/modifVolume.php:258
+#: Pages/modifDictionnaire.php:214 Pages/modifVolume.php:266
 msgid "Enregistrer"
 msgstr "Save"
 
-#: Pages/modifDictionnaire.php:221
+#: Pages/modifDictionnaire.php:235
 msgid "Langue source"
 msgstr "Source language"
 
-#: Pages/modifDictionnaire.php:222 Pages/modifDictionnaire.php:246
-#: Pages/modifVolume.php:161
+#: Pages/modifDictionnaire.php:236 Pages/modifDictionnaire.php:260
+#: Pages/modifVolume.php:167
 msgid "Choisir..."
 msgstr "Choose..."
 
-#: Pages/modifDictionnaire.php:229
+#: Pages/modifDictionnaire.php:243
 msgid "Langues cibles"
 msgstr "Target languages"
 
-#: Pages/modifDictionnaire.php:238
+#: Pages/modifDictionnaire.php:252
 msgid "Gérer le volume"
 msgstr "Manage the volume"
 
-#: Pages/modifDictionnaire.php:238
+#: Pages/modifDictionnaire.php:252
 msgid "Voir le volume"
 msgstr "See the volume"
 
-#: Pages/modifDictionnaire.php:276
+#: Pages/modifDictionnaire.php:290
 msgid "Le nom abrégé du dictionnaire contient des caractères non autorisés !"
 msgstr "The dictionary short name contains non allowed characters!"
 
-#: Pages/modifDictionnaire.php:309
+#: Pages/modifDictionnaire.php:327
 msgid ""
 "Le fichier de métadonnées du dictionnaire a été enregistré.\n"
 "\t\tVous pouvez maintenant gérer les volumes."
@@ -562,59 +562,59 @@ msgstr ""
 "The metadata file of the dictionary has been saved.\n"
 "\t\tYou can now manage the volumes."
 
-#: Pages/modifVolume.php:137
+#: Pages/modifVolume.php:143
 msgid "Modification des métadonnées d'un volume"
 msgstr "Modification of volume metadata file"
 
-#: Pages/modifVolume.php:143
+#: Pages/modifVolume.php:149
 msgid "Adresse WebDAV pour mise à jour des données"
 msgstr "WebDAV address for updating data"
 
-#: Pages/modifVolume.php:146
+#: Pages/modifVolume.php:152
 msgid "Mise à jour des données par formulaire"
 msgstr "Data update via an online form"
 
-#: Pages/modifVolume.php:153
+#: Pages/modifVolume.php:159
 msgid "Gestion d'un volume"
 msgstr "Manage a volume"
 
-#: Pages/modifVolume.php:155
+#: Pages/modifVolume.php:161
 msgid "Nom du dictionnaire"
 msgstr "Dictionary name"
 
-#: Pages/modifVolume.php:156
+#: Pages/modifVolume.php:162
 msgid "langue source"
 msgstr "source language"
 
-#: Pages/modifVolume.php:157
+#: Pages/modifVolume.php:163
 msgid "langues cible"
 msgstr "target language"
 
-#: Pages/modifVolume.php:158
+#: Pages/modifVolume.php:164
 msgid "Nombre d'entrées"
 msgstr "Number of entries"
 
-#: Pages/modifVolume.php:159
+#: Pages/modifVolume.php:165
 msgid "Recompter"
 msgstr "Recount"
 
-#: Pages/modifVolume.php:163
+#: Pages/modifVolume.php:169
 msgid "texte"
 msgstr "text"
 
-#: Pages/modifVolume.php:169
+#: Pages/modifVolume.php:175
 msgid "autre"
 msgstr "other"
 
-#: Pages/modifVolume.php:172
+#: Pages/modifVolume.php:178
 msgid "Encodage"
 msgstr "Encoding"
 
-#: Pages/modifVolume.php:177
+#: Pages/modifVolume.php:183
 msgid "Pointeurs CDM <a href=\"http://fr.wikipedia.org/wiki/XPath\">XPath</a>"
 msgstr "<a href=\"http://en.wikipedia.org/wiki/XPath\">XPath</a> CMD Pointers"
 
-#: Pages/modifVolume.php:178
+#: Pages/modifVolume.php:184
 msgid ""
 "Attention, n'oubliez pas de vider la description d'un pointeur s'il ne "
 "correspond à rien dans votre structure !"
@@ -622,23 +622,23 @@ msgstr ""
 "Attention, don't forget to empty the pointers' description if it does not "
 "match anything in your structure!"
 
-#: Pages/modifVolume.php:192
+#: Pages/modifVolume.php:198
 msgid "Éléments CDM spécifiques à un volume"
 msgstr "CMD elements specific to a volume"
 
-#: Pages/modifVolume.php:203
+#: Pages/modifVolume.php:211
 msgid "Liens vers d'autres entrées"
 msgstr "Link towards other entries"
 
-#: Pages/modifVolume.php:209
+#: Pages/modifVolume.php:217
 msgid "Lien"
 msgstr "Link"
 
-#: Pages/modifVolume.php:216
+#: Pages/modifVolume.php:224
 msgid "Article XML modèle (vide)"
 msgstr "Template XML article (empty)"
 
-#: Pages/modifVolume.php:318
+#: Pages/modifVolume.php:326
 msgid ""
 "Attention, vous devez impérativement remplir les pointeurs CDM précédés d'un "
 "astérisque *"
