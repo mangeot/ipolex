@@ -178,6 +178,8 @@ if (is_dir(DICTIONNAIRES_SITE)) {
 	
 	<p style="text-align:center;"><a href="modifDictionnaire.php"><img src="<?php echo RACINE_WEB;?>images/assets/b_new.png"/>
 	<?php echo gettext('Ajout d\'un dictionnaire');?></a></p>
+	<p style="text-align:center;"><a href="manipDico.php"><img src="<?php echo RACINE_WEB;?>images/assets/b_new.png"/>
+	<?php echo gettext('Manipulation d\'un dictionnaire');?></a></p>
  	<p><?php echo gettext('Vous pouvez accéder directement aux dictionnaires en montant le site sur votre bureau comme un répertoire distant avec le protocole <a href="http://fr.wikipedia.org/wiki/WebDAV">WebDav</a>.'); 
  	echo ' ',gettext('Pour monter un dictionnaire spécifique, copiez l\'adresse URL de la flèche droite verte.');
  	echo ' ',gettext('Pour monter le répertoire contenant tous les dictionnaires, utilisez l\'adresse URL suivante'); echo gettext(' : ');?><a href="<?php echo DICTIONNAIRES_DAV;?>">
