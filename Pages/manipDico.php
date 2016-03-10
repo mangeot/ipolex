@@ -95,6 +95,54 @@
 		$targets = recupciblesVolume($Params,$volume);		
 		header('Location:modifVolume.php?Dirname='.$Params['Dirname'].'&Dictname='.$Params['Name'].'&Source='.$source.'&Targets='.$targets.'&Authors='.$Params['Authors'].'&Administrators='.$Params['Administrators']);
 	}
+
+	$dicts = array();
+	$srcs = array();
+	$langs = array();
+
+// Open a known directory, and proceed to read its contents
+if (is_dir(DICTIONNAIRES_SITE)) {
+    if ($dh = opendir(DICTIONNAIRES_SITE)) {
+        while (($file = readdir($dh)) !== false) {
+			if (filetype(DICTIONNAIRES_SITE . '/'.$file)=='dir' 
+				&& substr($file,0,1)!== '.'
+				&& strpos($file,'_')>0) {
+				$souligne = strpos($file,'_');
+				$nom = substr($file,0,$souligne);
+				$dico = DICTIONNAIRES_SITE . '/'. $file . '/' . $nom . '-metadata.xml';
+				if (file_exists($dico)) $infos = parseDict($dico);
+				$infos['Dirname']= $file;
+				$dicts[$infos['Name']] = $infos;
+				foreach ($infos['Volumes'] as $key => $volume) {
+					$src = empty($srcs[$key])?array():$srcs[$key];
+					$lang = empty($langs[$key])?array():$langs[$key];
+					if (empty($src[$infos['Name']])) {
+						$src[$infos['Name']] = $infos;
+						$srcs[$key] = $src;
+					}
+					if (empty($lang[$infos['Name']])) {
+						$lang[$infos['Name']] = $infos;
+						$langs[$key] = $lang;
+					}
+					if (!empty($volume['Targets'])) {
+					foreach ($volume['Targets'] as $key) {
+						$lang = empty($langs[$key])?array():$langs[$key];
+						if (empty($lang[$infos['Name']])) {
+							$lang[$infos['Name']] = $infos;
+							$langs[$key] = $lang;
+						}
+					}
+					}
+				}
+			}
+        }
+        closedir($dh);
+    }
+	ksort($dicts,SORT_LOCALE_STRING);
+	ksort($srcs,SORT_LOCALE_STRING);
+	ksort($langs,SORT_LOCALE_STRING);
+}
+
 	include(RACINE_SITE.'include/header.php');
 ?>
 <header id="enTete">
@@ -132,6 +180,14 @@
 		<option value="choisir">choisir...</option>
 	</select>
 	</p>
+	<?php
+echo 'dicos:';
+foreach ($dicts as $nom => $dict) {
+	echo $nom, ':', $dict['NameC'];
+	var_dump($dict['Volumes']);
+}
+
+	?>
 	<p>*<?php echo gettext('Ressource à traiter:'); echo gettext(' : ');?><input type="file"  required="required" name="ressorce" onchange="this.form.submit()"/>
 	</p>
 	<p>*<?php echo gettext(' Choisir l \'opération à effectuer'); echo gettext(' : ');?><br/>
@@ -293,6 +349,100 @@
 		$name = substr($name,0,strlen($name)-1);
 		return $name;
 	}	
+
+		function parseDict($dico) {
+		$infos = array();
+		$doc = new DOMDocument();
+		$doc->load($dico);
+		$dicts = $doc->getElementsByTagName("dictionary-metadata");
+		$dict = $dicts->item(0);
+  		$infos['NameC'] = $dict->getAttribute('fullname');
+  		$infos['Name'] = $dict->getAttribute('name');
+  		$infos['Owner'] = $dict->getAttribute('owner');
+  		$infos['Category'] = $dict->getAttribute('category');
+  		$infos['Type'] = $dict->getAttribute('type');
+  		$infos['CreationDate'] = $dict->getAttribute('creation-date');
+  		$infos['InstallationDate'] = $dict->getAttribute('installation-date');
+  		$infos['Category'] = $dict->getAttribute('category');
+  		$infos['Type'] = $dict->getAttribute('type');
+  		$infos['Contents'] = $dict->getElementsByTagName('contents')->item(0)->nodeValue;
+  		$infos['Domain'] = $dict->getElementsByTagName('domain')->item(0)->nodeValue;
+  		if (empty($infos['Domain'])) {echo 'domaine vide : ',$dico;}
+  		$infos['Source'] = $dict->getElementsByTagName('source')->item(0)->nodeValue;
+  		$infos['Authors'] = $dict->getElementsByTagName('authors')->item(0)->nodeValue;
+  		//if (empty($infos['Authors'])) {echo 'auteurs vides : ',$dico;}
+  		$infos['Legal'] = $dict->getElementsByTagName('legal')->item(0)->nodeValue;
+  		$tmp = $dict->getElementsByTagName('comments');
+  		if ($tmp->length>0) {$infos['Comments'] = $tmp->item(0)->nodeValue;}
+  		$adminNodes = $dict->getElementsByTagName('user-ref');
+  		$admins = array();
+  		foreach ($adminNodes as $admin) {
+  			array_push($admins,$admin->getAttribute('name'));
+  		}
+		$infos['Administrators'] = $admins; 
+  		$volumes = $dict->getElementsByTagName('volume-metadata-ref');
+		$infos['Volumes'] = array();
+  		foreach ($volumes as $volume) {
+  			$source = $volume->getAttribute('source-language');
+			$volumeRef = $volume->getAttributeNS(XLINK_PREFIX,'href');
+			$volumeRef = dirname($dico) . '/'.$volumeRef;
+			$infosVolume = parseVolume($volumeRef);
+			$infos['Volumes'][$source] = $infosVolume;
+  		}
+		return($infos);
+	}
+	
+	function parseVolume($volume) {
+		$infos = array();
+		if (file_exists($volume)) {
+		$doc = new DOMDocument();
+		$doc->load($volume);
+		$volumes = $doc->getElementsByTagName("volume-metadata");
+		$dict = $volumes->item(0);
+		$infos['Name'] = $dict->getAttribute('name');
+		$infos['Source'] = $dict->getAttribute('source-language');
+		$infos['Targets'] = $dict->getAttribute('target-languages');
+		$infos['Targets'] = array_filter(explode(' ',$infos['Targets']));
+		$infos['Encoding'] = $dict->getAttribute('encoding');
+		$infos['CreationDate'] = $dict->getAttribute('creation-date');
+		$infos['Format'] = $dict->getAttribute('format');
+		$infos['HwNumber'] = $dict->getAttribute('hw-number'); 
+		$infos['Authors'] = $dict->getElementsByTagName('authors')->item(0)->nodeValue;
+  		//if (empty($infos['Authors'])) {echo 'auteurs vides : ',$volume;}
+  		$adminNodes = $dict->getElementsByTagName('user-ref');
+  		$admins = array();
+  		foreach ($adminNodes as $admin) {
+  			array_push($admins,$admin->getAttribute('name'));
+  		}
+		$infos['Administrators'] = $admins; 
+  		$tmp = $dict->getElementsByTagName('comments');
+  		if ($tmp->length>0) {$infos['Comments'] = $tmp->item(0)->nodeValue;}
+		}
+		else {echo 'Erreur : le fichier ',$volume,' n\'existe pas !';}
+		return($infos);
+	}
+	
+	function cibles($volumes) {
+		$cibles = array();
+		foreach ($volumes as $volume) {
+			$cibles = array_merge($volume['Targets'],$cibles);
+		}
+		$cibles = array_unique($cibles);
+		sort($cibles,SORT_LOCALE_STRING);
+		return $cibles;
+	}
+	
+	function toutesLangues($volumes) {
+		$cibles = array();
+		foreach ($volumes as $volume) {
+			$cibles = array_merge($volume['Targets'],$cibles);
+			array_push($cibles,$volume['Source']);
+		}
+		$cibles = array_unique($cibles);
+		sort($cibles,SORT_LOCALE_STRING);
+		return $cibles;
+	}
+
 ?>
 </div>
 <?php include(RACINE_SITE.'include/footer.php');?>
