@@ -177,7 +177,7 @@ if (is_dir(DICTIONNAIRES_SITE)) {
 <div>
 	<p>*<?php echo gettext('Volume à traiter'); echo gettext(' : ');?>
 	<select id="volume"  required="required" name="volume" onchange="this.form.submit()">
-		<option value="choisir">choisir...</option>
+	<option value="choisir">choisir...</option>
 	</select>
 	</p>
 	<?php

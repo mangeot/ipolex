@@ -9,10 +9,10 @@
 
 	define('LANG_COOKIE','LANG_COOKIE');
 	define('SEP_NOM',"#");
-	define('DICTIONNAIRES_SITE','/opt/www/html-ssl/dictionnaires');
+	define('DICTIONNAIRES_SITE','/opt/lampp/htdocs/ipolex/Dicos/');
 //	define('DICTIONNAIRES_SITE','/Data/ipolex');
 	define('DICTIONNAIRES_DAV','https://papillon.imag.fr/DAV/dictionnaires');
-	define('DICTIONNAIRES_WEB','https://papillon.imag.fr/dictionnaires');
+	define('DICTIONNAIRES_WEB','http://localhost/ipolex/Dicos');
 	define('DICTIONNAIRES_SITE_PUBLIC','/opt/www/html/dictionnaires');
 //	define('DICTIONNAIRES_SITE_PUBLIC','/Data/ipolexPub');
 	define('DICTIONNAIRES_WEB_PUBLIC','http://papillon.imag.fr/dictionnaires');
