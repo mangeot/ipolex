@@ -100,7 +100,7 @@
 <header id="enTete">
 	<?php print_lang_menu();?>
 	<h1><?php echo gettext('iPoLex : entrepôt de données lexicales');?></h1>
-	<h2><?php echo gettext('Ajout/Modification d\'un dictionnaire');?></h3>
+	<h2><?php echo gettext('Ajout/Modification du dictionnaire');?> <?php affichep('Name');?></h3>
 	<hr />
 </header>
 <div id="partieCentrale">
@@ -128,7 +128,7 @@
 <legend><?php echo gettext('Gestion d\'un dictionnaire');?></legend>
 <div>
 	<p>*<?php echo gettext('Nom complet'); echo gettext(' : ');?><input type="text" required="required" size="50" id="NameC" name="NameC" value="<?php affichep('NameC')?>" /></p>
-	<p>*<?php echo gettext('Nom abrégé'); echo gettext(' : ');?><input type="text" required="required"  pattern="[A-Z][a-zA-Z0-9\-]+"  id="Name" name="Name" onfocus="copyifempty(this,'NameC');" value="<?php affichep('Name')?>"/> <?php echo gettext('Caractères ASCII alphanumériques et tiret uniquement !');?></p>
+	<p>*<?php echo gettext('Nom abrégé'); echo gettext(' : ');?><input type="text" required="required"  pattern="[A-Z][a-zA-Z0-9\-]+"  id="Name" name="Name" onfocus="copyifempty(this,'NameC');" value="<?php affichep('Name')?>"/> <?php echo gettext('Le nom doit commencer par une majuscule.');?> <?php echo gettext('Caractères ASCII alphanumériques et tiret uniquement !');?> [A-Z][a-zA-Z0-9\-]+</p>
 	<p><?php echo gettext('Propriétaire'); echo gettext(' : ');?><input type="text" id="Owner"  onfocus="copyifempty(this,'Name');" name="Owner"  value="<?php affichep('Owner')?>"/></p>
 	<p>*<?php echo gettext('Catégorie'); echo gettext(' : ');?><select id="Category"  required="required" name="Category" onchange="this.form.submit()">
 		<option value="">choisir...</option>
@@ -238,6 +238,7 @@
 		if (!empty($Params['Volume'.$num.'Source'])) {
 			$source = $Params['Volume'.$num.'Source'];
 		}
+		$nom_volume = $Params['Name'] . '_' . $source . '_';
 		afficheLanguesOptions($source);
 		echo '</select>';
 		echo gettext('Langues cibles'),gettext(' : ');
@@ -245,12 +246,15 @@
 		$t=1;
 		while ($t<=$targets) {
 			echo $t, ' : ',ajouteCible($num,$t);
+			$nom_volume .= $Params['Volume'.$num.'Target'.$t] . '-';
 			$t++;
 		}
+		$nom_volume = preg_replace('/[\-_]$/','',$nom_volume);
 		ajouteCiblePlus($num,$t);
 		if (!empty($Params['Name']) && !empty($Params['Type']) && !empty($source) && !empty($Params['Dirname'])) {
 			$manageVolumeString = $modif?gettext('Gérer le volume'):gettext('Voir le volume');
 			echo '<input type="submit" id="ManageVolume',$num,'" name="ManageVolume" value="',$manageVolumeString,' ',$num,'" />';
+			echo ' nom : ',$nom_volume;
 		}
 		echo '</li>';
 	}
@@ -286,7 +290,7 @@
 	function creerDictionnaire($params) {
 		$admins = preg_split("/[\s,;]+/", $params['Administrators']);		
 		$name = $params['Name'];
-		if (!preg_match('/^[a-zA-Z0-9\-]+$/',$name)) {
+		if (!preg_match('/^[A-Z][a-zA-Z0-9\-]+$/',$name)) {
 			echo '<p class="erreur">',gettext('Le nom abrégé du dictionnaire contient des caractères non autorisés !'),'</p>';
 			return '';
 		}

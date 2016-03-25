@@ -140,7 +140,7 @@
 <header id="enTete">
 	<?php print_lang_menu();?>
 	<h1><?php echo gettext('iPoLex : entrepôt de données lexicales');?></h1>
-	<h2><?php echo gettext('Modification des métadonnées d\'un volume');?></h3>
+	<h2><?php echo gettext('Modification des métadonnées du volume');?> <?php affichep('Name')?></h3>
 	<hr />
 </header>
 <div id="partieCentrale">
@@ -161,6 +161,7 @@
 	<p><?php echo gettext('Nom du dictionnaire'), gettext(' : ');?><?php affichep('Dictname')?>; 
 	<?php echo gettext('langue source'), gettext(' : ');?><?php echo $LANGUES[$source]?>; 
 	<?php echo gettext('langues cible'), gettext(' : ');?><?php foreach ($targets as $cible) {echo $LANGUES[$cible],', ';}?></p>
+	<p><?php echo gettext('Nom du volume'), gettext(' : ');?><?php affichep('Name')?></p>
 	<p><?php echo gettext('Nombre d\'entrées'), gettext(' : ');?><input type="text" id="HwNumber" name="HwNumber"  value="<?php affichep('HwNumber')?>"/>
 	<?php if ($Params['Format']=='xml') {echo ' <input type="submit" name="CompterEntrees" value="',gettext('Recompter'),'"/>';};?></p>
 	<p>*<?php echo gettext('Format'), gettext(' : ');?><select id="Format" name="Format" onchange="this.form.submit()">
