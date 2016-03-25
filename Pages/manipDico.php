@@ -183,8 +183,14 @@ if (is_dir(DICTIONNAIRES_SITE)) {
 	<?php
 echo 'dicos:';
 foreach ($dicts as $nom => $dict) {
-	echo $nom, ':', $dict['NameC'];
-	var_dump($dict['Volumes']);
+//	echo $nom, ':', $dict['NameC'];
+$volumes = $dict['Volumes'];
+	//var_dump($dict['Volumes']);
+	foreach ($volumes as $src => $volume) {
+echo $volumes[$src]['Name'];
+//	var_dump($volumes[$src]);
+}
+
 }
 
 	?>
