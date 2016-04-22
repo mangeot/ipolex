@@ -171,35 +171,51 @@ if (is_dir(DICTIONNAIRES_SITE)) {
 		}
 	}
 ?>
-<form action="?" method="post">
+
+
+<form method="POST" enctype="multipart/form-data" action="operation.php" >
 <fieldset name="Manipulation d'un dictionnaire">
 <legend><?php echo gettext('Effectuer des opération sur un dictionnaire');?></legend>
 <div>
-	<p>*<?php echo gettext('Volume à traiter'); echo gettext(' : ');?>
-	<select id="volume"  required="required" name="volume" onchange="this.form.submit()">
-	<option value="choisir">choisir...</option>
-	</select>
-	</p>
+<p>*<?php echo gettext('Dictionnaire à traiter'); echo gettext(' : ');?>
+	<select name="nomdico">
+	<option value="choisir" >choisir...</option>
 	<?php
-echo 'dicos:';
-foreach ($dicts as $nom => $dict) {
+	foreach ($dicts as $nom => $dict) {
+//	echo $nom, ':', $dict['NameC'];
+	afficheo('nomdico',$dict['Dirname']); echo $dict['Name'];?></option>
+	<?php
+
+}
+	?>
+</select>
+</p>
+	<p>*<?php echo gettext('Volume à traiter'); echo gettext(' : ');?>
+	<select name="nomvolume">
+	<option value="choisir" >choisir...</option>
+	<?php
+	foreach ($dicts as $nom => $dict) {
 //	echo $nom, ':', $dict['NameC'];
 $volumes = $dict['Volumes'];
 	//var_dump($dict['Volumes']);
 	foreach ($volumes as $src => $volume) {
-echo $volumes[$src]['Name'];
-//	var_dump($volumes[$src]);
-}
+//	var_dump($volumes[$src])
+	afficheo('nomvolume',$volumes[$src]['Name']);echo $volumes[$src]['Name'];?></option>
+	<?php
+
+
 
 }
 
+}
 	?>
-	<p>*<?php echo gettext('Ressource à traiter:'); echo gettext(' : ');?><input type="file"  required="required" name="ressorce" onchange="this.form.submit()"/>
-	</p>
+</select>
+</p>
+
 	<p>*<?php echo gettext(' Choisir l \'opération à effectuer'); echo gettext(' : ');?><br/>
-	<input type="radio" value="préparation" id="prép"/><label for="prép"> Préparation</label><br/>
-	<input type="radio" value="tri" id="tri"/><label for="tri"> Tri</label><br/>
-	<input type="radio" value="transformation" id="transfo"/><label for="transfo"> transformation</label><br/>
+	<input type="radio" value="préparation" id="prép" name="op" /><label for="prép"> Préparation</label><br/>
+	<input type="radio" value="tri" id="tri" name="op" /><label for="tri"> Tri</label><br/>
+	<input type="radio" value="transformation" id="transfo" name="op" /><label for="transfo"> transformation</label><br/>
 	</p>
 	<p style="text-align:center;">
 
@@ -211,6 +227,7 @@ echo $volumes[$src]['Name'];
 </div>
 
 </fieldset>
+
 </form>
 <?php
 

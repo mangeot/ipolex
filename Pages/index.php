@@ -15,7 +15,7 @@
 	$dicts = array();
 	$srcs = array();
 	$langs = array();
-// Open a known directory, and proceed to read its contents
+// Open a known directory, and proceed to read its contents*ça ouvre le répertoire contenant les dictionaires et lit leur contenu.
 if (is_dir(DICTIONNAIRES_SITE)) {
     if ($dh = opendir(DICTIONNAIRES_SITE)) {
         while (($file = readdir($dh)) !== false) {

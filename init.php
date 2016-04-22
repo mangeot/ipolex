@@ -13,7 +13,7 @@
 //	define('DICTIONNAIRES_SITE','/Data/ipolex');
 	define('DICTIONNAIRES_DAV','https://papillon.imag.fr/DAV/dictionnaires');
 	define('DICTIONNAIRES_WEB','http://localhost/ipolex/Dicos');
-	define('DICTIONNAIRES_SITE_PUBLIC','/opt/www/html/dictionnaires');
+	define('DICTIONNAIRES_SITE_PUBLIC','/opt/lampp/htdocs/ipolex/ipolexPub');
 //	define('DICTIONNAIRES_SITE_PUBLIC','/Data/ipolexPub');
 	define('DICTIONNAIRES_WEB_PUBLIC','http://papillon.imag.fr/dictionnaires');
 	
