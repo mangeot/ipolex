@@ -213,7 +213,7 @@ $volumes = $dict['Volumes'];
 </p>
 
 	<p>*<?php echo gettext(' Choisir l \'opération à effectuer'); echo gettext(' : ');?><br/>
-	<input type="radio" value="préparation" id="prép" name="op" /><label for="prép"> Préparation</label><br/>
+	<input type="radio" value="prep" id="prep" name="op" /><label for="prep"> Préparation</label><br/>
 	<input type="radio" value="tri" id="tri" name="op" /><label for="tri"> Tri</label><br/>
 	<input type="radio" value="transformation" id="transfo" name="op" /><label for="transfo"> transformation</label><br/>
 	</p>
