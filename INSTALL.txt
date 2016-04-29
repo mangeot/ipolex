@@ -1,0 +1,6 @@
+Créer un dossier pour stocker les dictionnaires.
+Ce dossier doit être accessible par les scripts PHP
+
+Éditer le fichier init.php et indiquer le chemin vers ce dossier pour la constante DICTIONNAIRES_SITE.
+
+Éditer les autres constantes en fonction de la configuration de votre site Web.
