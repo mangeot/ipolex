@@ -33,13 +33,13 @@
 
 #analyze_frame {
 	border:0px;
-	height:100px;
-	width:400px;
+	height:200px;
+	width:1200px;
 }
 
 #analyze_container {
-	width: 300px; 
-	height: 100px; 
+	width: 1200px; 
+	height: 200px; 
 	border: 1px solid #CCCCCC; 
 	background-color:#EBEBEB;
 	display: block; 
