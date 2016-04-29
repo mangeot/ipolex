@@ -33,7 +33,7 @@ my $parser = XML::Parser->new(
     },
 );
 
-print STDERR "Début de l'analyse du dictionnaire\n";
+print STDERR "Début de l'analyse du dictionnaire ",$ARGV[0],"\n";
 $parser->parsefile($ARGV[0]);
 print STDERR "Fin de l'analyse du dictionnaire\n";
 print STDERR "Début de l'écriture du résultat\n";
@@ -161,8 +161,9 @@ print "\t\t\t<tr><td>cdm-definition</td><td>$tableauDef[0]->{ xpath }</td></tr>\
 if (@tableauSens) {
 	print "\t\t\t<tr><td>cdm-sense</td><td>$tableauSens[0]->{ xpath }</td></tr>\n";
 }
+if (@tableauEx) {
 print "\t\t\t<tr><td>cdm-example</td><td>$tableauEx[0]->{ xpath }</td></tr>\n";
-
+}
 print '				</tbody>
 			</table>
 		</section>
@@ -195,7 +196,12 @@ if (@tableauSens) {
 else {
 	print "\t\t\t<cdm-sense xpath='' />\n";
 }
+if (@tableauEx) {
 print "\t\t\t<cdm-example xpath='$tableauEx[0]->{ xpath }/text()' />\n";
+}
+else {
+	print "\t\t\t<cdm-example xpath='' />\n";
+}
 
 print '	</cdm-elements>
 </volume-metadata>
@@ -207,7 +213,7 @@ print "\n</template-entry>\n";
 
 print "\n</html>";
 
-print STDERR "Fin de l'écriture du résultat\n";	
+print STDERR "Fin de l'écriture du résultat";	
 
 sub xmldecl {
     my ( $parser, $version, $encoding, $standalone ) = @_;
