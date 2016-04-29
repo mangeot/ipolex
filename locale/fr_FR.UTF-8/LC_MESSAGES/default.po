@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ipotruc v1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-15 16:58+0900\n"
-"PO-Revision-Date: 2013-08-19 11:41+0900\n"
+"POT-Creation-Date: 2015-09-22 16:51+0200\n"
+"PO-Revision-Date: 2015-09-22 16:52+0100\n"
 "Last-Translator: Mathieu MANGEOT <mathieu.mangeot@imag.fr>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -422,6 +422,10 @@ msgstr "Nom complet"
 #: Pages/modifDictionnaire.php:131
 msgid "Nom abrégé"
 msgstr "Nom abrégé"
+
+#: Pages/modifDictionnaire.php:131
+msgid "Le nom doit commencer par une majuscule."
+msgstr "Le nom doit commencer par une majuscule."
 
 #: Pages/modifDictionnaire.php:131
 msgid "Caractères ASCII alphanumériques et tiret uniquement !"
