@@ -207,6 +207,7 @@
 	  foreach($langs as $lang) {
 		if (!empty($params[$nom.'_'.$lang])) {
   			$valeur = preg_replace('/\/$/','',$params[$nom.'_'.$lang]);
+  			$valeur = preg_replace('/"/','\'',$valeur);
 			$res .= '<'.$nom.' xpath="'.$valeur.'"';
 			$res .= ' d:lang="'.$lang.'" />'."\n  ";
 		  }
