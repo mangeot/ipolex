@@ -49,10 +49,12 @@ my $xmlarrivee = '<?xml version="1.0" ?>
         <traduction_française/>
         <catégorie_grammaticale_traduction_française_mot_vedette/>
       </bloc_traduction>
+      <exemples>
       <exemple>
-        <phrase_illustration/>
-        <traduction_française_phrase_illustration/>
-      </exemple>
+        <wol/>
+        <fra/>
+      <exemple>
+      </exemples>
       <synonyme/>
       <homonyme/>
       <note_usage/>
@@ -73,6 +75,21 @@ my $xmlarrivee = '<?xml version="1.0" ?>
 
 my $cdmheadworddepart = '/database/lexGroup/lex/text()';
 my $cdmheadwordarrivee = '/volume/article/bloc_forme/mot_vedette/text()';
+my $cdmprononciationarrivee='/volume/article/bloc_forme/prononciation/text()';
+my $cdmvolumearrivee='/volume';
+my $cdmentryaarivee='/volume/article';
+my $cdmentrid='/volume/article/@id';
+my $cdmvariantarrivee='/volume/article/variante/text()';
+my $cdmgrammaticalearrivee='/volume/article/catégorie_grammaticale/text()';
+my $cdmnomminalearrivee='/volume/article/classe_nominale/text()';
+my $cdmsens='/database/article/sens';
+my $cdmsensid='/database/article/sens/@id'
+my $cdmdefinition='/database/article/sens/définition/text()';
+my $cdmtranslation='/volume/article/sens/bloc_traduction/tranduction_française/text()';
+my $cdmwolofexemple='/volume/article/sens/exemples/exemple/wol/text()';
+my $cdmfrenchexemple='/volume/article/sens/exemples/exemple/fra/text()';
+
+
 
 my $parser= XML::DOM::Parser->new();
 #my $doc = $parser->parsefile ("file.xml");
