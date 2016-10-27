@@ -176,7 +176,9 @@ print '				</tbody>
 ';
 
 my $entryName = $tableauEntry[0]->{ name };
-print '<volume-metadata encoding="',$Encoding,'" hwnumber="',$elementsArray{$entryName}, '">
+print '<volume-metadata encoding="',$Encoding,'" hwnumber="',$elementsArray{$entryName}, '"
+	xmlns="http://www-clips.imag.fr/geta/services/dml" 
+	xmlns:d="http://www-clips.imag.fr/geta/services/dml">
 			<cdm-elements>
 ';
 print "\t\t\t<cdm-volume xpath='$volumeXpath' />\n";
@@ -204,7 +206,7 @@ else {
 }
 if (@tableauEx) {
 print "\t\t\t<cdm-example-block xpath='$example_block' d:lang='' />\n";
-print "\t\t\t<cdm-example xpath='$tableauEx[0]->{ xpath }/text()' d:lang='' />\n";
+print "\t\t\t<cdm-example xpath='$tableauEx[0]->{ xpath }/text()' d:lang='qaa' />\n";
 }
 else {
 	print "\t\t\t<cdm-example xpath=''  d:lang='' />\n";
