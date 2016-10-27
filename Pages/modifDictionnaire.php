@@ -131,7 +131,7 @@
 	<p>*<?php echo gettext('Nom abrégé'); echo gettext(' : ');?><input type="text" required="required"  pattern="[A-Z][a-zA-Z0-9\-]+"  id="Name" name="Name" onfocus="copyifempty(this,'NameC');" value="<?php affichep('Name')?>"/> <?php echo gettext('Le nom doit commencer par une majuscule.');?> <?php echo gettext('Caractères ASCII alphanumériques et tiret uniquement !');?> [A-Z][a-zA-Z0-9\-]+</p>
 	<p><?php echo gettext('Propriétaire'); echo gettext(' : ');?><input type="text" id="Owner"  onfocus="copyifempty(this,'Name');" name="Owner"  value="<?php affichep('Owner')?>"/></p>
 	<p>*<?php echo gettext('Catégorie'); echo gettext(' : ');?><select id="Category"  required="required" name="Category" onchange="this.form.submit()">
-		<option value="">choisir...</option>
+		<option value=""><?php echo gettext('choisir...');?></option>
 		<?php afficheo('Category',"monolingual")?><?php echo gettext('monolingue');?></option>
 		<?php afficheo('Category',"bilingual")?><?php echo gettext('bilingue');?></option>
 		<?php afficheo('Category',"multilingual")?><?php echo gettext('multilingue');?></option>
@@ -159,7 +159,7 @@
 	<p><?php echo gettext('Auteurs');?> <input type="text" id="Authors" name="Authors" onfocus="copyifempty(this,'Owner');"  value="<?php affichep('Authors');?>"/></p>	
 	<p><?php echo gettext('Licence');?> <input type="text"  size="50" id="Legal" name="Legal" value="<?php affichep('Legal','Creative Commons, CC by SA');?>"/></p>
 	<p>*<?php echo gettext('Accès'); echo gettext(' : ');?><select id="Access"  required="required" name="Access">
-		<option value="">choisir...</option>
+		<option value=""><?php echo gettext('choisir...');?></option>
 		<?php afficheo('Access',"public")?><?php echo gettext('public = web');?></option>
 		<?php afficheo('Access',"restricted")?><?php echo gettext('réservé = labo');?></option>
 		<?php afficheo('Access',"private")?><?php echo gettext('privé = admin');?></option>

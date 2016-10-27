@@ -175,7 +175,7 @@ if (is_dir(DICTIONNAIRES_SITE)) {
 
 <form method="POST" enctype="multipart/form-data" action="operation.php" >
 <fieldset name="Manipulation d'un dictionnaire">
-<legend><?php echo gettext('Effectuer des opération sur un dictionnaire');?></legend>
+<legend><?php echo gettext('Effectuer des opérations sur un dictionnaire');?></legend>
 <div>
 <p>*<?php echo gettext('Dictionnaire à traiter'); echo gettext(' : ');?>
 	<select name="nomdico">

@@ -85,7 +85,13 @@
 				if ($nom == 'cdm-translation' || $nom == 'cdm-translation-ref'
 					|| $nom == 'cdm-example' || $nom == 'cdm-idiom') {
 					$lang = $node->getAttributeNS(DML_PREFIX,'lang');
-					$nom .= '_'.$lang; 
+					if ($lang == 'qaa' && empty($Params[$nom.'_'.$source])) {
+						$nom .= '_'.$source; 
+						echo 'lang qaa:',$nom;
+					}
+					else {
+						$nom .= '_'.$lang; 
+					}
 				}
 				$Params[$nom] =  $node->getAttribute('xpath');
 			}
