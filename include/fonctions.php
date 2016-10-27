@@ -13,8 +13,10 @@
 	'cdm-pos' => array(gettext('Classe grammaticale'),'/volume/entry/pos/text()',''),
 	'cdm-domain' => array(gettext('Domaine'),'/volume/entry/domain/text()',''),
 	'cdm-definition' => array(gettext('Définition'),'/volume/entry/definition/text()',gettext('non indexé')),
-	'cdm-sense' => array(gettext('Sens'),'/volume/entry/sense',gettext('non indexé')),
+	'cdm-sense-block' => array(gettext('Bloc de sens'),'/volume/entry/senses',gettext('non indexé')),
+	'cdm-sense' => array(gettext('Sens'),'/volume/entry/senses/sense',gettext('non indexé')),
 	'cdm-translation' => array(gettext('Traduction en '),'/volume/entry/translation/text()',''),
+	'cdm-example-block' => array(gettext('Bloc d\'exemples'),'/volume/entry/examples',''),
 	'cdm-example' => array(gettext('Exemple en '),'/volume/entry/examples/example/text()',''),
 	'cdm-idiom' => array(gettext('Expression idiomatique en '),'/volume/entry/idioms/idiom/text()','')
 	);
