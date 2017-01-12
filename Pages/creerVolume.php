@@ -30,7 +30,7 @@ $file_uploaded = 0;
 $redirect = basename($_SERVER['SCRIPT_FILENAME'])."?success";
 
 //process the forms and upload the files
-if (!empty($_REQUEST['Send'])) {
+if (!empty($_REQUEST['Send']) && !empty($_FILES["file"]["name"])) {
 	$uploaded_file_name = $folder.$_FILES["file"]["name"];
 	//upload the file
 	move_uploaded_file($_FILES["file"]["tmp_name"], $uploaded_file_name);
@@ -46,6 +46,7 @@ if (!empty($_REQUEST['Send'])) {
 		rename($uploaded_file_name,$dataFile);
 	}
 	else if ($extension == 'gz') {
+
 		exec("gunzip $uploaded_file_name");
 		$uploaded_file_name = pathinfo($uploaded_file_name, PATHINFO_DIRNAME) . '/'. pathinfo_filename($uploaded_file_name);
 		$extension = pathinfo($uploaded_file_name, PATHINFO_EXTENSION);
