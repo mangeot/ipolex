@@ -224,7 +224,7 @@ $(document).ready(function() {
     			}
    		 	if (file_exists($analysisFile)) {
 	 			echo '
-   				<p><a href="',$analysisLink,'">', gettext('Résultat de l\'analyse'),'</a></p>';
+   				<p><a href="',$analysisLink,'" target="_blank">', gettext('Résultat de l\'analyse'),'</a></p>';
    				}
    				echo '</fieldset><br/>';
     		}
