@@ -312,6 +312,7 @@ $LANGUES = array(
 'non' => 'Norse, Old',
 'nor' => 'Norwegian',
 'nso' => 'Sotho, Northern',
+'qno' => 'Nouchi',
 'nub' => 'Nubian languages',
 'nya' => 'Chichewa',
 'nya' => 'Nyanja',

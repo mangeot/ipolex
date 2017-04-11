@@ -311,6 +311,7 @@ $LANGUES = array(
 'non'=>'norrois, vieux',
 'nor'=>'norvégien',
 'nso'=>'sotho du Nord',
+'qno'=> 'nouchi',
 'nub'=>'nubiennes, langues',
 'nya'=>'chichewa',
 'nym'=>'nyamwezi',
