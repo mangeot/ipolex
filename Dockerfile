@@ -31,6 +31,8 @@ WORKDIR $DICTIONNAIRES_WEB
 WORKDIR $DICTIONNAIRES_SITE_PUBLIC
 WORKDIR $DICTIONNAIRES_WEB_PUBLIC
 
+RUN chown www-data:www-data $DICTIONNAIRES_SITE $DICTIONNAIRES_DAV $DICTIONNAIRES_WEB $DICTIONNAIRES_SITE_PUBLIC $DICTIONNAIRES_WEB_PUBLIC
+
 # si on veut l'installer manuellement
 #RUN curl http://cdn-fastly.deb.debian.org/debian/pool/main/e/expat/libexpat1-dev_2.2.0-2+deb9u1_amd64.deb > libexpat1-dev_2.2.0-2+deb9u1_amd64.deb \
 #   && dpkg -i libexpat1-dev_2.2.0-2+deb9u1_amd64.deb
