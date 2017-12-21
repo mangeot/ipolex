@@ -31,13 +31,17 @@ WORKDIR $DICTIONNAIRES_WEB
 WORKDIR $DICTIONNAIRES_SITE_PUBLIC
 WORKDIR $DICTIONNAIRES_WEB_PUBLIC
 
-WORKDIR /var/www/html
+# si on veut l'installer manuellement
+#RUN curl http://cdn-fastly.deb.debian.org/debian/pool/main/e/expat/libexpat1-dev_2.2.0-2+deb9u1_amd64.deb > libexpat1-dev_2.2.0-2+deb9u1_amd64.deb \
+#   && dpkg -i libexpat1-dev_2.2.0-2+deb9u1_amd64.deb
 
 RUN apt-get update && apt-get install -y libexpat1-dev
 
 RUN docker-php-ext-install gettext
 
 RUN cpan install XML::Parser
+
+WORKDIR /var/www/html
 
 COPY . .
 
