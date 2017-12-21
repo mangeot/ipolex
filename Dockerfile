@@ -33,6 +33,8 @@ WORKDIR $DICTIONNAIRES_WEB_PUBLIC
 
 WORKDIR /var/www/html
 
+RUN apt-get update && apt-get install -y php-gettext
+
 COPY . .
 
 RUN cp init.php.sample init.php
