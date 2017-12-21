@@ -9,7 +9,7 @@
 
 	define('LANG_COOKIE','LANG_COOKIE');
 	define('SEP_NOM',"#");
-//	define('DICTIONNAIRES_SITE','%DICTIONNAIRES_SITE%');
+	define('DICTIONNAIRES_SITE','%DICTIONNAIRES_SITE%');
 //	define('DICTIONNAIRES_SITE','/opt/lampp/htdocs/ipolex/Dicos/');
 //	define('DICTIONNAIRES_SITE','/Data/ipolex');
 	define('DICTIONNAIRES_DAV','%DICTIONNAIRES_DAV%');
