@@ -22,7 +22,8 @@
 	define('DICTIONNAIRES_WEB_PUBLIC','%DICTIONNAIRES_WEB_PUBLIC%');
 //	define('DICTIONNAIRES_WEB_PUBLIC','http://papillon.imag.fr/dictionnaires');
 	
-	define('DEFAULT_TEST_USER','mangeot');
+	define('DEFAULT_TEST_USER','%DEFAULT_TEST_USER%');
+//	define('DEFAULT_TEST_USER','mangeot');
 		
 	require_once(RACINE_SITE.'include/language_negotiation.php');
 	$locale = negotiate_language();
