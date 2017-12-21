@@ -32,12 +32,16 @@ WORKDIR $DICTIONNAIRES_SITE_PUBLIC
 WORKDIR $DICTIONNAIRES_WEB_PUBLIC
 
 RUN chown www-data:www-data $DICTIONNAIRES_SITE $DICTIONNAIRES_DAV $DICTIONNAIRES_WEB $DICTIONNAIRES_SITE_PUBLIC $DICTIONNAIRES_WEB_PUBLIC
-
+locale-gen
 # si on veut l'installer manuellement
 #RUN curl http://cdn-fastly.deb.debian.org/debian/pool/main/e/expat/libexpat1-dev_2.2.0-2+deb9u1_amd64.deb > libexpat1-dev_2.2.0-2+deb9u1_amd64.deb \
 #   && dpkg -i libexpat1-dev_2.2.0-2+deb9u1_amd64.deb
 
-RUN apt-get update && apt-get install -y libexpat1-dev
+RUN apt-get update && apt-get install -y libexpat1-dev locales
+
+RUN echo 'fr_FR.UTF-8 UTF-8' >> /etc/locale.gen \
+   && echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen \
+   && locale-gen
 
 RUN docker-php-ext-install gettext
 
