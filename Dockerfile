@@ -33,8 +33,8 @@ WORKDIR $DICTIONNAIRES_WEB_PUBLIC
 
 WORKDIR /var/www/html
 
-RUN apt-get update && apt-get install -y gettext 
-#php-php-gettext
+#RUN apt-get update && apt-get install -y gettext 
+RUN docker-php-ext-install gettext
 
 COPY . .
 
