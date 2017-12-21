@@ -33,7 +33,7 @@ WORKDIR $DICTIONNAIRES_WEB_PUBLIC
 
 RUN chown www-data:www-data $DICTIONNAIRES_SITE $DICTIONNAIRES_DAV $DICTIONNAIRES_WEB $DICTIONNAIRES_SITE_PUBLIC $DICTIONNAIRES_WEB_PUBLIC
 
-RUN apt-get update && apt-get install -y libexpat1-dev locales
+RUN apt-get update && apt-get install -y libexpat1-dev locales openjdk-8-jre
 
 RUN echo 'fr_FR.UTF-8 UTF-8' >> /etc/locale.gen \
    && echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen \
