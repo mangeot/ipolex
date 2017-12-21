@@ -10,10 +10,10 @@ FROM php:apache
 
 LABEL maintainer="Mathieu.Mangeot@imag.fr"
 
-ARG DICTIONNAIRES_SITE="/data/ipolex"
+ARG DICTIONNAIRES_SITE="/var/www/html/Dicos"
 ARG DICTIONNAIRES_DAV="/DAV/Dicos"
 ARG DICTIONNAIRES_WEB="/Dicos"
-ARG DICTIONNAIRES_SITE_PUBLIC="/data/ipolexPublic"
+ARG DICTIONNAIRES_SITE_PUBLIC="/var/www/html/DicosPublic"
 ARG DICTIONNAIRES_WEB_PUBLIC="/DicosPublic"
 ARG DEFAULT_TEST_USER="mangeot"
 
