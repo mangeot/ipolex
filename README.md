@@ -21,5 +21,4 @@ Or building from the git repos
 
 Running the docker images
 -------------
-    docker run --name jibiki-database -d mangeot/postgres4jibiki postgres
     docker run --name myipolex -p 8888:80 -d mangeot/ipolex
