@@ -47,21 +47,21 @@ RUN echo 'fr_FR.UTF-8 UTF-8' >> /etc/locale.gen \
    && echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen \
    && locale-gen
 
-RUN sed -i 's#</VirtualHost>#<Directory "$DICTIONNAIRES_SITE_DAV"> \
-  DirectoryIndex none.none \
-  Options +Indexes +FollowSymLinks +MultiViews \
-  DAV On \
-  RemoveHandler .php \
-  ForceType text/plain \
-  php_flag engine off \
-  AuthType Basic \
-  AuthName "iPolex WebDav Authentication" \
-  AuthBasicProvider file \
-  AuthUserFile /etc/apache2/webdav.htpasswd \
-  Require valid-user \
- </Directory> \
- \
- </VirtualHost>\n#' /etc/apache2/sites-enabled/000-default.conf
+RUN sed -i 's#</VirtualHost>#<Directory "$DICTIONNAIRES_SITE_DAV">\n \
+  DirectoryIndex none.none\n \
+  Options +Indexes +FollowSymLinks +MultiViews\n \
+  DAV On\n \
+  RemoveHandler .php\n \
+  ForceType text/plain\n \
+  php_flag engine off\n \
+  AuthType Basic\n \
+  AuthName "iPolex WebDav Authentication"\n \
+  AuthBasicProvider file\n \
+  AuthUserFile /etc/apache2/webdav.htpasswd\n \
+  Require valid-user\n \
+ </Directory>\n \
+\n \
+ </VirtualHost>#' /etc/apache2/sites-enabled/000-default.conf
 
 RUN htpasswd -cb /etc/apache2/webdav.htpasswd $ADMIN_USER $ADMIN_PASSWORD
 
