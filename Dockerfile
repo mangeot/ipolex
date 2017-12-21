@@ -33,8 +33,11 @@ WORKDIR $DICTIONNAIRES_WEB_PUBLIC
 
 WORKDIR /var/www/html
 
-#RUN apt-get update && apt-get install -y gettext 
+RUN apt-get update && apt-get install -y libexpat1-dev
+
 RUN docker-php-ext-install gettext
+
+RUN cpan install XML::Parser
 
 COPY . .
 
