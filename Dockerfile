@@ -33,7 +33,7 @@ WORKDIR $DICTIONNAIRES_WEB_PUBLIC
 
 WORKDIR /var/www/html
 
-RUN apt-get update && apt-get install -y php-gettext
+RUN apt-get update && apt-get install -y gettext
 
 COPY . .
 
