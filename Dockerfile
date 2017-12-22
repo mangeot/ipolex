@@ -63,6 +63,10 @@ RUN sed -i "s#</VirtualHost>#<Directory \"$DICTIONNAIRES_SITE_DAV\">\n \
   Require valid-user\n \
  </Directory>\n \
 \n \
+<Directory "/var/www/html">\n \
+   Options +Indexes +FollowSymLinks +MultiViews\n \
+</Directory>\n \
+\n \
  </VirtualHost>#" /etc/apache2/sites-enabled/000-default.conf
 
 RUN htpasswd -cb /etc/apache2/webdav.htpasswd $ADMIN_USER $ADMIN_PASSWORD
