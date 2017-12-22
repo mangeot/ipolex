@@ -23,6 +23,7 @@ Running the docker images
 -------------
 Create a directory for storing the data
     mkdir -p /Users/mangeot/docker/ipolex
+
 And run the docker container
     docker run --name myipolex -p 8888:80 -d --volume /Users/mangeot/docker/ipolex:/var/www/html/Dicos mangeot/ipolex
 
