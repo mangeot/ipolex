@@ -49,9 +49,11 @@ RUN echo 'fr_FR.UTF-8 UTF-8' >> /etc/locale.gen \
    && echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen \
    && locale-gen
 
-RUN sed -i "s#</VirtualHost>#<Directory \"$DICTIONNAIRES_SITE_DAV\">\n \
+RUN sed -i "s#</VirtualHost>#<Directory "/var/www/html">\n \
+   Options +Indexes +FollowSymLinks +MultiViews\n \
+</Directory>\n \
+<Directory \"$DICTIONNAIRES_SITE_DAV\">\n \
   DirectoryIndex none.none\n \
-  Options +Indexes +FollowSymLinks +MultiViews\n \
   DAV On\n \
   RemoveHandler .php\n \
   ForceType text/plain\n \
@@ -62,10 +64,6 @@ RUN sed -i "s#</VirtualHost>#<Directory \"$DICTIONNAIRES_SITE_DAV\">\n \
   AuthUserFile /etc/apache2/webdav.htpasswd\n \
   Require valid-user\n \
  </Directory>\n \
-\n \
-<Directory "/var/www/html">\n \
-   Options +Indexes +FollowSymLinks +MultiViews\n \
-</Directory>\n \
 \n \
  </VirtualHost>#" /etc/apache2/sites-enabled/000-default.conf
 
