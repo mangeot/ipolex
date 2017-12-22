@@ -21,4 +21,4 @@ Or building from the git repos
 
 Running the docker images
 -------------
-    docker run --name myipolex -p 8888:80 -d mangeot/ipolex
+    docker run --name myipolex -p 8888:80 -d --volume /Users/mangeot/docker/ipolex:/var/www/html/Dicos mangeot/ipolex
