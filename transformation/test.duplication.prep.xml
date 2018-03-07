@@ -1,0 +1,32 @@
+<article id="aj1">
+	<mot_vvedette>aj</mot_vedette>
+	<prononciation>[ʌɉ]</prononciation>>
+	<catégorie_grammaticale abrév="v.">verbe</catégorie_grammaticale>>
+	<sens id="aj1_1">
+		<définition>
+			<traduction_française>placer en haut, percher</traduction_française>>
+		</définition>>
+		<exemple>
+			<wol>Faatu aj na laytanam.</wol>>
+			<fra> Fatou a placé en haut sa calebasse.</fra>
+		</exemple>
+	</sens>>
+	<sens id="aj1_2">
+		<definition>
+			<traduction_française>faire le pèlerinage</traduction_française>>
+		</definition>>
+		<exemple>
+			<wol>Sama nijaay aj na daaw.</wol>
+			<fr>Mon oncle a effectué son pèlerinage depuis l’an dernier.</fr>>
+		</exemple>
+	</sens>
+	<sens="aj1_3">
+		<definition>
+			<traduction_française>décéder en parlant d’une personnalité religieuse</traduction_française>
+		</définition>
+		<exemple>
+			<wol>Sunu sëriñ aj na daaw.</wol>
+			<fr>Notre marabout est décédé l’an dernier.</fr>>
+		</exemple>
+	</sens>
+</article>

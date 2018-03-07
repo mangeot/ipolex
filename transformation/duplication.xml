@@ -1,0 +1,54 @@
+<article id="">
+    <bloc_forme>
+      <mot_vedette>aada</mot_vedette>
+      <prononciation>a:dɐ</prononciation>
+    </bloc_forme>
+    <catégorie_grammaticale>turu bokkaale</catégorie_grammaticale>
+    <classe_nominale>j-</classe_nominale>
+    <variant></variant>
+    <bloc_sens>
+    <sens id="">
+      <définition>li aw xeet cosaanoo di ko def</définition>
+      <bloc_traduction>
+        <traduction_française>coutumes</traduction_française>
+        <catégorie_grammaticale_traduction_française_mot_vedette>nom</catégorie_grammaticale_traduction_française_mot_vedette>
+      </bloc_traduction>
+      <exemples>
+      <exemple>
+        <wol>Sunu aada day bañ foot àllarba</wol>
+        <fra>Nos coutumes nous interdisent de faire le linge le mercredi</fra>
+      </exemple>
+      </exemples>
+      <synonyme></synonyme>
+      <homonyme></homonyme>
+      <note_usage/>
+    </sens>
+      <sens id="">
+      <définition>li aw xeet</définition>
+      <bloc_traduction>
+        <traduction_française>coutumes</traduction_française>
+        <catégorie_grammaticale_traduction_française_mot_vedette>nom</catégorie_grammaticale_traduction_française_mot_vedette>
+      </bloc_traduction>
+      <exemples>
+      <exemple>
+        <wol>Sunu aada day bañ foot àllarba</wol>
+        <fra>Nos coutumes nous interdisent de faire le linge le mercredi</fra>
+      </exemple>
+      </exemples>
+      <synonyme></synonyme>
+      <homonyme></homonyme>
+      <note_usage/>
+    </sens>
+    </bloc_sens>
+    <bloc_métainformation>
+      <auteur/>
+      <date_dernière_modification/>
+      <commentaire/>
+      <auteur_statut_fiche/>
+      <statut_fiche/>
+    </bloc_métainformation>
+    <bloc_dérivés>
+      <dérivé/>
+      <lexème_source_expression_dérivée/>
+    </bloc_dérivés>
+    </article>
