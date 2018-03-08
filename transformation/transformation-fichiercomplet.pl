@@ -7,7 +7,9 @@ use strict;
 use warnings;
 use utf8::all;
 
+use XML::DOM;
 use XML::DOM::XPath;
+use Data::Dumper;
 
 my $encoding = "UTF-8";
 
@@ -16,7 +18,8 @@ binmode(STDOUT, ":utf8");
 binmode(STDERR, ":utf8");
 #open my $FILE, "<:encoding($encoding)","/opt/lampp/htdocs/ipolex/Dicos/Baat_fra-wol/Baat_wol-fra.xml" or die ("$! IN \n");
 #open my $FILE, "<:encoding($encoding)","/opt/lampp/htdocs/ipolex/Dicos/Baat_fra-wol/DicoArrivee_fra-wol/DicoArrivee_wol-fra.metadata" or die ("$! IN \n");
-open my $FILE, "<:encoding($encoding)","../Donnees/Baat_fra-wol/baat_wol_fra-prep.xml" or die ("$! IN \n");
+# open (IN,$ARGV[0]);
+open my $FILE, "<:encoding($encoding)",$ARGV[0] or die ("$! $ARGV[0] \n");
 #open my $OUT, ">:encoding($encoding)","/opt/lampp/htdocs/ipolex/Dicos/Baat_fra-wol/Cisse_wol-fra-transformation.xml" or die ("$! OUT \n");
 
 my $xmlarrivee = '<?xml version="1.0" ?>
@@ -24,11 +27,10 @@ my $xmlarrivee = '<?xml version="1.0" ?>
   <article id="">
     <bloc_forme>
       <mot_vedette/>
-      <prononciation/>
+	  <variante/><prononciation/>
     </bloc_forme>
     <catégorie_grammaticale/>
     <classe_nominale/>
-    <variant/>
     <bloc_sens>
     <sens id="">
       <définition/>
@@ -80,13 +82,13 @@ my $cdmcatarrivee='/volume/article/catégorie_grammaticale/text()';
 my $cdmclassWdepart='/database/lexGroup/catWGroup/clasW/text()';
 my $cdmclassWarrivee='/volume/article/classe_nominale/text()';
 
-my $cdmvariantdepart='/database/lexGroup/variant/text()';
-my $cdmvariantarrivee='/volume/article/variant/text()';
+my $cdmvariantdepart='/database/lexGroup/varW/text()';
+my $cdmvariantarrivee='/volume/article/bloc_forme/variante/text()';
 
-my $cdmsynonymedepart='/database/lexGroup/variante/text()';
+my $cdmsynonymedepart='/database/lexGroup/synW/text()';
 my $cdmsynonymearrivee='/volume/article/bloc_sens/sens/synonyme/text()';
 
-my $cdmhomonymedepart='/database/lexGroup/homo/text()';
+my $cdmhomonymedepart='/database/lexGroup/homW/text()';
 my $cdmhomonymearrivee='/volume/article/bloc_sens/sens/homonyme/text()';
 
 
@@ -156,7 +158,7 @@ while( my $line = <$FILE>)  {
   my $cattrad=$docdepart->findvalue($cdmcattradfrenchdepart);
 my $wolexemple=$docdepart->findvalue($cdmwolofexempledepart);
 my $frenchexemple=$docdepart->findvalue($cdmfrenchexempledepart);
-my $variant=$docdepart->findvalue($cdmvariantdepart);
+my @variantes = $docdepart->findnodes($cdmvariantdepart);
 my $synonyme=$docdepart->findvalue($cdmsynonymedepart);
 my $homonyme=$docdepart->findvalue($cdmhomonymedepart);
 	$cdmheadwordarrivee =~ s/\/text\(\)$//;
@@ -225,11 +227,31 @@ my $frenchexempleNode = $nodefrenchexemple[0];
 
 
 
-my @nodevariant = $docarrivee->findnodes($cdmvariantarrivee);
-my $variantNode = $nodevariant[0];
 
- $variantNode->addText($variant);
+my @nodevariante = $docarrivee->findnodes($cdmvariantarrivee);
+my $varianteNode = $nodevariante[0];
 
+print STDERR $_->getData, "\n" foreach (@variantes);
+
+	my $parentVariante = $varianteNode->getParentNode();
+	my $noeudSuivantVariante = $varianteNode->getNextSibling();
+	print STDERR $noeudSuivantVariante->getNodeName();
+	foreach my $variante (@variantes) {
+		my $varianteText = $variante->getData();
+		my $clone2 = $varianteNode->cloneNode(1);
+		$clone2->setOwnerDocument($docarrivee);
+		$clone2->addText($variante);
+		# si la variante a un noeud suivant
+		if ($noeudSuivantVariante) {
+			print STDERR "insert before";
+			$parentVariante->insertBefore($clone2,$noeudSuivantVariante);
+		}
+		else {
+			print STDERR "sinon";
+		# sinon
+		$parentVariante->appendChild($clone2);
+		}
+	}
 
 
 my @nodesynonyme = $docarrivee->findnodes($cdmsynonymearrivee);

@@ -71,7 +71,7 @@ RUN htpasswd -cb /etc/apache2/webdav.htpasswd $ADMIN_USER $ADMIN_PASSWORD
 
 RUN /usr/sbin/a2enmod dav dav_fs dav_lock
 
-RUN cpan install XML::Parser
+RUN cpan install XML::Parser XML::DOM::XPath
 
 RUN docker-php-ext-install gettext
 
