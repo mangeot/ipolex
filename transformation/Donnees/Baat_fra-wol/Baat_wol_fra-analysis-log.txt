@@ -1,0 +1,4 @@
+Début de l'analyse du dictionnaire /opt/lampp/htdocs/ipolex/Dicos//Baat_fra-wol/baat_wol_fra.xml
+Fin de l'analyse du dictionnaire
+Début de l'écriture du résultat
+Fin de l'écriture du résultat

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<volume-metadata
+   xmlns="http://www-clips.imag.fr/geta/services/dml" 
+   xmlns:d="http://www-clips.imag.fr/geta/services/dml"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www-clips.imag.fr/geta/services/dml
+   http://www-clips.imag.fr/geta/services/dml/dml.xsd"
+   location="local"
+   creation-date="2016-08-25T14:22:10+02:00" 
+   installation-date="2016-08-25T14:22:10+02:00" 
+   last-modification-date="2016-08-25T14:22:10+02:00" 
+   hw-number="" 
+   encoding="" 
+   format="xml" 
+   name="DicoArrivee_wol_fra"
+   dbname="dicoarriveewolfra" 
+   version="1"
+   source-language="wol"
+   target-languages="fra"
+   reverse-lookup="false">
+ <authors></authors>
+ <comments></comments>
+ <cdm-elements>
+			<cdm-volume xpath=""/>
+			<cdm-entry xpath=""/>
+			<cdm-entry-id xpath="/@id"/>
+			<cdm-headword xpath="/text()"/>
+			<cdm-pronunciation xpath="/text()"/>
+			<cdm-pos xpath="/text()"/>
+			<cdm-definition xpath="/text()"/>
+			<cdm-sense xpath=""/>
+			<cdm-example xpath=""/>
+	</cdm-elements>
+	<administrators>
+		  <user-ref name="Mouhamadou KHOULE"/>
+ </administrators>
+ <volume-ref xlink:href="dicoarrivee_wol_fra.xml" source-language="wol"/>
+ <template-entry-ref xlink:href="dicoarrivee_wol_fra-template.xml"/>
+</volume-metadata>

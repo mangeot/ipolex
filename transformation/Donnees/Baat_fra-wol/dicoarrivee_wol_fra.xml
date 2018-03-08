@@ -1,0 +1,35 @@
+<volume>
+  <article id="">
+    <bloc_forme>
+      <mot_vedette/>
+      <prononciation/>
+    </bloc_forme>
+    <catégorie_grammaticale/>
+    <classe_nominale/>
+    <sens id="">
+      <définition/>
+      <bloc_traduction>
+        <traduction_française/>
+        <catégorie_grammaticale_traduction_française_mot_vedette/>
+      </bloc_traduction>
+      <exemple>
+        <phrase_illustration/>
+        <traduction_française_phrase_illustration/>
+      </exemple>
+      <synonyme/>
+      <homonyme/>
+      <note_usage/>
+    </sens>
+    <bloc_métainformation>
+      <auteur/>
+      <date_dernière_modification/>
+      <commentaire/>
+      <auteur_statut_fiche/>
+      <statut_fiche/>
+    </bloc_métainformation>
+    <bloc_dérivés>
+      <dérivé/>
+      <lexème_source_expression_dérivée/>
+    </bloc_dérivés>
+    </article>
+</volume>

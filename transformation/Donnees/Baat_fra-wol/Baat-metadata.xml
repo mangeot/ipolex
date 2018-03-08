@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<dictionary-metadata
+   xmlns="http://www-clips.imag.fr/geta/services/dml"
+   xmlns:d="http://www-clips.imag.fr/geta/services/dml" 
+   xmlns:xlink="http://www.w3.org/1999/xlink" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www-clips.imag.fr/geta/services/dml
+   http://www-clips.imag.fr/geta/services/dml/dml.xsd"
+   category="monolingual" 
+   creation-date="2015-09-22T16:47:07+02:00" 
+   installation-date="2015-09-22T16:47:07+02:00" 
+   last-modification-date="2016-11-10T11:06:36+01:00" 
+   fullname="baatukaay"
+   name="Baat" 
+   owner="" 
+   type="monodirectional"> 
+ <languages>
+ <source-language d:lang="wol"/>
+ <target-language d:lang="fra"/>
+ </languages>
+ <contents>vocabulaire général</contents>
+ <domain>général</domain> 
+ <source>GETALP</source>
+ <authors></authors>
+ <legal>Creative Commons, CC by SA</legal>
+ <access>public</access>
+ <comments></comments>
+ <administrators>
+		  <user-ref name="mangeot"/>
+ </administrators>
+ <volumes>
+  <volume-metadata-ref name="Baat_wol_fra" xlink:href="Baat_wol_fra-metadata.xml" source-language="wol" target-languages="fra" />
+ </volumes>
+  
+</dictionary-metadata>

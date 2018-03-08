@@ -1,0 +1,22 @@
+Début de l'analyse du dictionnaire /opt/lampp/htdocs/ipolex/Dicos//Baat_fra-wol/dicoarrivee_wol_fra.xml
+Fin de l'analyse du dictionnaire
+Début de l'écriture du résultat
+Use of uninitialized value $volumeXpath in substitution (s///) at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 104.
+Use of uninitialized value $volumeXpath in concatenation (.) or string at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 146.
+Use of uninitialized value in concatenation (.) or string at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 147.
+Use of uninitialized value in concatenation (.) or string at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 152.
+Use of uninitialized value in concatenation (.) or string at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 154.
+Use of uninitialized value in concatenation (.) or string at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 158.
+Use of uninitialized value in concatenation (.) or string at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 159.
+Use of uninitialized value in concatenation (.) or string at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 160.
+Use of uninitialized value $entryName in hash element at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 175.
+Use of uninitialized value $Encoding in print at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 175.
+Use of uninitialized value in print at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 175.
+Use of uninitialized value $volumeXpath in concatenation (.) or string at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 178.
+Use of uninitialized value in concatenation (.) or string at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 179.
+Use of uninitialized value in concatenation (.) or string at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 184.
+Use of uninitialized value in concatenation (.) or string at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 186.
+Use of uninitialized value in concatenation (.) or string at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 190.
+Use of uninitialized value in concatenation (.) or string at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 191.
+Use of uninitialized value in concatenation (.) or string at /opt/lampp/htdocs/ipolex/pl/dictionary_analysis.pl line 192.
+Fin de l'écriture du résultat

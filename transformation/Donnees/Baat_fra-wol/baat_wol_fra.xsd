@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="database">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="lexGroup"/>
+      </xs:sequence>
+      <xs:attribute name="toolboxdatabasetype" use="required" type="xs:NCName"/>
+      <xs:attribute name="toolboxversion" use="required"/>
+      <xs:attribute name="toolboxwrite" use="required" type="xs:NCName"/>
+      <xs:attribute name="wrap" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="lexGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="lex"/>
+        <xs:element minOccurs="0" ref="uttW"/>
+        <xs:element minOccurs="0" ref="catWGroup"/>
+        <xs:choice minOccurs="0">
+          <xs:element ref="clasW"/>
+          <xs:element ref="srcLW"/>
+        </xs:choice>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="defWGroup"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="varW"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="synW"/>
+        <xs:element minOccurs="0" ref="homW"/>
+        <xs:choice>
+          <xs:element ref="lexSrcW"/>
+          <xs:element minOccurs="0" maxOccurs="unbounded" ref="exDerWGroup"/>
+        </xs:choice>
+        <xs:element minOccurs="0" ref="tradFlexGroup"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="phrWGroup"/>
+        <xs:element minOccurs="0" ref="aut"/>
+        <xs:element minOccurs="0" ref="cmt"/>
+        <xs:element minOccurs="0" ref="autStat"/>
+        <xs:element ref="dat"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="lex" type="xs:string"/>
+  <xs:element name="uttW" type="xs:string"/>
+  <xs:element name="catWGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="catW"/>
+        <xs:element minOccurs="0" ref="clasW"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="catW" type="xs:string"/>
+  <xs:element name="srcLW" type="xs:string"/>
+  <xs:element name="defWGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="defW"/>
+        <xs:element minOccurs="0" ref="srcDW"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="defW" type="xs:string"/>
+  <xs:element name="srcDW" type="xs:string"/>
+  <xs:element name="varW" type="xs:string"/>
+  <xs:element name="synW" type="xs:string"/>
+  <xs:element name="homW" type="xs:NCName"/>
+  <xs:element name="lexSrcW" type="xs:NCName"/>
+  <xs:element name="exDerWGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="exDerW"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="exDerW" type="xs:string"/>
+  <xs:element name="tradFlexGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="tradFlex"/>
+        <xs:element minOccurs="0" ref="catF"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="tradFlex" type="xs:string"/>
+  <xs:element name="catF" type="xs:NCName"/>
+  <xs:element name="phrWGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="phrW"/>
+        <xs:choice>
+          <xs:element ref="fsPhrW"/>
+          <xs:element minOccurs="0" maxOccurs="unbounded" ref="tradPhrW"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="phrW" type="xs:string"/>
+  <xs:element name="fsPhrW" type="xs:string"/>
+  <xs:element name="tradPhrW" type="xs:string"/>
+  <xs:element name="aut" type="xs:NCName"/>
+  <xs:element name="cmt" type="xs:string"/>
+  <xs:element name="autStat" type="xs:NCName"/>
+  <xs:element name="dat" type="xs:string"/>
+  <xs:element name="clasW" type="xs:string"/>
+</xs:schema>

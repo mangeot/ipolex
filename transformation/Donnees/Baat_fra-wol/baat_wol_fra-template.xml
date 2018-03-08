@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<database toolboxdatabasetype="Dic_Wol" toolboxversion="1.6.1 Jun 2013" toolboxwrite="export" wrap="400">
+  <lexGroup>
+    <lex/>
+    <uttW/>
+    <catWGroup>
+      <catW/>
+      <clasW/>
+    </catWGroup>
+    <defWGroup>
+      <defW/>
+      <srcDW/>
+    </defWGroup>
+    <tradFlexGroup>
+      <tradFlex/>
+      <catF/>
+    </tradFlexGroup>
+    <phrWGroup>
+      <phrW/>
+      <tradPhrW/>
+      <fsPhrW/>
+    </phrWGroup>
+    <aut/>
+    <dat/>
+    <exDerWGroup>
+      <exDerW/>
+    </exDerWGroup>
+    <cmt/>
+    <autStat/>
+    <synW/>
+    <homW/>
+    <varW/>
+    <srcLW/>
+    <lexSrcW/>
+    <clasW/>
+  </lexGroup>
+</database>
