@@ -27,7 +27,8 @@ my $xmlarrivee = '<?xml version="1.0" ?>
   <article id="">
     <bloc_forme>
       <mot_vedette/>
-	  <variante/><prononciation/>
+	  <variante/>
+	  <prononciation/>
     </bloc_forme>
     <catégorie_grammaticale/>
     <classe_nominale/>
@@ -231,25 +232,21 @@ my $frenchexempleNode = $nodefrenchexemple[0];
 my @nodevariante = $docarrivee->findnodes($cdmvariantarrivee);
 my $varianteNode = $nodevariante[0];
 
-print STDERR $_->getData, "\n" foreach (@variantes);
-
 	my $parentVariante = $varianteNode->getParentNode();
 	my $noeudSuivantVariante = $varianteNode->getNextSibling();
-	print STDERR $noeudSuivantVariante->getNodeName();
+	if (scalar(@variantes)>0) 	{$parentVariante->removeChild($varianteNode);}
 	foreach my $variante (@variantes) {
-		my $varianteText = $variante->getData();
-		my $clone2 = $varianteNode->cloneNode(1);
-		$clone2->setOwnerDocument($docarrivee);
-		$clone2->addText($variante);
+		my $noeudClone = $varianteNode->cloneNode(1);
+		$noeudClone->setOwnerDocument($docarrivee);
+		my $varianteText = getNodeText($variante);
+		$noeudClone->addText($varianteText);
 		# si la variante a un noeud suivant
 		if ($noeudSuivantVariante) {
-			print STDERR "insert before";
-			$parentVariante->insertBefore($clone2,$noeudSuivantVariante);
+			$parentVariante->insertBefore($noeudClone,$noeudSuivantVariante);
 		}
 		else {
-			print STDERR "sinon";
 		# sinon
-		$parentVariante->appendChild($clone2);
+		$parentVariante->appendChild($noeudClone);
 		}
 	}
 
@@ -266,6 +263,7 @@ my $homonymeNode = $nodehomonyme[0];
  $homonymeNode->addText($homonyme);
 
 my @entryarrivee = $docarrivee->findnodes($cdmentryarrivee);
+
 my $entryarrivee = $entryarrivee[0];
 	# pour imprimer dans un fichier, remplacer STDOUT par $OUT
 	#print $OUT $docarrivee->toString;
@@ -307,4 +305,30 @@ sub xpath2closedtag {
 		}
 	}
 	return $tags;
+}
+
+sub getNodeText {
+	my $node = $_[0];
+	my $text = '';
+	if ($node->getNodeType == DOCUMENT_NODE) {
+    	$node = $node->getDocumentElement();
+	}
+	if ($node->getNodeType == TEXT_NODE || $node->getNodeType == CDATA_SECTION_NODE) {
+          $text = $node->getData();
+    }
+    elsif ($node->getNodeType == ATTRIBUTE_NODE) {
+          $text = $node->getValue();
+    }
+    elsif ($node->getNodeType == ELEMENT_NODE || $node->getNodeType == ENTITY_REFERENCE_NODE || $node->getNodeType == DOCUMENT_FRAGMENT_NODE) {
+    	foreach my $child ($node->getChildNodes()) {
+          $text .= getNodeText($child);
+        }
+    }
+    elsif ($node->getNodeType == COMMENT_NODE || $node->getNodeType == ENTITY_NODE || $node->getNodeType == PROCESSING_INSTRUCTION_NODE || $node->getNodeType == DOCUMENT_TYPE_NODE) {
+    	;
+    }
+    else {
+          $text = $node->toString();
+    }
+	return $text;
 }
