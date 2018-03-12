@@ -27,6 +27,8 @@ my $xmlarrivee = '<?xml version="1.0" ?>
   <article id="">
     <bloc_forme>
       <mot_vedette/>
+      <source_mot_vedette/>
+      <lexème_source/>
 	  <variante/>
 	  <prononciation/>
     </bloc_forme>
@@ -35,6 +37,7 @@ my $xmlarrivee = '<?xml version="1.0" ?>
     <bloc_sens>
     <sens id="">
       <définition/>
+      <source_définition/>
       <bloc_traduction>
         <traduction_française/>
         <catégorie_grammaticale_traduction_française_mot_vedette/>
@@ -58,8 +61,7 @@ my $xmlarrivee = '<?xml version="1.0" ?>
       <statut_fiche/>
     </bloc_métainformation>
     <bloc_dérivés>
-      <dérivé/>
-      <lexème_source_expression_dérivée/>
+      <expression_dérivée/>
     </bloc_dérivés>
     </article>
 </volume>';
@@ -74,6 +76,15 @@ my $cdmentryarrivee = '/volume/article';
 my $cdmheadworddepart = '/database/lexGroup/lex/text()';
 my $cdmheadwordarrivee = '/volume/article/bloc_forme/mot_vedette/text()';
 
+my $cdmsourceheadworddepart = '/database/lexGroup/srcLW/text()';
+my $cdmsourceheadwordarrivee = '/volume/article/bloc_forme/source_mot_vedette/text()';
+
+
+my $cdmlexemesourcedepart = '/database/lexGroup/lexSrcW/text()';
+my $cdmlexemesourcearrivee = '/volume/article/bloc_forme/lexème_source/text()';
+
+
+
 my $cdmprononciationdepart='/database/lexGroup/uttW/text()';
 my $cdmprononciationarrivee='/volume/article/bloc_forme/prononciation/text()';
 
@@ -86,6 +97,10 @@ my $cdmclassWarrivee='/volume/article/classe_nominale/text()';
 my $cdmvariantdepart='/database/lexGroup/varW/text()';
 my $cdmvariantarrivee='/volume/article/bloc_forme/variante/text()';
 
+my $cdmderivedepart='/database/lexGroup/exDerW/text()';
+my $cdmvderivearrivee='/volume/article/bloc_dérivés/expression_dérivée/text()';
+
+
 my $cdmsynonymedepart='/database/lexGroup/synW/text()';
 my $cdmsynonymearrivee='/volume/article/bloc_sens/sens/synonyme/text()';
 
@@ -95,6 +110,9 @@ my $cdmhomonymearrivee='/volume/article/bloc_sens/sens/homonyme/text()';
 
 my $cdmdefinitiondepart='/database/lexGroup/defWGroup/defW/text()';
 my $cdmdefinitionarrivee='/volume/article/bloc_sens/sens/définition/text()';
+
+my $cdmsourcedefinitiondepart='/database/lexGroup/defWGroup/srcDW/text()';
+my $cdmsourcedefinitionarrivee='/volume/article/bloc_sens/sens/définition/source_defintion/text()';
 
 my $cdmtranslationdepart='/database/lexGroup/tradFlexGroup/tradFlex/text()';
 my $cdmtranslationarrivee='/volume/article/bloc_sens/sens/bloc_traduction/traduction_française/text()';
@@ -151,35 +169,51 @@ while( my $line = <$FILE>)  {
 
 
 	my $headword = $docdepart->findvalue($cdmheadworddepart);
+	my $sourceheadword= $docdepart->findvalue($cdmsourceheadworddepart);
+	my $lexemesource= $docdepart->findvalue($cdmlexemesourcedepart);
 	my $prononciation=$docdepart->findvalue($cdmprononciationdepart);
 	my $cat=$docdepart->findvalue($cdmcatdepart);
 	my $classW=$docdepart->findvalue($cdmclassWdepart);
   my $definition=$docdepart->findvalue($cdmdefinitiondepart);
+   my $sourcedefinition=$docdepart->findvalue($cdmsourcedefinitiondepart);
   my $translation=$docdepart->findvalue($cdmtranslationdepart);
   my $cattrad=$docdepart->findvalue($cdmcattradfrenchdepart);
 my $wolexemple=$docdepart->findvalue($cdmwolofexempledepart);
 my $frenchexemple=$docdepart->findvalue($cdmfrenchexempledepart);
 my @variantes = $docdepart->findnodes($cdmvariantdepart);
-my $synonyme=$docdepart->findvalue($cdmsynonymedepart);
+my @derivees = $docdepart->findnodes($cdmderivedepart);
+my @synonymes=$docdepart->findnodes($cdmsynonymedepart);
 my $homonyme=$docdepart->findvalue($cdmhomonymedepart);
 	$cdmheadwordarrivee =~ s/\/text\(\)$//;
+	$cdmsourceheadwordarrivee =~ s/\/text\(\)$//;
+	$cdmlexemesourcearrivee =~ s/\/text\(\)$//;
 	$cdmprononciationarrivee =~ s/\/text\(\)$//;
 	$cdmcatarrivee =~ s/\/text\(\)$//;
 	$cdmclassWarrivee =~ s/\/text\(\)$//;
   $cdmdefinitionarrivee=~ s/\/text\(\)$//;
+   $cdmsourcedefinitionarrivee=~ s/\/text\(\)$//;
   $cdmtranslationarrivee=~ s/\/text\(\)$//;
     $cdmcattradfrencharrivee=~ s/\/text\(\)$//;
    $cdmwolofexemplearrivee=~ s/\/text\(\)$//;
    $cdmfrenchexemplearrivee=~ s/\/text\(\)$//;
  $cdmvariantarrivee=~ s/\/text\(\)$//;
+  $cdmvderivearrivee=~ s/\/text\(\)$//;
   $cdmsynonymearrivee=~ s/\/text\(\)$//;
   $cdmhomonymearrivee=~ s/\/text\(\)$//;
 
 
 	my @nodes = $docarrivee->findnodes($cdmheadwordarrivee);
 	my $headwordNode = $nodes[0];
+     $headwordNode->addText($headword);
 
-	$headwordNode->addText($headword);
+     my @sourceheadwordnodes = $docarrivee->findnodes($cdmsourceheadwordarrivee);
+	my $sourceheadwordNode = $sourceheadwordnodes[0];
+     $sourceheadwordNode->addText($sourceheadword);
+
+
+    my @lexemesourcenodes = $docarrivee->findnodes($cdmlexemesourcearrivee);
+	my $lexemesourceNode = $lexemesourcenodes[0];
+     $lexemesourceNode->addText($lexemesource);
 
 	my @nodesbis = $docarrivee->findnodes($cdmprononciationarrivee);
 	my $prononciationNode = $nodesbis[0];
@@ -202,6 +236,11 @@ my $homonyme=$docdepart->findvalue($cdmhomonymedepart);
   my $defNode = $nodedef[0];
 
   $defNode->addText($definition);
+
+  my @sourcedefinitionnode = $docarrivee->findnodes($cdmsourcedefinitionarrivee);
+  my $sourcedefinitionNode = $nodedef[0];
+
+  $sourcedefinitionNode->addText($sourcedefinition);
 
   my @nodetranslation = $docarrivee->findnodes($cdmtranslationarrivee);
   my $translationNode = $nodetranslation[0];
@@ -251,10 +290,53 @@ my $varianteNode = $nodevariante[0];
 	}
 
 
+
 my @nodesynonyme = $docarrivee->findnodes($cdmsynonymearrivee);
 my $synonymeNode = $nodesynonyme[0];
 
- $synonymeNode->addText($synonyme);
+	my $parentSynonyme = $synonymeNode->getParentNode();
+	my $noeudSuivantSynonyme = $synonymeNode->getNextSibling();
+	if (scalar(@synonymes)>0) 	{$parentSynonyme->removeChild($synonymeNode);}
+	foreach my $synonyme (@synonymes) {
+		my $noeudCloneSyn = $synonymeNode->cloneNode(1);
+		$noeudCloneSyn->setOwnerDocument($docarrivee);
+		my $synonymeText = getNodeText($synonyme);
+		$noeudCloneSyn->addText($synonymeText);
+		# si la variante a un noeud suivant
+		if ($noeudSuivantSynonyme) {
+			$parentSynonyme->insertBefore($noeudCloneSyn,$noeudSuivantSynonyme);
+		}
+		else {
+		# sinon
+		$parentSynonyme->appendChild($noeudCloneSyn);
+		}
+	}
+
+
+my @nodesderive = $docarrivee->findnodes($cdmvderivearrivee);
+my $deriveNode = $nodesderive[0];
+
+	my $parentDerive = $deriveNode->getParentNode();
+	my $noeudSuivantDerive = $deriveNode->getNextSibling();
+	if (scalar(@derivees)>0) 	{$parentDerive->removeChild($deriveNode);}
+	foreach my $derivee (@derivees) {
+		my $noeudCloneDer = $deriveNode->cloneNode(1);
+		$noeudCloneDer->setOwnerDocument($docarrivee);
+		my $deriveText = getNodeText($derivee);
+		$noeudCloneDer->addText($deriveText);
+		# si la variante a un noeud suivant
+		if ($noeudSuivantDerive) {
+			$parentDerive>insertBefore($noeudCloneDer,$noeudSuivantDerive);
+		}
+		else {
+		# sinon
+		$parentDerive->appendChild($noeudCloneDer);
+		}
+	}
+#my @nodesynonyme = $docarrivee->findnodes($cdmsynonymearrivee);
+#my $synonymeNode = $nodesynonyme[0];
+
+ #$synonymeNode->addText($synonyme);
 
 
  my @nodehomonyme = $docarrivee->findnodes($cdmhomonymearrivee);
