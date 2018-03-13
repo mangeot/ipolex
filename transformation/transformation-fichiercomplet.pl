@@ -44,8 +44,8 @@ my $xmlarrivee = '<?xml version="1.0" ?>
       </bloc_traduction>
       <exemples>
       <exemple>
-        <wol/>
-        <fra/>
+        <exemple-wol/>
+        <exemple-fra/>
       </exemple>
       </exemples>
       <synonyme/>
@@ -53,19 +53,13 @@ my $xmlarrivee = '<?xml version="1.0" ?>
       <note_usage/>
     </sens>
     </bloc_sens>
-    <bloc_métainformation>
-      <auteur/>
-      <date_dernière_modification/>
-      <commentaire/>
-      <auteur_statut_fiche/>
-      <statut_fiche/>
-    </bloc_métainformation>
     <bloc_dérivés>
       <expression_dérivée/>
     </bloc_dérivés>
     </article>
 </volume>';
 
+my $nomDicoDepart = 'Thierno';
 
 my $cdmvolumedepart = '/database';
 my $cdmvolumearrivee = '/volume';
@@ -121,10 +115,10 @@ my $cdmcattradfrenchdepart='/database/lexGroup/tradFlexGroup/catF/text()';
 my $cdmcattradfrencharrivee='/volume/article/bloc_sens/sens/bloc_traduction/catégorie_grammaticale_traduction_française_mot_vedette/text()';
 
 my $cdmwolofexempledepart='/database/lexGroup/phrWGroup/phrW/text()';
-my $cdmwolofexemplearrivee='/volume/article/bloc_sens/sens/exemples/exemple/wol/text()';
+my $cdmwolofexemplearrivee='/volume/article/bloc_sens/sens/exemples/exemple/exemple-wol/text()';
 
 my $cdmfrenchexempledepart='/database/lexGroup/phrWGroup/tradPhrW/text()';
-my $cdmfrenchexemplearrivee='/volume/article/bloc_sens/sens/exemples/exemple/fra/text()';
+my $cdmfrenchexemplearrivee='/volume/article/bloc_sens/sens/exemples/exemple/exemple-fra/text()';
 
 my $headerdepart = xpath2opentag($cdmvolumedepart);
 my $footerdepart = xpath2closedtag($cdmvolumedepart);
@@ -326,7 +320,7 @@ my $deriveNode = $nodesderive[0];
 		$noeudCloneDer->addText($deriveText);
 		# si la variante a un noeud suivant
 		if ($noeudSuivantDerive) {
-			$parentDerive>insertBefore($noeudCloneDer,$noeudSuivantDerive);
+			$parentDerive->insertBefore($noeudCloneDer,$noeudSuivantDerive);
 		}
 		else {
 		# sinon
@@ -345,8 +339,19 @@ my $homonymeNode = $nodehomonyme[0];
  $homonymeNode->addText($homonyme);
 
 my @entryarrivee = $docarrivee->findnodes($cdmentryarrivee);
-
 my $entryarrivee = $entryarrivee[0];
+
+# copie de l'entrée source dans l'entrée arrivée
+
+my @entrydepart = $docdepart->findnodes($cdmentrydepart);
+my $entrydepart = $entrydepart[0];
+
+my $elementsource = $docarrivee->createElement('entree-source');
+$elementsource->setAttribute('provenance',$nomDicoDepart);
+my $cloneEntrydepart = $entrydepart->cloneNode(1);
+$cloneEntrydepart->setOwnerDocument($docarrivee);
+$elementsource->appendChild($cloneEntrydepart);
+	$entryarrivee->appendChild($elementsource);
 	# pour imprimer dans un fichier, remplacer STDOUT par $OUT
 	#print $OUT $docarrivee->toString;
 	print STDOUT $entryarrivee->toString,"\n";
