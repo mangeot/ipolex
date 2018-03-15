@@ -20,12 +20,12 @@
 	if (!file_exists($metadataFile)) {
 		header('Location:creerVolume.php?'.$parameters);
 	}
-	
+
 	$modif = false;
 	if (!empty($_REQUEST['Administrators'])) {
 		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:DEFAULT_TEST_USER;
 		$admins = preg_split("/[\s,;]+/", $_REQUEST['Administrators']);
-		$modif = in_array($user, $admins);
+		$modif = in_array($user, $admins) || (DEFAULT_TEST_USER != '' && $user == DEFAULT_TEST_USER);
 		if ($modif && (!empty($_REQUEST['Enregistrer']) || !empty($_REQUEST['AjoutLien']) || !empty($_REQUEST['AjoutCDMFreeElement']))) {
 			$Params = $_REQUEST;
 			$Params['Name'] = $name;
