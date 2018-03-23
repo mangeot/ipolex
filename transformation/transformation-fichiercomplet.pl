@@ -1,6 +1,8 @@
 #!/usr/bin/perl
 #
-# transformation.pl
+# ./transformation-fichiercomplet.pl -i Donnees/anaan.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml > out.xml
+# ./transformation-fichiercomplet.pl -i Donnees/Baat_fra-wol/baat_wol_fra-prep.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml > out.xml
+#
 #
 
 use strict;
@@ -10,54 +12,51 @@ use utf8::all;
 use XML::DOM;
 use XML::DOM::XPath;
 use Data::Dumper;
+use Getopt::Long; # pour gérer les arguments.
 
 my $encoding = "UTF-8";
+my $unicode = "UTF-8";
 
-binmode(STDIN, ":utf8");
-binmode(STDOUT, ":utf8");
+my ($metaEntree, $metaSortie,  $entreeModele, $fichierEntree, $fichierSortie, $help, $verbeux) = ();
+
+GetOptions( 
+  'entree|in|from|i=s' => \$fichierEntree, 
+  'sortie|out|to|o=s'           => \$fichierSortie, 
+  'modele|template|t=s'           => \$entreeModele, 
+  'encodage|encoding|enc|c=s' 	=> \$encoding, 
+  'help|h'                	  	=> \$help, 
+  'verbeux|v'             	  	=> \$verbeux, 
+  );
+ 
+my $date = localtime;
+my $OUTFILE;
+if (!(defined $fichierEntree)) {
+	$fichierEntree  = *STDIN;
+} # si le fichier entree n'est pas spécifié, on ouvre l'entrée standard
+if (!(defined $fichierSortie)) {
+	$OUTFILE = *STDOUT;
+} # si le fichier sortie n'est pas spécifié, on ouvre la sortie standard
+else {
+	open $OUTFILE, ">:encoding($unicode)",$fichierSortie or die ("$! $fichierSortie \n");
+}
+if (!defined $entreeModele) {&help;};
+if (!(defined $encoding)) {
+	$encoding  = "UTF-8";
+} # si le fichier entree n'est pas spécifié, on ouvre l'entrée standard
+if (defined $help) {&help;};
+
 binmode(STDERR, ":utf8");
-#open my $FILE, "<:encoding($encoding)","/opt/lampp/htdocs/ipolex/Dicos/Baat_fra-wol/Baat_wol-fra.xml" or die ("$! IN \n");
-#open my $FILE, "<:encoding($encoding)","/opt/lampp/htdocs/ipolex/Dicos/Baat_fra-wol/DicoArrivee_fra-wol/DicoArrivee_wol-fra.metadata" or die ("$! IN \n");
-# open (IN,$ARGV[0]);
-open my $FILE, "<:encoding($encoding)",$ARGV[0] or die ("$! $ARGV[0] \n");
-#open my $OUT, ">:encoding($encoding)","/opt/lampp/htdocs/ipolex/Dicos/Baat_fra-wol/Cisse_wol-fra-transformation.xml" or die ("$! OUT \n");
 
-my $xmlarrivee = '<?xml version="1.0" ?>
-<volume>
-  <article id="">
-    <bloc_forme>
-      <mot_vedette/>
-      <source_mot_vedette/>
-      <lexème_source/>
-	  <variante/>
-	  <prononciation/>
-    </bloc_forme>
-    <catégorie_grammaticale/>
-    <classe_nominale/>
-    <bloc_sens>
-    <sens id="">
-      <définition/>
-      <source_définition/>
-      <bloc_traduction>
-        <traduction_française/>
-        <catégorie_grammaticale_traduction_française_mot_vedette/>
-      </bloc_traduction>
-      <exemples>
-      <exemple>
-        <exemple-wol/>
-        <exemple-fra/>
-      </exemple>
-      </exemples>
-      <synonyme/>
-      <homonyme/>
-      <note_usage/>
-    </sens>
-    </bloc_sens>
-    <bloc_dérivés>
-      <expression_dérivée/>
-    </bloc_dérivés>
-    </article>
-</volume>';
+sub help {
+	print STDERR "Message d'aide, voir V_for_fusionInterne.pl pour exemple\n";
+}
+
+open my $INFILE, "<:encoding($encoding)",$fichierEntree or die ("$! $fichierEntree \n");
+
+open my $MODELEFILE, "<:encoding($unicode)", $entreeModele or die "error opening $entreeModele: $!";
+my $xmlarrivee = do { local $/; <$MODELEFILE> };
+
+#print STDERR "XMLarrivée : [",$xmlarrivee,"]",$entreeModele;
 
 my $nomDicoDepart = 'Thierno';
 
@@ -92,7 +91,7 @@ my $cdmvariantdepart='/database/lexGroup/varW/text()';
 my $cdmvariantarrivee='/volume/article/bloc_forme/variante/text()';
 
 my $cdmderivedepart='/database/lexGroup/exDerW/text()';
-my $cdmvderivearrivee='/volume/article/bloc_dérivés/expression_dérivée/text()';
+my $cdmderivearrivee='/volume/article/bloc_dérivés/expression_dérivée/text()';
 
 
 my $cdmsynonymedepart='/database/lexGroup/synW/text()';
@@ -106,7 +105,7 @@ my $cdmdefinitiondepart='/database/lexGroup/defWGroup/defW/text()';
 my $cdmdefinitionarrivee='/volume/article/bloc_sens/sens/définition/text()';
 
 my $cdmsourcedefinitiondepart='/database/lexGroup/defWGroup/srcDW/text()';
-my $cdmsourcedefinitionarrivee='/volume/article/bloc_sens/sens/définition/source_defintion/text()';
+my $cdmsourcedefinitionarrivee='/volume/article/bloc_sens/sens/source_définition/text()';
 
 my $cdmtranslationdepart='/database/lexGroup/tradFlexGroup/tradFlex/text()';
 my $cdmtranslationarrivee='/volume/article/bloc_sens/sens/bloc_traduction/traduction_française/text()';
@@ -141,202 +140,58 @@ my $footerdepart = xpath2closedtag($cdmvolumedepart);
 
 
 my $closedtagentryarrivee = xpath2closedtag(xpathdifference($cdmentrydepart,$cdmvolumedepart));
-my $opentagvolumearrivee = xpath2opentag($cdmvolumearrivee);
+my $opentagvolumearrivee = xpath2opentag($cdmvolumearrivee, 'creation-date="' . $date . '"');
 my $closedtagvolumearrivee = xpath2closedtag($cdmvolumearrivee);
 
 $/ = $closedtagentryarrivee;
 
 my $parser= XML::DOM::Parser->new();
 
-print STDOUT '<?xml version="1.0" encoding="UTF-8" ?>
+print $OUTFILE '<?xml version="1.0" encoding="UTF-8" ?>
 ';
-print $opentagvolumearrivee,"\n";
+print $OUTFILE $opentagvolumearrivee,"\n";
 
-while( my $line = <$FILE>)  {   
+while( my $line = <$INFILE>)  {   
 
-	#my $doc = $parser->parsefile ("file.xml");
 	$line = $headerdepart . $line . $footerdepart;
 	print STDERR "Entrée : ",$line;
 
 	my $docdepart = $parser->parse ($line);
+	print STDERR "xmlarrivee : ",$xmlarrivee;
 	my $docarrivee = $parser->parse ($xmlarrivee);
 
+&copiePointeurs($cdmheadworddepart, $cdmheadwordarrivee, $docdepart, $docarrivee);
 
-	my $headword = $docdepart->findvalue($cdmheadworddepart);
-	my $sourceheadword= $docdepart->findvalue($cdmsourceheadworddepart);
-	my $lexemesource= $docdepart->findvalue($cdmlexemesourcedepart);
-	my $prononciation=$docdepart->findvalue($cdmprononciationdepart);
-	my $cat=$docdepart->findvalue($cdmcatdepart);
-	my $classW=$docdepart->findvalue($cdmclassWdepart);
-  my $definition=$docdepart->findvalue($cdmdefinitiondepart);
-   my $sourcedefinition=$docdepart->findvalue($cdmsourcedefinitiondepart);
-  my $translation=$docdepart->findvalue($cdmtranslationdepart);
-  my $cattrad=$docdepart->findvalue($cdmcattradfrenchdepart);
-my $wolexemple=$docdepart->findvalue($cdmwolofexempledepart);
-my $frenchexemple=$docdepart->findvalue($cdmfrenchexempledepart);
-my @variantes = $docdepart->findnodes($cdmvariantdepart);
-my @derivees = $docdepart->findnodes($cdmderivedepart);
-my @synonymes=$docdepart->findnodes($cdmsynonymedepart);
-my $homonyme=$docdepart->findvalue($cdmhomonymedepart);
-	$cdmheadwordarrivee =~ s/\/text\(\)$//;
-	$cdmsourceheadwordarrivee =~ s/\/text\(\)$//;
-	$cdmlexemesourcearrivee =~ s/\/text\(\)$//;
-	$cdmprononciationarrivee =~ s/\/text\(\)$//;
-	$cdmcatarrivee =~ s/\/text\(\)$//;
-	$cdmclassWarrivee =~ s/\/text\(\)$//;
-  $cdmdefinitionarrivee=~ s/\/text\(\)$//;
-   $cdmsourcedefinitionarrivee=~ s/\/text\(\)$//;
-  $cdmtranslationarrivee=~ s/\/text\(\)$//;
-    $cdmcattradfrencharrivee=~ s/\/text\(\)$//;
-   $cdmwolofexemplearrivee=~ s/\/text\(\)$//;
-   $cdmfrenchexemplearrivee=~ s/\/text\(\)$//;
- $cdmvariantarrivee=~ s/\/text\(\)$//;
-  $cdmvderivearrivee=~ s/\/text\(\)$//;
-  $cdmsynonymearrivee=~ s/\/text\(\)$//;
-  $cdmhomonymearrivee=~ s/\/text\(\)$//;
+&copiePointeurs($cdmsourceheadworddepart, $cdmsourceheadwordarrivee, $docdepart, $docarrivee);
 
+&copiePointeurs($cdmlexemesourcedepart, $cdmlexemesourcearrivee, $docdepart, $docarrivee);
 
-	my @nodes = $docarrivee->findnodes($cdmheadwordarrivee);
-	my $headwordNode = $nodes[0];
-     $headwordNode->addText($headword);
+&copiePointeurs($cdmprononciationdepart, $cdmprononciationarrivee, $docdepart, $docarrivee);
 
-     my @sourceheadwordnodes = $docarrivee->findnodes($cdmsourceheadwordarrivee);
-	my $sourceheadwordNode = $sourceheadwordnodes[0];
-     $sourceheadwordNode->addText($sourceheadword);
+&copiePointeurs($cdmcatdepart, $cdmcatarrivee, $docdepart, $docarrivee);
 
+&copiePointeurs($cdmclassWdepart, $cdmclassWarrivee, $docdepart, $docarrivee);
 
-    my @lexemesourcenodes = $docarrivee->findnodes($cdmlexemesourcearrivee);
-	my $lexemesourceNode = $lexemesourcenodes[0];
-     $lexemesourceNode->addText($lexemesource);
+&copiePointeurs($cdmdefinitiondepart, $cdmdefinitionarrivee, $docdepart, $docarrivee);
 
-	my @nodesbis = $docarrivee->findnodes($cdmprononciationarrivee);
-	my $prononciationNode = $nodesbis[0];
+&copiePointeurs($cdmsourcedefinitiondepart, $cdmsourcedefinitionarrivee, $docdepart, $docarrivee);
+  
+&copiePointeurs($cdmtranslationdepart, $cdmtranslationarrivee, $docdepart, $docarrivee);
 
-	$prononciationNode->addText($prononciation);
+&copiePointeurs($cdmcattradfrenchdepart, $cdmcattradfrencharrivee, $docdepart, $docarrivee);
 
-	my @nodecat = $docarrivee->findnodes($cdmcatarrivee);
-	my $catNode = $nodecat[0];
+&copiePointeurs($cdmwolofexempledepart, $cdmwolofexemplearrivee, $docdepart, $docarrivee);
 
-	$catNode->addText($cat);
+&copiePointeurs($cdmfrenchexempledepart, $cdmfrenchexemplearrivee, $docdepart, $docarrivee);
 
+&copiePointeurs($cdmvariantdepart, $cdmvariantarrivee, $docdepart, $docarrivee);
 
+&copiePointeurs($cdmsynonymedepart, $cdmsynonymearrivee, $docdepart, $docarrivee);
 
-	my @nodeclassW = $docarrivee->findnodes($cdmclassWarrivee);
-	my $classWnode = $nodeclassW[0];
+&copiePointeurs($cdmderivedepart, $cdmderivearrivee, $docdepart, $docarrivee);
 
-	$classWnode->addText($classW);
+&copiePointeurs($cdmhomonymedepart, $cdmhomonymearrivee, $docdepart, $docarrivee);
 
-  my @nodedef = $docarrivee->findnodes($cdmdefinitionarrivee);
-  my $defNode = $nodedef[0];
-
-  $defNode->addText($definition);
-
-  my @sourcedefinitionnode = $docarrivee->findnodes($cdmsourcedefinitionarrivee);
-  my $sourcedefinitionNode = $nodedef[0];
-
-  $sourcedefinitionNode->addText($sourcedefinition);
-
-  my @nodetranslation = $docarrivee->findnodes($cdmtranslationarrivee);
-  my $translationNode = $nodetranslation[0];
-
-  $translationNode->addText($translation);
-
-  my @nodecattrad = $docarrivee->findnodes($cdmcattradfrencharrivee);
-  my $cattradNode = $nodecattrad[0];
-
-  $cattradNode->addText($cattrad);
-
-
-my @nodewolexemple = $docarrivee->findnodes($cdmwolofexemplearrivee);
- my $wolexempleNode = $nodewolexemple[0];
-
- $wolexempleNode->addText($wolexemple);
-
-
-my @nodefrenchexemple = $docarrivee->findnodes($cdmfrenchexemplearrivee);
-my $frenchexempleNode = $nodefrenchexemple[0];
-
- $frenchexempleNode->addText($frenchexemple);
-
-
-
-
-
-my @nodevariante = $docarrivee->findnodes($cdmvariantarrivee);
-my $varianteNode = $nodevariante[0];
-
-	my $parentVariante = $varianteNode->getParentNode();
-	my $noeudSuivantVariante = $varianteNode->getNextSibling();
-	if (scalar(@variantes)>0) 	{$parentVariante->removeChild($varianteNode);}
-	foreach my $variante (@variantes) {
-		my $noeudClone = $varianteNode->cloneNode(1);
-		$noeudClone->setOwnerDocument($docarrivee);
-		my $varianteText = getNodeText($variante);
-		$noeudClone->addText($varianteText);
-		# si la variante a un noeud suivant
-		if ($noeudSuivantVariante) {
-			$parentVariante->insertBefore($noeudClone,$noeudSuivantVariante);
-		}
-		else {
-		# sinon
-		$parentVariante->appendChild($noeudClone);
-		}
-	}
-
-
-
-my @nodesynonyme = $docarrivee->findnodes($cdmsynonymearrivee);
-my $synonymeNode = $nodesynonyme[0];
-
-	my $parentSynonyme = $synonymeNode->getParentNode();
-	my $noeudSuivantSynonyme = $synonymeNode->getNextSibling();
-	if (scalar(@synonymes)>0) 	{$parentSynonyme->removeChild($synonymeNode);}
-	foreach my $synonyme (@synonymes) {
-		my $noeudCloneSyn = $synonymeNode->cloneNode(1);
-		$noeudCloneSyn->setOwnerDocument($docarrivee);
-		my $synonymeText = getNodeText($synonyme);
-		$noeudCloneSyn->addText($synonymeText);
-		# si la variante a un noeud suivant
-		if ($noeudSuivantSynonyme) {
-			$parentSynonyme->insertBefore($noeudCloneSyn,$noeudSuivantSynonyme);
-		}
-		else {
-		# sinon
-		$parentSynonyme->appendChild($noeudCloneSyn);
-		}
-	}
-
-
-my @nodesderive = $docarrivee->findnodes($cdmvderivearrivee);
-my $deriveNode = $nodesderive[0];
-
-	my $parentDerive = $deriveNode->getParentNode();
-	my $noeudSuivantDerive = $deriveNode->getNextSibling();
-	if (scalar(@derivees)>0) 	{$parentDerive->removeChild($deriveNode);}
-	foreach my $derivee (@derivees) {
-		my $noeudCloneDer = $deriveNode->cloneNode(1);
-		$noeudCloneDer->setOwnerDocument($docarrivee);
-		my $deriveText = getNodeText($derivee);
-		$noeudCloneDer->addText($deriveText);
-		# si la variante a un noeud suivant
-		if ($noeudSuivantDerive) {
-			$parentDerive->insertBefore($noeudCloneDer,$noeudSuivantDerive);
-		}
-		else {
-		# sinon
-		$parentDerive->appendChild($noeudCloneDer);
-		}
-	}
-#my @nodesynonyme = $docarrivee->findnodes($cdmsynonymearrivee);
-#my $synonymeNode = $nodesynonyme[0];
-
- #$synonymeNode->addText($synonyme);
-
-
- my @nodehomonyme = $docarrivee->findnodes($cdmhomonymearrivee);
-my $homonymeNode = $nodehomonyme[0];
-
- $homonymeNode->addText($homonyme);
 
 my @entryarrivee = $docarrivee->findnodes($cdmentryarrivee);
 my $entryarrivee = $entryarrivee[0];
@@ -352,12 +207,10 @@ my $cloneEntrydepart = $entrydepart->cloneNode(1);
 $cloneEntrydepart->setOwnerDocument($docarrivee);
 $elementsource->appendChild($cloneEntrydepart);
 	$entryarrivee->appendChild($elementsource);
-	# pour imprimer dans un fichier, remplacer STDOUT par $OUT
-	#print $OUT $docarrivee->toString;
-	print STDOUT $entryarrivee->toString,"\n";
+	print $OUTFILE $entryarrivee->toString,"\n";
 }
 
-print STDOUT $closedtagvolumearrivee;
+print $OUTFILE $closedtagvolumearrivee;
 
 
 sub xpathdifference{
@@ -376,10 +229,14 @@ sub xpathdifference{
 
 sub xpath2opentag {
 	my $xpath = $_[0];
+	my $attribut = $_[1] || '';
+	if ($attribut ne '') {
+		$attribut = ' ' . $attribut;
+	}
 	$xpath =~ s/\/$//;
 	$xpath =~ s/\//></g;
 	$xpath =~ s/^>//;
-	$xpath .= '>';
+	$xpath .= $attribut . '>';
 }
 
 sub xpath2closedtag {
@@ -418,4 +275,40 @@ sub getNodeText {
           $text = $node->toString();
     }
 	return $text;
+}
+
+sub copiePointeurs {
+	my $pointeurDepart = $_[0];
+	my $pointeurArrivee = $_[1];
+	my $docDepart = $_[2];
+	my $docArrivee = $_[3];
+	
+	my @valeurs = $docDepart->findnodes($pointeurDepart);
+	$pointeurArrivee =~ s/\/text\(\)$//;
+
+	my @noeudsArrivee = $docArrivee->findnodes($pointeurArrivee);
+	my $noeudArrivee = $noeudsArrivee[0];
+
+	if (!$noeudArrivee) {
+		print STDERR "$pointeurArrivee gives null value\n";
+	}
+	else {
+		my $noeudParent = $noeudArrivee->getParentNode();
+		my $noeudSuivant = $noeudArrivee->getNextSibling();
+		if (scalar(@valeurs)>0) 	{$noeudParent->removeChild($noeudArrivee);}
+		foreach my $valeur (@valeurs) {
+			my $noeudClone = $noeudArrivee->cloneNode(1);
+			$noeudClone->setOwnerDocument($docArrivee);
+			my $noeudTexte = getNodeText($valeur);
+			$noeudClone->addText($noeudTexte);
+			# si la variante a un noeud suivant
+			if ($noeudSuivant) {
+				$noeudParent->insertBefore($noeudClone,$noeudSuivant);
+			}
+			else {
+			# sinon
+			$noeudParent->appendChild($noeudClone);
+			}
+		}
+	}
 }

@@ -3,34 +3,34 @@
   <article id="">
     <bloc_forme>
       <mot_vedette/>
-      <prononciation/>
+      <source_mot_vedette/>
+      <lexème_source/>
+	  <variante/>
+	  <prononciation/>
     </bloc_forme>
     <catégorie_grammaticale/>
     <classe_nominale/>
-    <sens id="">
+   <bloc_sens>
+     <sens id="">
       <définition/>
+      <source_définition/>
       <bloc_traduction>
         <traduction_française/>
         <catégorie_grammaticale_traduction_française_mot_vedette/>
       </bloc_traduction>
+      <exemples>
       <exemple>
-        <phrase_illustration/>
-        <traduction_française_phrase_illustration/>
+        <exemple-wol/>
+        <exemple-fra/>
       </exemple>
+      </exemples>
       <synonyme/>
       <homonyme/>
       <note_usage/>
     </sens>
-    <bloc_métainformation>
-      <auteur/>
-      <date_dernière_modification/>
-      <commentaire/>
-      <auteur_statut_fiche/>
-      <statut_fiche/>
-    </bloc_métainformation>
+    </bloc_sens>
     <bloc_dérivés>
-      <dérivé/>
-      <lexème_source_expression_dérivée/>
+      <expression_dérivée/>
     </bloc_dérivés>
   </article>
 </volume>
