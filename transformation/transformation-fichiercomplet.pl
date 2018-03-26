@@ -54,64 +54,102 @@ sub help {
 open my $INFILE, "<:encoding($encoding)",$fichierEntree or die ("$! $fichierEntree \n");
 
 open my $MODELEFILE, "<:encoding($unicode)", $entreeModele or die "error opening $entreeModele: $!";
+open my $METAENTREFILE, "<:encoding($unicode)", $metaEntree or die "error opening $metaEntree: $!";
+open my $METASORTIEFILE, "<:encoding($unicode)", $metaEntree or die "error opening $metaSortie: $!";
+
+my %CDMSDEPART=load_cdm($metaEntree);
+my %CDMSARRIVE=load_cdm($metaSortie);
+
+
+
 my $xmlarrivee = do { local $/; <$MODELEFILE> };
 
 #print STDERR "XMLarrivée : [",$xmlarrivee,"]",$entreeModele;
 
+  <cdm-volume xpath="/database"/>
+<cdm-entry xpath="/database/lexGroup"/>
+<cdm-entry-id xpath="/database/lexGroup/@id"/>
+<cdm-headword xpath="/database/lexGroup/lex/text()"/>
+<cdm-headword-variant xpath="/database/lexGroup/variante/text()"/>
+<cdm-pronunciation xpath="/database/lexGroup/uttW/text()"/>
+<cdm-pos xpath="/database/lexGroup/catWGroup/catW/text()"/>
+<cdm-definition xpath="/database/lexGroup/defWGroup/defW/text()"/>
+<cdm-translation xpath="/database/lexGroup/tradFlexGroup/tradFlex/text()" d:lang="fra" />
+  <cdm-example-block xpath="/database/lexGroup/phrWGroup"/>
+<cdm-example xpath="/database/lexGroup/phrWGroup/tradPhrW/text()" d:lang="fra" />
+  <cdm-example xpath="/database/lexGroup/phrWGroup/phrW/text()" d:lang="wol" />
+  <cdm-classe-nominale xpath="/database/lexGroup/catWGroup/clasW/text()" index="true"  />	
+  		<cdm-source-mot-vedette xpath="/database/lexGroup/SrcLW/text()" index="true"  />	
+  		<cdm-lexeme-source xpath="/database/lexGroup/lexSrcW/text()" index="true"  />	
+  		<cdm-pos-translation xpath="/database/lexGroup/tradFlexGroup/catF/text()" index="true"  />	
+  		<cdm-synonyme xpath="/database/lexGroup/synW/text()" index="true"  />	
+  		<cdm-homonyme xpath="/database/lexGroup/homW/text()" index="true"  />	
+  		<cdm-note-usage xpath="/database/lexGroup/nusW/text()" index="true"  />	
+  		<cdm-derive-bloc xpath="/database/lexGroup/exDerWGroup" index="true"  />	
+  		<cdm-expression-derive xpath="/database/lexGroup/exDerW/text" index="true"  />	
+  		<cdm-source-definition xpath="/database/lexGroup/defWGroup/srcDW/text()" index="true"  />	
+
 my $nomDicoDepart = 'Thierno';
 
-my $cdmvolumedepart = '/database';
-my $cdmvolumearrivee = '/volume';
+my $cdmvolumedepart = $CDMSDEPART[cdm-voume];
+my $cdmvolumearrivee = $CDMSARRIVE[cdm-voume];
 
-my $cdmentrydepart = '/database/lexGroup';
-my $cdmentryarrivee = '/volume/article';
+my $cdmentrydepart = $CDMSDEPART[cdm-entry]
+my $cdmentryarrivee = $CDMSARRIVE[cdm-entry];
 
-my $cdmheadworddepart = '/database/lexGroup/lex/text()';
-my $cdmheadwordarrivee = '/volume/article/bloc_forme/mot_vedette/text()';
+my $cdmheadworddepart = $CDMSDEPART[cdm-headword];
+my $cdmheadwordarrivee = $CDMSARRIVE[cdm-headword];
 
-my $cdmsourceheadworddepart = '/database/lexGroup/srcLW/text()';
-my $cdmsourceheadwordarrivee = '/volume/article/bloc_forme/source_mot_vedette/text()';
-
-
-my $cdmlexemesourcedepart = '/database/lexGroup/lexSrcW/text()';
-my $cdmlexemesourcearrivee = '/volume/article/bloc_forme/lexème_source/text()';
+my $cdmsourceheadworddepart = $CDMSDEPART[cdm-source-mot-vedette];
+my $cdmsourceheadwordarrivee = $CDMSARRIVE[cdm-source-mot-vedette];
 
 
-
-my $cdmprononciationdepart='/database/lexGroup/uttW/text()';
-my $cdmprononciationarrivee='/volume/article/bloc_forme/prononciation/text()';
-
-my $cdmcatdepart='/database/lexGroup/catWGroup/catW/text()';
-my $cdmcatarrivee='/volume/article/catégorie_grammaticale/text()';
-
-my $cdmclassWdepart='/database/lexGroup/catWGroup/clasW/text()';
-my $cdmclassWarrivee='/volume/article/classe_nominale/text()';
-
-my $cdmvariantdepart='/database/lexGroup/varW/text()';
-my $cdmvariantarrivee='/volume/article/bloc_forme/variante/text()';
-
-my $cdmderivedepart='/database/lexGroup/exDerW/text()';
-my $cdmderivearrivee='/volume/article/bloc_dérivés/expression_dérivée/text()';
+my $cdmlexemesourcedepart = $CDMSDEPART[cdm-lexeme-source];
+my $cdmlexemesourcearrivee = $CDMSARRIVE[cdm-lexeme-source];
 
 
-my $cdmsynonymedepart='/database/lexGroup/synW/text()';
-my $cdmsynonymearrivee='/volume/article/bloc_sens/sens/synonyme/text()';
 
-my $cdmhomonymedepart='/database/lexGroup/homW/text()';
-my $cdmhomonymearrivee='/volume/article/bloc_sens/sens/homonyme/text()';
+my $cdmprononciationdepart=$CDMSDEPART[cdm-pronunciation];
+my $cdmprononciationarrivee=$CDMSARRIVE[cdm-pronunciation];
+
+my $cdmcatdepart=$CDMSDEPART[cdm-pos];
+my $cdmcatarrivee=$CDMSARRIVE[cdm-pos];
+
+my $cdmclassWdepart=$CDMSDEPART[cdm-classe-nominale];
+my $cdmclassWarrivee=$CDMSARRIVE[cdm-classe-nominale];
+
+my $cdmvariantdepart=$CDMSDEPART[cdm-headword-variant];
+my $cdmvariantarrivee=$CDMSARRIVE[cdm-headword-variant]
+
+my $cdmderivedepart=$CDMSDEPART[cdm-expression-derive];
+my $cdmderivearrivee=$CDMSARRIVE[cdm-expression-derive];
+
+my $cdmblocderivedepart=$CDMSDEPART[cdm-derive-bloc;
+my $cdmblocderivearrivee=$CDMSARRIVE[cdm-derive-bloc];
+
+my $cdmderivedepart=$CDMSDEPART[cdm-expression-derive];
+my $cdmderivearrivee=$CDMSARRIVE[cdm-expression-derive];
 
 
-my $cdmdefinitiondepart='/database/lexGroup/defWGroup/defW/text()';
-my $cdmdefinitionarrivee='/volume/article/bloc_sens/sens/définition/text()';
 
-my $cdmsourcedefinitiondepart='/database/lexGroup/defWGroup/srcDW/text()';
-my $cdmsourcedefinitionarrivee='/volume/article/bloc_sens/sens/source_définition/text()';
+my $cdmsynonymedepart=$CDMSDEPART[cdm-synonyme]
+my $cdmsynonymearrivee=$CDMSARRIVE[cdm-synonyme];
 
-my $cdmtranslationdepart='/database/lexGroup/tradFlexGroup/tradFlex/text()';
-my $cdmtranslationarrivee='/volume/article/bloc_sens/sens/bloc_traduction/traduction_française/text()';
+my $cdmhomonymedepart=$CDMSDEPART[cdm-homonyme;
+my $cdmhomonymearrivee=$CDMSARRIVE[cdm-homonyme];
 
-my $cdmcattradfrenchdepart='/database/lexGroup/tradFlexGroup/catF/text()';
-my $cdmcattradfrencharrivee='/volume/article/bloc_sens/sens/bloc_traduction/catégorie_grammaticale_traduction_française_mot_vedette/text()';
+
+my $cdmdefinitiondepart=$CDMSDEPART[cdm-definition];
+my $cdmdefinitionarrivee=$CDMSARRIVE[cdm-definition];
+
+my $cdmsourcedefinitiondepart=$CDMSDEPART[cdm-source-definition];
+my $cdmsourcedefinitionarrivee=$CDMSARRIVE[cdm-source-definition];
+
+my $cdmtranslationdepart=$CDMSDEPART[cdm-translation];
+my $cdmtranslationarrivee=$CDMSARRIVE[cdm-translation];
+
+my $cdmcattradfrenchdepart=$CDMSDEPART[cdm-pos-translation];
+my $cdmcattradfrencharrivee=$CDMSARRIVE[cdm-pos-translation];
 
 my $cdmwolofexempledepart='/database/lexGroup/phrWGroup/phrW/text()';
 my $cdmwolofexemplearrivee='/volume/article/bloc_sens/sens/exemples/exemple/exemple-wol/text()';
@@ -275,6 +313,24 @@ sub getNodeText {
           $text = $node->toString();
     }
 	return $text;
+}
+
+
+#cette fonction permet de récupérer les pointeurs cdm à partir du fichier metada.
+
+
+sub load_cdm {
+    my ($fichier)=@_;
+  open (IN,$fichier);
+  my %dico=();
+  while(my $ligne=<IN>){
+      
+      if($ligne=~/^\s*<(\S+)\s+xpath=\"([^\"]+[(\sd:lang=\"w+\"\")]?)/gi){
+           my $cdm=$1; my $xpath=$2; 
+           $dico{$cdm}=$xpath;
+      }
+  }
+  return %dico;
 }
 
 sub copiePointeurs {

@@ -49,7 +49,6 @@ $chemin = DICTIONNAIRES_SITE.$dico.'/';
 
 // appeler le script de réification
 
-
 $metadataFile = $chemin.$_POST['nomvolume'].'-metadata.xml';
   $doc = new DOMDocument();
   $doc->load($metadataFile);
@@ -73,7 +72,7 @@ $metadataFile = $chemin.$_POST['nomvolume'].'-metadata.xml';
 
   foreach($cdmentry as $entry)
   {
-   
+    
     if ($entry->hasAttribute("xpath")) {
         $xpathentry=$entry->getAttribute("xpath");
        $cdment=preg_replace('#.+/([^/]+)$#','$1',$xpathentry);
