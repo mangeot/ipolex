@@ -13,13 +13,20 @@ sub load_cdm {
   my %dico=();
   while(my $ligne=<IN>){
       
-      if($ligne=~/^\s*<(\S+)\s+xpath=\"([^\"]+[(\sd:lang=\"w+\"\")]?)/gi){
-           my $cdm=$1; my $xpath=$2; 
-           $dico{$cdm}=$xpath;
-      }
+      if($ligne=~/^\s*<(\S+)\s+xpath=\"([^\"]+)(\"\sd:lang=\")?(\w+)?/){
+           my $cdm=$1; my $xpath=$2;  my $lang = $4;
+           if ($ligne=~/d:lang/)
+           {
+           $dico{$cdm.$lang}=$xpath;}
+           else
+           {$dico{$cdm}=$xpath;}
   }
-  return %dico;
+ 
 }
+
+ return %dico;
+
+ }
 
 %dicoCdm=load_cdm($fichierXML);
 print Dumper(%dicoCdm);
