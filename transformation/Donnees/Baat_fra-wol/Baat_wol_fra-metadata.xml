@@ -30,7 +30,7 @@
 <cdm-pronunciation xpath="/database/lexGroup/uttW/text()"/>
 <cdm-pos xpath="/database/lexGroup/catWGroup/catW/text()"/>
 <cdm-definition xpath="/database/lexGroup/defWGroup/defW/text()"/>
-<cdm-sense-block xpath="/database/lexGroup/defWGroup/defW/text()"/>
+<cdm-sense xpath="/database/lexGroup/defWGroup"/>
 <cdm-translation xpath="/database/lexGroup/tradFlexGroup/tradFlex/text()" d:lang="fra" />
   <cdm-example xpath="/database/lexGroup/phrWGroup/tradPhrW/text()" d:lang="fra" />
   <cdm-example xpath="/database/lexGroup/phrWGroup/phrW/text()" d:lang="wol" />
