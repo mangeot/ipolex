@@ -22,18 +22,22 @@
  <authors></authors>
  <comments></comments>
  <cdm-elements>
-			<cdm-volume xpath=""/>
-			<cdm-entry xpath=""/>
-			<cdm-entry-id xpath="/@id"/>
-			<cdm-headword xpath="/text()"/>
-			<cdm-pronunciation xpath="/text()"/>
-			<cdm-pos xpath="/text()"/>
-			<cdm-definition xpath="/text()"/>
-			<cdm-sense xpath=""/>
-			<cdm-example xpath=""/>
+			<cdm-volume xpath="/volume"/>
+			<cdm-entry xpath="/volume/article"/>
+			<cdm-entry-id xpath="/volume/article/@id"/>
+			<cdm-headword xpath="/volume/article/bloc_forme/mot_vedette/text()"/>
+			<cdm-headword-variant xpath="/volume/article/bloc_forme/variante/text()"/>
+			<cdm-pronunciation xpath="/volume/article/bloc_forme/prononciation/text()"/>
+			<cdm-pos xpath="/volume/article/catégorie_grammaticale/text()"/>
+			<cdm-classe-nominale xpath="/volume/article/classe_nominale/text()"/>
+			<cdm-sense xpath="/volume/article/bloc_sens/sens"/>
+			<cdm-definition xpath="/volume/article/bloc_sens/sens/définition/text()"/>
+			<cdm-translation xpath="/volume/article/bloc_sens/sens/bloc_traduction/traduction_française/text()" d:lang="fra"/>
+			<cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-wol/text()" d:lang="wol"/>
+			<cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-fra/text()" d:lang="fra"/>
 	</cdm-elements>
 	<administrators>
-		  <user-ref name="Mouhamadou KHOULE"/>
+		  <user-ref name="khoule"/>
  </administrators>
  <volume-ref xlink:href="dicoarrivee_wol_fra.xml" source-language="wol"/>
  <template-entry-ref xlink:href="dicoarrivee_wol_fra-template.xml"/>
