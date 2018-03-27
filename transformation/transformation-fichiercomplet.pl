@@ -66,29 +66,6 @@ my $xmlarrivee = do { local $/; <$MODELEFILE> };
 
 #print STDERR "XMLarrivée : [",$xmlarrivee,"]",$entreeModele;
 
-  <cdm-volume xpath="/database"/>
-<cdm-entry xpath="/database/lexGroup"/>
-<cdm-entry-id xpath="/database/lexGroup/@id"/>
-<cdm-headword xpath="/database/lexGroup/lex/text()"/>
-<cdm-headword-variant xpath="/database/lexGroup/variante/text()"/>
-<cdm-pronunciation xpath="/database/lexGroup/uttW/text()"/>
-<cdm-pos xpath="/database/lexGroup/catWGroup/catW/text()"/>
-<cdm-definition xpath="/database/lexGroup/defWGroup/defW/text()"/>
-<cdm-translation xpath="/database/lexGroup/tradFlexGroup/tradFlex/text()" d:lang="fra" />
-  <cdm-example-block xpath="/database/lexGroup/phrWGroup"/>
-<cdm-example xpath="/database/lexGroup/phrWGroup/tradPhrW/text()" d:lang="fra" />
-  <cdm-example xpath="/database/lexGroup/phrWGroup/phrW/text()" d:lang="wol" />
-  <cdm-classe-nominale xpath="/database/lexGroup/catWGroup/clasW/text()" index="true"  />	
-  		<cdm-source-mot-vedette xpath="/database/lexGroup/SrcLW/text()" index="true"  />	
-  		<cdm-lexeme-source xpath="/database/lexGroup/lexSrcW/text()" index="true"  />	
-  		<cdm-pos-translation xpath="/database/lexGroup/tradFlexGroup/catF/text()" index="true"  />	
-  		<cdm-synonyme xpath="/database/lexGroup/synW/text()" index="true"  />	
-  		<cdm-homonyme xpath="/database/lexGroup/homW/text()" index="true"  />	
-  		<cdm-note-usage xpath="/database/lexGroup/nusW/text()" index="true"  />	
-  		<cdm-derive-bloc xpath="/database/lexGroup/exDerWGroup" index="true"  />	
-  		<cdm-expression-derive xpath="/database/lexGroup/exDerW/text" index="true"  />	
-  		<cdm-source-definition xpath="/database/lexGroup/defWGroup/srcDW/text()" index="true"  />	
-
 my $nomDicoDepart = 'Thierno';
 
 my $cdmvolumedepart = $CDMSDEPART[cdm-voume];
