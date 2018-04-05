@@ -7,11 +7,11 @@
    xsi:schemaLocation="http://www-clips.imag.fr/geta/services/dml
    http://www-clips.imag.fr/geta/services/dml/dml.xsd"
    location="local"
-   creation-date="2016-08-25T14:22:10+02:00" 
-   installation-date="2016-08-25T14:22:10+02:00" 
-   last-modification-date="2016-08-25T14:22:10+02:00" 
-   hw-number="" 
-   encoding="" 
+   creation-date="2018-03-19T16:01:18+01:00" 
+   installation-date="2018-03-19T16:01:18+01:00" 
+   last-modification-date="2018-03-29T15:51:39+02:00" 
+   hw-number="1 " 
+   encoding="utf-8" 
    format="xml" 
    name="DicoArrivee_wol_fra"
    dbname="dicoarriveewolfra" 
@@ -19,26 +19,49 @@
    source-language="wol"
    target-languages="fra"
    reverse-lookup="false">
- <authors></authors>
+ <authors>Mouhamadou KHOULE</authors>
  <comments></comments>
  <cdm-elements>
-			<cdm-volume xpath="/volume"/>
-			<cdm-entry xpath="/volume/article"/>
-			<cdm-entry-id xpath="/volume/article/@id"/>
-			<cdm-headword xpath="/volume/article/bloc_forme/mot_vedette/text()"/>
-			<cdm-headword-variant xpath="/volume/article/bloc_forme/variante/text()"/>
-			<cdm-pronunciation xpath="/volume/article/bloc_forme/prononciation/text()"/>
-			<cdm-pos xpath="/volume/article/catégorie_grammaticale/text()"/>
-			<cdm-classe-nominale xpath="/volume/article/classe_nominale/text()"/>
-			<cdm-sense xpath="/volume/article/bloc_sens/sens"/>
-			<cdm-definition xpath="/volume/article/bloc_sens/sens/définition/text()"/>
-			<cdm-translation xpath="/volume/article/bloc_sens/sens/bloc_traduction/traduction_française/text()" d:lang="fra"/>
-			<cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-wol/text()" d:lang="wol"/>
-			<cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-fra/text()" d:lang="fra"/>
+  <cdm-volume xpath="/volume"/>
+<cdm-entry xpath="/volume/article"/>
+<cdm-entry-id xpath="/volume/article/@id"/>
+<cdm-headword xpath="/volume/article/bloc_forme/mot_vedette/text()"/>
+<cdm-headword-variant xpath="/volume/article/bloc_forme/variante/text()"/>
+<cdm-pronunciation xpath="/volume/article/bloc_forme/prononciation/text()"/>
+<cdm-pos xpath="/volume/article/bloc_forme/catégorie_grammaticale/text()"/>
+<cdm-definition xpath="/volume/article/bloc-sens/sens/définition/text()"/>
+<cdm-sense-block xpath="/volume/article/bloc-sens"/>
+<cdm-sense xpath="/volume/article/bloc-sens/sens"/>
+<cdm-translation xpath="/volume/article/bloc_sens/sens/bloc_traduction/traduction_française/text()" d:lang="fra" />
+  <cdm-example-block xpath="/volume/article/bloc-sens/exemples"/>
+<cdm-example xpath="/volume/article/bloc-sens/exemples/exemple/exemple-fra/text()" d:lang="fra" />
+  <cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-wol/text()" d:lang="wol" />
+  <cdm-classe-nominale xpath="/volume/article/classe_nominale/text()" index="true"  />	
+  		<cdm-source-mot-vedette xpath="/volume/article/bloc_forme/source_mot_vedette/text()" index="true"  />	
+  		<cdm-lexeme-source xpath="/volume/article/bloc_forme/lexème_source/text()" index="true"  />	
+  		<cdm-pos-translation xpath="/volume/article/bloc_sens/sens/bloc_traduction/catégorie_grammaticale_traduction_française/text()" index="true"  />	
+  		<cdm-synonyme xpath="/volume/article/bloc_sens/sens/synonyme" index="true"  />	
+  		<cdm-homonyme xpath="/volume/article/bloc_sens/sens/homonyme" index="true"  />	
+  		<cdm-note-usage xpath="/volume/article/bloc_sens/sens/note_usage" index="true"  />	
+  		<cdm-derive-bloc xpath="/volume/article/bloc_dérivés" index="true"  />	
+  		<cdm-expression-derive xpath="/volume/article/bloc_dérivés/expression_dérivée" index="true"  />	
+  		<cdm-source-definition xpath="/volume/article/bloc-sens/sens/source_définition/text()" index="true"  />	
+  		<links>
+  <link name="translation" xpath="/volume/entry/translation-ref">
+  		<volume xpath="target-volume-name"/>
+  <value xpath="@id"/>
+  <type xpath="@type"/>
+  <lang xpath="@lang"/>
+  <label xpath="@label"/>
+  <weight xpath="@weight"/>
+  </link>
+  		</links>
 	</cdm-elements>
-	<administrators>
-		  <user-ref name="khoule"/>
+<administrators>
+		  <user-ref name="mangeot"/>
  </administrators>
  <volume-ref xlink:href="dicoarrivee_wol_fra.xml" source-language="wol"/>
- <template-entry-ref xlink:href="dicoarrivee_wol_fra-template.xml"/>
-</volume-metadata>
+ <xmlschema-ref xlink:href="dicoarrivee_wol_fra.xsd"/>
+<template-entry-ref xlink:href="dicoarrivee_wol_fra-template.xml"/>
+<xsl-stylesheet name="DicoArrivee_wol_fra" default="true" xlink:href="DicoArrivee_wol_fra-view.xsl"/>
+ 	</volume-metadata>

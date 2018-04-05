@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 #
 # ./transformation-fichiercomplet.pl -i Donnees/anaan.xml -n 'Thierno' -m Donnees/Baat_fra-wol/Baat_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml > out.xml
-# ./transformation-fichiercomplet.pl -i Donnees/Baat_fra-wol/baat_wol_fra-prep.xml  -m Donnees/Baat_fra-wol/Baat_wol_fra-metadata.xml -n Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml > out.xml
-#
-#
+#./transformation-fichiercomplet.pl -i /donnees/Dicos/DicoCherif_fra-wol/dicocherif_wol_fra-prep.xml -n 'Cherif' -m /donnees/Dicos/DicoCherif_fra-wol/DicoCherif_wol_fra-metadata.xml -s /donnees/Dicos/DicoArrivee_fra-wol/DicoArrivee_wol_fra-metadata.xml -t /donnees/Dicos/DicoArrivee_fra-wol/dicoarrivee_wol_fra-template.xml > out.xml
+#./transformation-fichiercomplet.pl -i /donnees/Dicos/Baat_fra-wol/baat_wol_fra-prep.xml -n 'Thierno' -m /donnees/Dicos/Baat_fra-wol/Baat_wol_fra-metadata.xml -s /donnees/Dicos/DicoArrivee_fra-wol/DicoArrivee_wol_fra-metadata.xml -t /donnees/Dicos/DicoArrivee_fra-wol/dicoarrivee_wol_fra-template.xml > out.xml
+
 
 use strict;
 use warnings;
@@ -117,6 +117,7 @@ while( my $line = <$INFILE>)  {
 
 	copiePointeurs($CDMArbreDepart, $CDMArbreArrivee, $docdepart, $docarrivee);
 
+
 	#	print STDERR "fin des copiePointeurs\n";
 
 	my @entryarrivee = $docarrivee->findnodes($cdmentryarrivee);
@@ -215,19 +216,24 @@ sub getNodeText {
 # cette fonction permet de récupérer les pointeurs cdm à partir du fichier metada.
 sub load_cdm {
   my ($fichier)=@_;
-  open (IN, "<:encoding($unicode)", $fichier);
+  open (IN,$fichier);
   my %dico=();
   while(my $ligne=<IN>){
-      # attention, il faut prendre tout ce qui n'est pas " et '
-      if ($ligne=~/^\s*<(\S+)\s+xpath=["']([^"]+)["']/){
-           my $cdm=$1; my $xpath=$2; 
-#           print STDERR 'cdm: ',$cdm,' xpath:',$xpath,"\n";
-           $dico{$cdm}=$xpath;
-      }
+      
+      if($ligne=~/^\s*<(\S+)\s+xpath=\"([^\"]+)(\"\sd:lang=\")?(\w+)?/){
+           my $cdm=$1; my $xpath=$2;  my $lang = $4;
+           if ($ligne=~/d:lang/)
+           {
+           $dico{$cdm.$lang}=$xpath;}
+           else
+           {$dico{$cdm}=$xpath;}
   }
-  close(IN);
-  return %dico;
+ 
 }
+close(IN);
+ return %dico;
+
+ }
 
 # Cette fonction copie le résultat d'un pointeur XPath de départ dans un résultat de pointeur XPath d'arrivée
 # Elle est récursive

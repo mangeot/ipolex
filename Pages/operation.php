@@ -82,18 +82,20 @@ $metadataFile = $chemin.$_POST['nomvolume'].'-metadata.xml';
 
   }
 
-
-foreach($cdmheadword as $headword)
+foreach($cdmheadword as $pos)
   {
    
-    if ($headword->hasAttribute("xpath")) {
-        $xpathheadword=$headword->getAttribute("xpath");
-       $cdm_head=preg_replace('#/([a-z_]+/)+([a-z_]+)/(text\(\))$#','$2',$xpathheadword);
-       echo 'cdm-headword:'.$cdm_head;
-
-    }
-
+    if ($pos->hasAttribute("xpath")) {
+        $xpathpos=$pos->getAttribute("xpath");
+       $cdmh=preg_replace('#.+/([^/]+)/([^/]+)$#','$2',$xpathpos);
+       if ($cdmh=="text()"){
+      $cdmhead=preg_replace('#.+/([^/]+)/([^/]+)$#','$1',$xpathpos);
   }
+      else $cdmhead=$cdm;
+
+       echo 'cdm-headword:'.$cdmhead;
+    }
+}
 
 foreach($cdmpos as $pos)
   {
@@ -130,8 +132,8 @@ foreach($cdmpos as $pos)
       $datafile_tri = $chemin.strtolower($_POST['nomvolume']).'-prep.xml';
        $resultat_tri=$chemin . strtolower($_POST['nomvolume'])."-tri.xml";
     //  exec("/projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $_POST['ressource'] $cdment $cdm_head $cdmpos $_POST['nomvolume']_tri.xml");
-      echo "perl /projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $datafile_tri '$cdment' '$cdm_head' '$cdmpos' $resultat_tri";
-      exec("perl /projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $datafile_tri $cdment $cdm_head $cdmpos $resultat_tri");
+      echo "perl /projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $datafile_tri '$cdment' '$cdmhead' '$cdmpos' $resultat_tri";
+      exec("perl /projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $datafile_tri $cdment $cdmhead $cdmpos $resultat_tri");
       echo "opération de tri réussie";
       #}else
       # {echo "/projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $XML_FILE $cdment $cdm_head $cdmpos $VOLUME_NAME"."<br>probléme exec PERL  !!!!!!!!!!<br>";}
