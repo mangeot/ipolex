@@ -1,9 +1,8 @@
 #!/usr/bin/perl
 #
 # ./transformation-fichiercomplet.pl -i Donnees/anaan.xml -n 'Thierno' -m Donnees/Baat_fra-wol/Baat_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml > out.xml
-#./transformation-fichiercomplet.pl -i /donnees/Dicos/DicoCherif_fra-wol/dicocherif_wol_fra-prep.xml -n 'Cherif' -m /donnees/Dicos/DicoCherif_fra-wol/DicoCherif_wol_fra-metadata.xml -s /donnees/Dicos/DicoArrivee_fra-wol/DicoArrivee_wol_fra-metadata.xml -t /donnees/Dicos/DicoArrivee_fra-wol/dicoarrivee_wol_fra-template.xml > out.xml
-#./transformation-fichiercomplet.pl -i /donnees/Dicos/Baat_fra-wol/baat_wol_fra-prep.xml -n 'Thierno' -m /donnees/Dicos/Baat_fra-wol/Baat_wol_fra-metadata.xml -s /donnees/Dicos/DicoArrivee_fra-wol/DicoArrivee_wol_fra-metadata.xml -t /donnees/Dicos/DicoArrivee_fra-wol/dicoarrivee_wol_fra-template.xml > out.xml
-
+# ./transformation-fichiercomplet.pl -i Donnees/Baat_fra-wol/baat_wol_fra-prep.xml  -m Donnees/Baat_fra-wol/Baat_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -n 'Thierno' > out.xml
+#
 
 use strict;
 use warnings;
@@ -13,6 +12,8 @@ use XML::DOM;
 use XML::DOM::XPath;
 use Data::Dumper;
 use Getopt::Long; # pour gérer les arguments.
+
+use Storable qw(freeze thaw); # hard copy
 
 my $encoding = "UTF-8";
 my $unicode = "UTF-8";
@@ -69,6 +70,7 @@ my %CDMSDEPART=load_cdm($metaEntree);
 #print STDERR "load cdm arrivée:\n";
 my %CDMSARRIVEE=load_cdm($metaSortie);
 
+my %cdmsarrivee =%{thaw freeze \%CDMSARRIVEE};
 
 # print STDERR "Récupération de quelques pointeurs CDM utiles pour la suite\n";
 my $cdmvolumedepart = delete($CDMSDEPART{'cdm-volume'});
@@ -80,7 +82,7 @@ my $cdmentryarrivee = delete($CDMSARRIVEE{'cdm-entry'});
 my $cdmheadworddepart = $CDMSDEPART{'cdm-headword'};
 
 my $CDMArbreDepart = arbre_cdm(\%CDMSDEPART);
-my $CDMArbreArrivee = arbre_cdm(\%CDMSARRIVEE);
+my $CDMArbreArrivee = arbre_cdm_complet(\%CDMSARRIVEE);
 
 print STDERR "arbredepart: \n",Dumper($CDMArbreDepart);
 print STDERR "arbrearrivee: \n",Dumper($CDMArbreArrivee);
@@ -117,7 +119,6 @@ while( my $line = <$INFILE>)  {
 
 	copiePointeurs($CDMArbreDepart, $CDMArbreArrivee, $docdepart, $docarrivee);
 
-
 	#	print STDERR "fin des copiePointeurs\n";
 
 	my @entryarrivee = $docarrivee->findnodes($cdmentryarrivee);
@@ -140,8 +141,6 @@ while( my $line = <$INFILE>)  {
 }
 #print STDERR "Fin transformation fichier\n";
 print $OUTFILE $closedtagvolumearrivee;
-
-
 
 
 # Cette fonction permet de calculer la différence entre deux XPath
@@ -216,7 +215,7 @@ sub getNodeText {
 # cette fonction permet de récupérer les pointeurs cdm à partir du fichier metada.
 sub load_cdm {
   my ($fichier)=@_;
-  open (IN,$fichier);
+  open (IN, "<:encoding($unicode)", $fichier);
   my %dico=();
   while(my $ligne=<IN>){
       
@@ -251,7 +250,6 @@ sub copiePointeurs {
 		if ($pointeurArrivee) {
 			my @pointeursArrivee = @$pointeurArrivee;
 			$pointeurArrivee = $pointeursArrivee[0];
-		
 			# ATTENTION : supprimer le / final sinon le module xpath bugue !
 			$pointeurDepart =~ s/\/$//;
 			$pointeurArrivee =~ s/\/$//;
@@ -265,27 +263,37 @@ sub copiePointeurs {
 				my $noeudArriveeParent = $noeudArrivee->getParentNode();
 				my $noeudArriveeSuivant = $noeudArrivee->getNextSibling();
 				my @noeudsDepart = $ancetreDepart->findnodes($pointeurDepart);
-				if (scalar(@noeudsDepart)>0) 	{$noeudArriveeParent->removeChild($noeudArrivee);}
+				if (scalar(@noeudsDepart)>1) {
+					$noeudArriveeParent->removeChild($noeudArrivee);
+				}
 				foreach my $noeudDepart (@noeudsDepart) {
-					my $noeudClone = $noeudArrivee->cloneNode(1);
-					$noeudClone->setOwnerDocument($noeudArrivee->getOwnerDocument());
-					if (scalar(@pointeursDepart)>1 && scalar(@pointeursArrivee)>1) {
+					my $noeudClone = $noeudArrivee;
+					if (scalar(@noeudsDepart)>1) {
+						$noeudClone = $noeudArrivee->cloneNode(1);
+						$noeudClone->setOwnerDocument($noeudArrivee->getOwnerDocument());
+					}
+					if (scalar(@pointeursDepart)>1) {
 						my $descendantsDepart = $pointeursDepart[1];
-						my $descendantsArrivee = $pointeursArrivee[1];
+						my $descendantsArrivee = \%ArbreArrivee;
+						if (scalar(@pointeursArrivee)>1) {
+							$descendantsArrivee = $pointeursArrivee[1];
+						}
 #						print STDERR "Appel récursif : copiePointeurs\n";
-						copiePointeurs($descendantsDepart,$descendantsArrivee,$noeudDepart,$noeudClone);
+						copiePointeurs($descendantsDepart,$descendantsArrivee, $noeudDepart,$noeudClone);
 					}
 					else {
 						my $noeudTexte = getNodeText($noeudDepart);
 						print STDERR "noeudTexte: $noeudTexte\n";
 						$noeudClone->addText($noeudTexte);
 					}
+					if (scalar(@noeudsDepart)>1) {
 					# si la variante a un noeud suivant
-					if ($noeudArriveeSuivant) {
-						$noeudArriveeParent->insertBefore($noeudClone,$noeudArriveeSuivant);
-					}
-					else { # sinon
-						$noeudArriveeParent->appendChild($noeudClone);
+						if ($noeudArriveeSuivant) {
+							$noeudArriveeParent->insertBefore($noeudClone,$noeudArriveeSuivant);
+						}
+						else { # sinon
+							$noeudArriveeParent->appendChild($noeudClone);
+						}
 					}
 				}
 			}
@@ -342,6 +350,58 @@ sub arbre_cdm {
 				$tableauDepart->{$secondkey} = \@spointeur;
 				delete ($tableauDepart->{$firstkey});
 				$j = $keyssize;
+			}
+			else {
+				$j++;
+			}
+		}
+		$i++;
+	}
+	return $tableauDepart;
+}
+
+sub arbre_cdm_complet {
+	my $tableauDepart = $_[0];
+#	print STDERR Dumper($tableauDepart);
+	my @keys = reverse sort { $tableauDepart->{$a} cmp $tableauDepart->{$b} } keys %{ $tableauDepart };
+#	print STDERR Dumper(\@keys);
+	foreach my $key (keys %{ $tableauDepart }) {
+		my $pointeur = $tableauDepart->{$key};
+		my @feuille = ( $pointeur );
+		$tableauDepart->{$key} = \@feuille;
+	}	
+	my $i=0;
+	my $keyssize = scalar(@keys);
+	foreach my $firstkey (@keys) {
+		print STDERR "FK: $firstkey\n";
+		my $fpointeur = $tableauDepart->{$firstkey};
+		my @fpointeur = @$fpointeur;
+		$fpointeur = $fpointeur[0];
+		my $j=$i+1;
+		while ($j<$keyssize) {
+			my $secondkey = $keys[$j];
+			print STDERR "$firstkey , $secondkey\n";
+			my $spointeur = $tableauDepart->{$secondkey};
+			my @spointeur = @$spointeur;
+			$spointeur = $spointeur[0];
+			if ($fpointeur =~ s/^\Q$spointeur\E/\./) {
+				print STDERR 'sp:',$spointeur, 'fp:',$fpointeur,"\n";
+				my %hash = ();
+				if (scalar (@spointeur)>1) {
+					my $hash = $spointeur[1];
+					%hash = %$hash;
+				}
+				if (scalar(@fpointeur)>1) {
+					@fpointeur = ($fpointeur,$fpointeur[1]);
+				}
+				else {
+					@fpointeur = ($fpointeur);
+				}
+				$hash{$firstkey} = \@fpointeur;
+				@spointeur = ($spointeur, \%hash);
+				if ($secondkey eq 'cdm-example-block') { print STDERR "change eb\n";}
+				$tableauDepart->{$secondkey} = \@spointeur;
+ 				$j = $keyssize;
 			}
 			else {
 				$j++;
