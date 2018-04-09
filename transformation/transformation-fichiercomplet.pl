@@ -393,7 +393,7 @@ sub arbre_cdm_complet {
 			my $spointeur = $tableauDepart->{$secondkey};
 			my @spointeur = @$spointeur;
 			$spointeur = $spointeur[0];
-			if ($fpointeur =~ s/^\Q$spointeur\E/\./) {
+			if ($fpointeur =~ s/^\Q$spointeur\E(.)/\.$1/) {
 #				print STDERR 'sp:',$spointeur, 'fp:',$fpointeur,"\n";
 				my %hash = ();
 				if (scalar (@spointeur)>1) {
