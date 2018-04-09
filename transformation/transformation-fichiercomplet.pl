@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 #
 # Transformation extrait : 
 # ./transformation-fichiercomplet.pl -i Donnees/anaan.xml -n 'Thierno' -m Donnees/Baat_fra-wol/Baat_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml > out.xml
@@ -56,8 +56,6 @@ if (! ($entreeModele && $metaEntree && $metaSortie)) {&help;};
 if (defined $help) {&help;};
 
 
-binmode(STDERR, ":utf8");
-
 sub help {
 	print STDERR "Message d'aide, voir V_for_fusionInterne.pl pour exemple\n";
 	exit 0;
@@ -74,6 +72,9 @@ my %CDMSDEPART=load_cdm($metaEntree);
 #print STDERR "load cdm arrivée:\n";
 my %CDMSARRIVEE=load_cdm($metaSortie);
 
+# on initialise le parseur XML DOM
+my $parser= XML::DOM::Parser->new();
+
 # print STDERR "Récupération de quelques pointeurs CDM utiles pour la suite\n";
 my $cdmvolumedepart = delete($CDMSDEPART{'cdm-volume'});
 my $cdmvolumearrivee = delete($CDMSARRIVEE{'cdm-volume'});
@@ -83,6 +84,7 @@ my $cdmentryarrivee = delete($CDMSARRIVEE{'cdm-entry'});
 
 my $cdmheadworddepart = $CDMSDEPART{'cdm-headword'};
 
+# print STDERR "Transformation des tables CDM en arbres\n";
 my $CDMArbreDepart = arbre_cdm(\%CDMSDEPART);
 my $CDMArbreArrivee = arbre_cdm_complet(\%CDMSARRIVEE);
 
@@ -101,14 +103,12 @@ my $closedtagvolumearrivee = xpath2closedtag($cdmvolumearrivee);
 # donc on coupe après une balise de fin d'article.
 $/ = $closedtagentrydepart;
 
-my $parser= XML::DOM::Parser->new();
-
 # On imprime le début du fichier résultat = en-tête XML
 print $OUTFILE '<?xml version="1.0" encoding="UTF-8" ?>
 ';
 print $OUTFILE $opentagvolumearrivee,"\n";
 
-# boucle principale sur chaque entrée
+# Boucle principale sur chaque entrée
 while( my $line = <$INFILE>)  {   
 
 	$line = $headerdepart . $line . $footerdepart;
@@ -117,10 +117,9 @@ while( my $line = <$INFILE>)  {
 	
 	my @headwords = $docdepart->findnodes($cdmheadworddepart);
 	my $headword = getNodeText($headwords[0]);
+	
 	print STDERR "Transformation article : $headword\n";
-
 	copiePointeurs($CDMArbreDepart, $CDMArbreArrivee, $docdepart, $docarrivee);
-
 	#	print STDERR "fin des copiePointeurs\n";
 
 	my @entryarrivee = $docarrivee->findnodes($cdmentryarrivee);
@@ -367,6 +366,9 @@ sub arbre_cdm {
 	return $tableauDepart;
 }
 
+# Cette fonction transforme un tableau de pointeurs CDM en arbre de pointeurs
+# les pointeurs enfants sont des descendants de l'arbre XML. Ils sont également conservés 
+# dans l'arbre de départ
 sub arbre_cdm_complet {
 	my $tableauDepart = $_[0];
 #	print STDERR Dumper($tableauDepart);
@@ -380,19 +382,19 @@ sub arbre_cdm_complet {
 	my $i=0;
 	my $keyssize = scalar(@keys);
 	foreach my $firstkey (@keys) {
-		print STDERR "FK: $firstkey\n";
+#		print STDERR "FK: $firstkey\n";
 		my $fpointeur = $tableauDepart->{$firstkey};
 		my @fpointeur = @$fpointeur;
 		$fpointeur = $fpointeur[0];
 		my $j=$i+1;
 		while ($j<$keyssize) {
 			my $secondkey = $keys[$j];
-			print STDERR "$firstkey , $secondkey\n";
+#			print STDERR "$firstkey , $secondkey\n";
 			my $spointeur = $tableauDepart->{$secondkey};
 			my @spointeur = @$spointeur;
 			$spointeur = $spointeur[0];
 			if ($fpointeur =~ s/^\Q$spointeur\E/\./) {
-				print STDERR 'sp:',$spointeur, 'fp:',$fpointeur,"\n";
+#				print STDERR 'sp:',$spointeur, 'fp:',$fpointeur,"\n";
 				my %hash = ();
 				if (scalar (@spointeur)>1) {
 					my $hash = $spointeur[1];
@@ -406,7 +408,7 @@ sub arbre_cdm_complet {
 				}
 				$hash{$firstkey} = \@fpointeur;
 				@spointeur = ($spointeur, \%hash);
-				if ($secondkey eq 'cdm-example-block') { print STDERR "change eb\n";}
+#				if ($secondkey eq 'cdm-example-block') { print STDERR "change eb\n";}
 				$tableauDepart->{$secondkey} = \@spointeur;
  				$j = $keyssize;
 			}
