@@ -1,8 +1,14 @@
 #!/usr/bin/perl
 #
+# Transformation extrait : 
 # ./transformation-fichiercomplet.pl -i Donnees/anaan.xml -n 'Thierno' -m Donnees/Baat_fra-wol/Baat_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml > out.xml
+#
+# Transformation dico Thierno : 
 # ./transformation-fichiercomplet.pl -i Donnees/Baat_fra-wol/baat_wol_fra-prep.xml  -m Donnees/Baat_fra-wol/Baat_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -n 'Thierno' > out.xml
 #
+# Transformation dico Chérif : 
+# ./transformation-fichiercomplet.pl -i Donnees/Baat_fra-wol/dicocherif_wol_fra-prep.xml  -m Donnees/Baat_fra-wol/DicoCherif_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -n 'Chérif' > out.xml
+
 
 use strict;
 use warnings;
@@ -12,8 +18,6 @@ use XML::DOM;
 use XML::DOM::XPath;
 use Data::Dumper;
 use Getopt::Long; # pour gérer les arguments.
-
-use Storable qw(freeze thaw); # hard copy
 
 my $encoding = "UTF-8";
 my $unicode = "UTF-8";
@@ -70,8 +74,6 @@ my %CDMSDEPART=load_cdm($metaEntree);
 #print STDERR "load cdm arrivée:\n";
 my %CDMSARRIVEE=load_cdm($metaSortie);
 
-my %cdmsarrivee =%{thaw freeze \%CDMSARRIVEE};
-
 # print STDERR "Récupération de quelques pointeurs CDM utiles pour la suite\n";
 my $cdmvolumedepart = delete($CDMSDEPART{'cdm-volume'});
 my $cdmvolumearrivee = delete($CDMSARRIVEE{'cdm-volume'});
@@ -91,13 +93,13 @@ print STDERR "arbrearrivee: \n",Dumper($CDMArbreArrivee);
 my $headerdepart = xpath2opentag($cdmvolumedepart);
 my $footerdepart = xpath2closedtag($cdmvolumedepart);
 
-my $closedtagentryarrivee = xpath2closedtag(xpathdifference($cdmentrydepart,$cdmvolumedepart));
+my $closedtagentrydepart = xpath2closedtag(xpathdifference($cdmentrydepart,$cdmvolumedepart));
 my $opentagvolumearrivee = xpath2opentag($cdmvolumearrivee, 'creation-date="' . $date . '"');
 my $closedtagvolumearrivee = xpath2closedtag($cdmvolumearrivee);
 
 # On va lire le fichier d'entrée article par article 
 # donc on coupe après une balise de fin d'article.
-$/ = $closedtagentryarrivee;
+$/ = $closedtagentrydepart;
 
 my $parser= XML::DOM::Parser->new();
 
@@ -268,10 +270,13 @@ sub copiePointeurs {
 				}
 				foreach my $noeudDepart (@noeudsDepart) {
 					my $noeudClone = $noeudArrivee;
+					# S'il y a plusieurs nœuds de départ, il faut cloner le nœud d'arrivée
 					if (scalar(@noeudsDepart)>1) {
 						$noeudClone = $noeudArrivee->cloneNode(1);
 						$noeudClone->setOwnerDocument($noeudArrivee->getOwnerDocument());
 					}
+					# S'il y a des pointeurs CDM descendants du pointeur courant, 
+					# on appelle récursivement copiePointeurs avec les descendants
 					if (scalar(@pointeursDepart)>1) {
 						my $descendantsDepart = $pointeursDepart[1];
 						my $descendantsArrivee = \%ArbreArrivee;
@@ -281,14 +286,16 @@ sub copiePointeurs {
 #						print STDERR "Appel récursif : copiePointeurs\n";
 						copiePointeurs($descendantsDepart,$descendantsArrivee, $noeudDepart,$noeudClone);
 					}
+					# Sinon, on recopie le texte
 					else {
 						my $noeudTexte = getNodeText($noeudDepart);
 						print STDERR "noeudTexte: $noeudTexte\n";
 						$noeudClone->addText($noeudTexte);
 					}
+					# S'il y a plusieurs nœuds de départ, il faut insérer le nœud d'arrivée
+					# cloné précédemment
 					if (scalar(@noeudsDepart)>1) {
-					# si la variante a un noeud suivant
-						if ($noeudArriveeSuivant) {
+						if ($noeudArriveeSuivant) { # si le nœud d'arrivée a un noeud suivant
 							$noeudArriveeParent->insertBefore($noeudClone,$noeudArriveeSuivant);
 						}
 						else { # sinon
