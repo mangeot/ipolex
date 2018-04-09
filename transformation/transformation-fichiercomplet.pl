@@ -1,8 +1,14 @@
 #!/usr/bin/perl
 #
+# Transformation extrait : 
 # ./transformation-fichiercomplet.pl -i Donnees/anaan.xml -n 'Thierno' -m Donnees/Baat_fra-wol/Baat_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml > out.xml
+#
+# Transformation dico Thierno : 
 # ./transformation-fichiercomplet.pl -i Donnees/Baat_fra-wol/baat_wol_fra-prep.xml  -m Donnees/Baat_fra-wol/Baat_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -n 'Thierno' > out.xml
 #
+# Transformation dico Chérif : 
+# ./transformation-fichiercomplet.pl -i Donnees/Baat_fra-wol/dicocherif_wol_fra-prep.xml  -m Donnees/Baat_fra-wol/DicoCherif_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -n 'Chérif' > out.xml
+
 
 use strict;
 use warnings;
@@ -91,13 +97,13 @@ print STDERR "arbrearrivee: \n",Dumper($CDMArbreArrivee);
 my $headerdepart = xpath2opentag($cdmvolumedepart);
 my $footerdepart = xpath2closedtag($cdmvolumedepart);
 
-my $closedtagentryarrivee = xpath2closedtag(xpathdifference($cdmentrydepart,$cdmvolumedepart));
+my $closedtagentrydepart = xpath2closedtag(xpathdifference($cdmentrydepart,$cdmvolumedepart));
 my $opentagvolumearrivee = xpath2opentag($cdmvolumearrivee, 'creation-date="' . $date . '"');
 my $closedtagvolumearrivee = xpath2closedtag($cdmvolumearrivee);
 
 # On va lire le fichier d'entrée article par article 
 # donc on coupe après une balise de fin d'article.
-$/ = $closedtagentryarrivee;
+$/ = $closedtagentrydepart;
 
 my $parser= XML::DOM::Parser->new();
 
