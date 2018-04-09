@@ -19,8 +19,6 @@ use XML::DOM::XPath;
 use Data::Dumper;
 use Getopt::Long; # pour gérer les arguments.
 
-use Storable qw(freeze thaw); # hard copy
-
 my $encoding = "UTF-8";
 my $unicode = "UTF-8";
 my $nomDicoDepart = '';
@@ -75,8 +73,6 @@ close $MODELEFILE;
 my %CDMSDEPART=load_cdm($metaEntree);
 #print STDERR "load cdm arrivée:\n";
 my %CDMSARRIVEE=load_cdm($metaSortie);
-
-my %cdmsarrivee =%{thaw freeze \%CDMSARRIVEE};
 
 # print STDERR "Récupération de quelques pointeurs CDM utiles pour la suite\n";
 my $cdmvolumedepart = delete($CDMSDEPART{'cdm-volume'});
