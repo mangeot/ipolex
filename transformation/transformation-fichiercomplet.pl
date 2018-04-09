@@ -270,10 +270,13 @@ sub copiePointeurs {
 				}
 				foreach my $noeudDepart (@noeudsDepart) {
 					my $noeudClone = $noeudArrivee;
+					# S'il y a plusieurs nœuds de départ, il faut cloner le nœud d'arrivée
 					if (scalar(@noeudsDepart)>1) {
 						$noeudClone = $noeudArrivee->cloneNode(1);
 						$noeudClone->setOwnerDocument($noeudArrivee->getOwnerDocument());
 					}
+					# S'il y a des pointeurs CDM descendants du pointeur courant, 
+					# on appelle récursivement copiePointeurs avec les descendants
 					if (scalar(@pointeursDepart)>1) {
 						my $descendantsDepart = $pointeursDepart[1];
 						my $descendantsArrivee = \%ArbreArrivee;
@@ -283,14 +286,16 @@ sub copiePointeurs {
 #						print STDERR "Appel récursif : copiePointeurs\n";
 						copiePointeurs($descendantsDepart,$descendantsArrivee, $noeudDepart,$noeudClone);
 					}
+					# Sinon, on recopie le texte
 					else {
 						my $noeudTexte = getNodeText($noeudDepart);
 						print STDERR "noeudTexte: $noeudTexte\n";
 						$noeudClone->addText($noeudTexte);
 					}
+					# S'il y a plusieurs nœuds de départ, il faut insérer le nœud d'arrivée
+					# cloné précédemment
 					if (scalar(@noeudsDepart)>1) {
-					# si la variante a un noeud suivant
-						if ($noeudArriveeSuivant) {
+						if ($noeudArriveeSuivant) { # si le nœud d'arrivée a un noeud suivant
 							$noeudArriveeParent->insertBefore($noeudClone,$noeudArriveeSuivant);
 						}
 						else { # sinon
