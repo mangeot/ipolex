@@ -36,8 +36,7 @@
   <cdm-example xpath="/dilaf/dog/sayu_tekki/misaal/nettali[@làkk='wo']/text()" d:lang="wol" />
   <cdm-classe-nominale xpath="/dilaf/dog/maas/text()" index="true"  />	
   		<cdm-synonyme xpath="/dilaf/dog/sayu_tekki/bokk_tekki/text()" index="true"  />	
-  		<cdm-derive-bloc xpath="/dilaf/dog/sayu_tekki/guddalinu_méngale" index="true"  />	
-  		<cdm-expression-derive xpath="/dilaf/dog/sayu_tekki/guddalinu_méngale/bind/text()" index="true"  />	
+  		<cdm-expression-derivee xpath="/dilaf/dog/sayu_tekki/guddalinu_méngale/bind/text()" index="true"  />	
   		<links>
   <link name="translation" xpath="/volume/entry/translation-ref">
   		<volume xpath="target-volume-name"/>

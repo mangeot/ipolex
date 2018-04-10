@@ -35,8 +35,8 @@ GetOptions(
   'modele|template|t=s'           => \$entreeModele, 
   'nom|name|n=s' 	=> \$nomDicoDepart, 
   'encodage|encoding|enc|c=s' 	=> \$encoding, 
-  'help|h'                	  	=> \$help, 
-  'verbeux|v'             	  	=> \$verbeux, 
+  'aide|help|h'                	  	=> \$help, 
+  'verbeux|verbose|v'             	  	=> \$verbeux, 
   );
  
 my $date = localtime;

@@ -42,7 +42,7 @@
   		<cdm-synonyme xpath="/volume/article/bloc_sens/sens/synonyme/text()" index="true"  />	
   		<cdm-homonyme xpath="/volume/article/bloc_sens/sens/homonyme/text()" index="true"  />	
   		<cdm-note-usage xpath="/volume/article/bloc_sens/sens/note_usage/text()" index="true"  />	
-  		<cdm-expression-derivee xpath="/volume/article/bloc_dérivés/expression_dérivée/text()" index="true"  />	
+  		<cdm-expression-derivee xpath="/volume/article/bloc_sens/sens/bloc_dérivés/expression_dérivée/text()" index="true"  />	
   		<cdm-source-definition xpath="/volume/article/bloc_sens/sens/source_définition/text()" index="true"  />	
   		<links>
   <link name="translation" xpath="/volume/entry/translation-ref">
