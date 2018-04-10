@@ -33,7 +33,8 @@ $chemin = DICTIONNAIRES_SITE.$dico.'/';
 
 // appeler le script de préparation sur donnes A et B
 
-// concatener les 2 fichiers de donnes A et B
+// concatener les 2 fichiers de donnees A et B
+// `cat fichierA.xml fichierB.xml > fichierC.xml`;
 
 // appeler le script de tri
 
