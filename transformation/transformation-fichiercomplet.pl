@@ -1,13 +1,16 @@
 #!/usr/bin/perl -w
 #
-# Transformation extrait : 
-# ./transformation-fichiercomplet.pl -i Donnees/anaan.xml -n 'Thierno' -m Donnees/Baat_fra-wol/Baat_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml > out.xml
+# Transformation extrait Thierno : 
+# ./transformation-fichiercomplet.pl -v -i Donnees/anaan.xml -n 'Thierno' -m Donnees/Baat_fra-wol/Baat_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml > out.xml
 #
 # Transformation dico Thierno : 
-# ./transformation-fichiercomplet.pl -i Donnees/Baat_fra-wol/baat_wol_fra-prep.xml  -m Donnees/Baat_fra-wol/Baat_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -n 'Thierno' > out.xml
+# ./transformation-fichiercomplet.pl -v -i Donnees/Baat_fra-wol/baat_wol_fra-prep.xml  -m Donnees/Baat_fra-wol/Baat_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -n 'Thierno' > out.xml
+#
+# Transformation extrait Cherif
+# ./transformation-fichiercomplet.pl -v -i Donnees/anaan.xml  -m Donnees/Baat_fra-wol/DicoCherif_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -n 'Chérif' > out.xml
 #
 # Transformation dico Chérif : 
-# ./transformation-fichiercomplet.pl -i Donnees/Baat_fra-wol/dicocherif_wol_fra-prep.xml  -m Donnees/Baat_fra-wol/DicoCherif_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -n 'Chérif' > out.xml
+# ./transformation-fichiercomplet.pl -v -i Donnees/Baat_fra-wol/dicocherif_wol_fra-prep.xml  -m Donnees/Baat_fra-wol/DicoCherif_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -n 'Chérif' > out.xml
 
 
 use strict;
@@ -88,8 +91,8 @@ my $cdmheadworddepart = $CDMSDEPART{'cdm-headword'};
 my $CDMArbreDepart = arbre_cdm(\%CDMSDEPART);
 my $CDMArbreArrivee = arbre_cdm_complet(\%CDMSARRIVEE);
 
-print STDERR "arbredepart: \n",Dumper($CDMArbreDepart);
-print STDERR "arbrearrivee: \n",Dumper($CDMArbreArrivee);
+if ($verbeux) {print STDERR "arbredepart: \n",Dumper($CDMArbreDepart);}
+if ($verbeux) {print STDERR "arbrearrivee: \n",Dumper($CDMArbreArrivee);}
 
 # On reconstruit les balises ouvrantes et fermantes du volume 
 my $headerdepart = xpath2opentag($cdmvolumedepart);
@@ -118,7 +121,7 @@ while( my $line = <$INFILE>)  {
 	my @headwords = $docdepart->findnodes($cdmheadworddepart);
 	my $headword = getNodeText($headwords[0]);
 	
-	print STDERR "Transformation article : $headword\n";
+if ($verbeux) 	{print STDERR "Transformation article : $headword\n";}
 	copiePointeurs($CDMArbreDepart, $CDMArbreArrivee, $docdepart, $docarrivee);
 	#	print STDERR "fin des copiePointeurs\n";
 
@@ -247,6 +250,7 @@ sub copiePointeurs {
 		my $pointeurDepart = $ArbreDepart{$cle};
 		my @pointeursDepart = @$pointeurDepart;
 		$pointeurDepart = $pointeursDepart[0];
+		if ($verbeux) {print STDERR 'départ: ',$cle,' pointeur:',$pointeurDepart,"\n";}
 		my $pointeurArrivee = $ArbreArrivee{$cle};
 		if ($pointeurArrivee) {
 			my @pointeursArrivee = @$pointeurArrivee;
@@ -256,11 +260,12 @@ sub copiePointeurs {
 			$pointeurArrivee =~ s/\/$//;
 			$pointeurArrivee =~ s/\/text\(\)$//;
 
+			if ($verbeux) {print STDERR 'arrivée: ',$cle,' pointeur:',$pointeurArrivee,"\n";}
 			my @noeudsArrivee = $ancetreArrivee->findnodes($pointeurArrivee);
 			my $noeudArrivee = $noeudsArrivee[0];
 
 			if ($noeudArrivee) {
-				print STDERR 'cdmd: ', $pointeurDepart, ' cdma: ', $pointeurArrivee,"\n";
+				if ($verbeux) {print STDERR 'cdmd: ', $pointeurDepart, ' cdma: ', $pointeurArrivee,"\n";}
 				my $noeudArriveeParent = $noeudArrivee->getParentNode();
 				my $noeudArriveeSuivant = $noeudArrivee->getNextSibling();
 				my @noeudsDepart = $ancetreDepart->findnodes($pointeurDepart);
@@ -282,13 +287,13 @@ sub copiePointeurs {
 						if (scalar(@pointeursArrivee)>1) {
 							$descendantsArrivee = $pointeursArrivee[1];
 						}
-#						print STDERR "Appel récursif : copiePointeurs\n";
+						if ($verbeux) {print STDERR "Appel récursif : copiePointeurs\n";}
 						copiePointeurs($descendantsDepart,$descendantsArrivee, $noeudDepart,$noeudClone);
 					}
 					# Sinon, on recopie le texte
 					else {
 						my $noeudTexte = getNodeText($noeudDepart);
-						print STDERR "noeudTexte: $noeudTexte\n";
+						if ($verbeux) {print STDERR "noeudTexte: $noeudTexte\n";}
 						$noeudClone->addText($noeudTexte);
 					}
 					# S'il y a plusieurs nœuds de départ, il faut insérer le nœud d'arrivée
@@ -304,11 +309,11 @@ sub copiePointeurs {
 				}
 			}
 			else {
-	#			print STDERR "$noeudArrivee gives null value\n";
+				if ($verbeux) {print STDERR "noeudArrivee donne une valeur nulle\n";}
 			}
 		}
 		else {
-#			print STDERR "$pointeurArrivee gives null value\n";
+			if ($verbeux) {print STDERR "pointeurArrivee donne une valeur nulle\n";}
 		}
 	}	
 }

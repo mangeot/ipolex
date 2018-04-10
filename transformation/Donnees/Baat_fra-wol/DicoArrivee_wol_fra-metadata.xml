@@ -28,7 +28,7 @@
 <cdm-headword xpath="/volume/article/bloc_forme/mot_vedette/text()"/>
 <cdm-headword-variant xpath="/volume/article/bloc_forme/variante/text()"/>
 <cdm-pronunciation xpath="/volume/article/bloc_forme/prononciation/text()"/>
-<cdm-pos xpath="/volume/article/bloc_forme/catégorie_grammaticale/text()"/>
+<cdm-pos xpath="/volume/article/catégorie_grammaticale/text()"/>
 <cdm-definition xpath="/volume/article/bloc_sens/sens/définition/text()"/>
 <cdm-sense xpath="/volume/article/bloc_sens/sens"/>
 <cdm-translation xpath="/volume/article/bloc_sens/sens/bloc_traduction/traduction_française/text()" d:lang="fra" />
@@ -43,7 +43,7 @@
   		<cdm-homonyme xpath="/volume/article/bloc_sens/sens/homonyme/text()" index="true"  />	
   		<cdm-note-usage xpath="/volume/article/bloc_sens/sens/note_usage/text()" index="true"  />	
   		<cdm-expression-derivee xpath="/volume/article/bloc_dérivés/expression_dérivée/text()" index="true"  />	
-  		<cdm-source-definition xpath="/volume/article/bloc-sens/sens/source_définition/text()" index="true"  />	
+  		<cdm-source-definition xpath="/volume/article/bloc_sens/sens/source_définition/text()" index="true"  />	
   		<links>
   <link name="translation" xpath="/volume/entry/translation-ref">
   		<volume xpath="target-volume-name"/>
