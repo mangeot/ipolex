@@ -1,6 +1,8 @@
 #!/usr/bin/perl
 
-## pb : comparaison de bɑɲcoh et bɑŋkāɘt // vérifier les tris et locales
+
+# ./V_for_FusionInterne_wol.pl -v -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -from Donnees/Baat_fra-wol/dicoThiernoTransforme.xml -to out.xml
+#
 # =======================================================================================================================================
 ######----- V_for_FusionInterne.pl -----#####
 # =======================================================================================================================================
@@ -16,7 +18,7 @@
 #             - La fusion ne modifie pas les deux fichiers sources
 #             - Création d'un journal des exécutions (LOG)
 # ---------------------------------------------------------------------------------------------------------------------------------------
-# Usage : perl V_for_FusionInterne.pl -v -from source1.xml -to out.xml 
+# Usage : perl V_for_FusionInterne.pl -v -metadata fichier-metadata.xml -from source1.xml -to out.xml 
 #
 # -v : affiche les informations du STDERR
 #
@@ -36,7 +38,7 @@
 ###--- METADIRECTIVES ---###
 use strict;
 use warnings;
-use utf8;
+use utf8::all;
 use locale;
 use IO::File; 
 use Getopt::Long; # pour gérer les arguments.
@@ -60,7 +62,7 @@ my ($verbeux, $help, $pretty_print, $locale) = ();
 GetOptions( 
   'date|time|t=s'             => \$date, # flag de type -date ou --date, ou -time ou --time, ou -t ou --t (=s : string)
   'source|base|in|one|from|i=s' => \$FichierEntree, 
-  'metasortie|mout|s=s'           => \$metaArrivee,
+  'metadonnees|metadata|m=s'           => \$metaArrivee,
   'sortie|out|to|o=s'           => \$FichierResultat, 
   'erreur|error|e=s'          => \$erreur, 
   'encodage|encoding|enc|f=s'   => \$encoding, 
@@ -91,17 +93,21 @@ my $collator = Unicode::Collate::->new();
 
  # on initialise le parseur XML DOM
 my $parser= XML::DOM::Parser->new();
-#print STDERR "load cdm métaArrivée:\n";
+print STDERR "load cdm métaArrivée:\n";
 my %CDMSARRIVEE=load_cdm($metaArrivee);
 # =======================================================================================================================================
 ###--- PROLOGUE ---###
-my $ref_root = $CDMSARRIVEE{'cdm-volume'}; # la racine (par exemple : <volume> ou <dictionary>).
-my $ref_entry = $CDMSARRIVEE{'cdm-entry'}; # l'élément de référence pour la fusion (pour MAM : 'entry' par exemple).
-my $ref_head = 'bloc_forme';
-my $ref_headword = $CDMSARRIVEE{'cdm-headword'}; # le sous-élément à comparer pour la fusion
-my $ref_sense = $CDMSARRIVEE{'cdm-sense'}; # le sous-élément qui sera récupéré puis inséré.
-my $ref_cat=$CDMSARRIVEE{'cdm-pos'};#le sous-élément à comparer dans le cas où ontrouve 2 entées de même headword.
+my $cdmentry = $CDMSARRIVEE{'cdm-entry'}; # l'élément de référence pour la fusion (pour MAM : 'entry' par exemple).
+my $cdmheadword = $CDMSARRIVEE{'cdm-headword'}; # le sous-élément à comparer pour la fusion
+my $cdmsense = $CDMSARRIVEE{'cdm-sense'}; # le sous-élément qui sera récupéré puis inséré.
+my $cdmcat=$CDMSARRIVEE{'cdm-pos'};#le sous-élément à comparer dans le cas où ontrouve 2 entées de même headword.
 # ------------------------------------------------------------------------
+
+my $ref_entry = xpath2opentag($cdmentry);
+my $ref_headword = xpath2opentag($cdmentry);
+my $ref_cat = xpath2opentag($cdmcat);
+my $ref_sense = xpath2opentag($cdmsense);
+my $closedtagentry = xpath2closedtag($cdmentry);
 
 
 # ------------------------------------------------------------------------
@@ -145,6 +151,7 @@ $writer->startTag
 	#		'http://www-clips.imag.fr/geta/services/dml/motamot_fra.xsd',
 	);
  
+
 # =======================================================================================================================================
 ###--- PREPARATION ---###
 my ($twig_base, $twig_one, $twig_two, $twig_axi);
@@ -221,18 +228,27 @@ my ($headword_one, $headword_two);
 my ($forme_one, $forme_two);
 my ($cat_one, $cat_two);
 
+print STDERR 'next_entry:';
+
 $entry_one = next_entry($twig_one, *FILEONE, \$entry_one); # obtenir la première entrée de la source 1.
-$forme_one = [$entry_one->findnodes ($ref_head)]->[0];
-$headword_one = $forme_one ? [$forme_one->findnodes ($ref_headword)]->[0]->text : undef;
+ exit 0;
+#$forme_one = [$entry_one->findnodes ($ref_head)]->[0];
+#$headword_one = $forme_one ? [$forme_one->findnodes ($ref_headword)]->[0]->text : undef;
+my @headwords_one = $entry_one->findnodes($cdmheadword);
+$headword_one = getNodeText($headwords_one[0]);
+print STDERR 'h1:',$headword_one;
+
 #$headword_one = $entry_one ? [$forme_one->findnodes ($ref_headword)]->[0]->text : undef;
 $entry_two = next_entry($twig_two, *FILEONE, \$entry_two); # obtenir la deuxième entrée de la source 1.
-$forme_two = [$entry_two->findnodes ($ref_head)]->[0];
-$headword_two = $forme_two ? [$forme_two->findnodes ($ref_headword)]->[0]->text : undef;
-$cat_one= $entry_one ? [$entry_one->findnodes ($ref_cat)]->[0]->text : undef;
-$cat_two = $entry_one ?[$entry_two->findnodes ($ref_cat)]->[0]->text : undef;
-print STDERR  'h1:',$headword_one;
-print  STDERR 'h2:',$headword_two;
+my @headwords_two = entry_two->findnodes ($ref_headword);
+$headword_two = getNodeText($headwords_two[0]);
+my @cats_one = $entry_one->findnodes ($cdmcat);
+$cat_one  = getNodeText($cats_one[0]);
+my @cats_two = $entry_two->findnodes ($cdmcat);
+$cat_two  = getNodeText($cats_two[0]);
 
+print STDERR 'h2:',$headword_two;
+exit 0;
 # ------------------------------------------------------------------------
 if ( defined $verbeux ) {&info('c');};
  
@@ -244,7 +260,7 @@ if ( defined $verbeux ) {&info('c');};
 # On écrit dans le fichier de sortie selon la comparaison.
 #my ($headword_one, $headword_two, $id_one, $id_two);
 # Le traitement continuera tant qu'il y a des entrées dans l'une ou l'autre source.
-my    $egaux = 0;
+my $egaux = 0;
 my $egaunotcat=0;
     while ($entry_one && $entry_two)
   { 
@@ -275,24 +291,19 @@ my $egaunotcat=0;
     }
       # pour avoir l'entrée suivante dans le fichier 1.
       $entry_one = $entry_two;
-	  $forme_one = $entry_one ? [$entry_one->findnodes ($ref_head)]->[0] : undef;
-	  $headword_one = $forme_one ? [$forme_one->findnodes ($ref_headword)]->[0]->text : undef;
+	  @headwords_one = $entry_one->findnodes($cdmheadword);
+	  $headword_one = getNodeText($headwords_one[0]);
 
-    my $cat_one_node00 = $entry_one ? [$entry_one->findnodes ($ref_cat)]->[0] : undef;
-        $cat_one = (ref($cat_one_node00)) ? $cat_one_node00->text : undef;
-      #  if (!(defined $cat_one)){
-       #   print"Erreur catégorie"; print "$headword_one";
-        #}
-
-   # $cat_one = $entry_one ?[$entry_one->findnodes ($ref_cat)]->[0]->text : undef;
+	  @cats_one = $entry_one->findnodes ($cdmcat);
+	  $cat_one  = getNodeText($cats_one[0]);
     
 
     $entry_two = next_entry($twig_two, *FILEONE, \$entry_two);
-	  $forme_two = $entry_two ? [$entry_two->findnodes ($ref_head)]->[0] : undef;
-	  $headword_two = $forme_two ? [$forme_two->findnodes ($ref_headword)]->[0]->text : undef;
-    my $cat_two_node0 = $entry_two ? [$entry_two->findnodes ($ref_cat)]->[0] : undef;
-   # $cat_two = ref([$cat_two_nodes]->[0])  &&  UNIVERSAL::can($r,'can') ? [$cat_two_nodes]->[0]->text : undef;
-    $cat_two = (ref($cat_two_node0)) ? $cat_two_node0->text : undef;
+	@headwords_two = entry_two->findnodes ($ref_headword);
+	$headword_two = getNodeText($headwords_two[0]);
+	
+	@cats_two = $entry_two->findnodes ($cdmcat);
+	$cat_two  = getNodeText($cats_two[0]);
 
     
 
@@ -316,11 +327,11 @@ my $egaunotcat=0;
         print "$headword_one";
        fusion ($entry_one, $entry_two);
         $entry_two = next_entry($twig_two, *FILEONE, \$entry_two);
-		$forme_two = [$entry_two->findnodes ($ref_head)]->[0];
-		$headword_two = $entry_two ? [$forme_two->findnodes ($ref_headword)]->[0]->text : undef;
-    my $cat_two_node000 = $entry_two ? [$entry_two->findnodes ($ref_cat)]->[0] : undef;
-   # $cat_two = ref([$cat_two_nodes]->[0])  &&  UNIVERSAL::can($r,'can') ? [$cat_two_nodes]->[0]->text : undef;
-    $cat_two = (ref($cat_two_node000)) ? $cat_two_node000->text : undef;
+		@headwords_two = entry_two->findnodes ($ref_headword);
+		$headword_two = getNodeText($headwords_two[0]);
+	
+		@cats_two = $entry_two->findnodes ($cdmcat);
+		$cat_two  = getNodeText($cats_two[0]);
     
       }
   }
@@ -349,6 +360,8 @@ sub next_entry
 my ($twig, $file, $entry) = @_;
 $$entry = undef;
 $/ = '</'.$ref_entry.'>';
+print STDERR 'cherche:', '</'.$ref_entry.'>';
+exit 0;
 while (!$$entry && !eof $file) 
 	{
 	my $xml = <$file>;
@@ -384,10 +397,77 @@ foreach my $sense_two ($entry_two->findnodes($ref_sense))
 #	}
   $sense_two->cut;
   my $last_elt = $entry_one->last_child($ref_sense);
-  $last_elt = $entry_one->last_child($ref_head) if !defined $last_elt;
   $sense_two->paste('after' => $last_elt);
   }
 return ($entry_one);
+}
+
+# ------------------------------------------------------------------------
+# Cette fonction permet de récupérer le texte dans un nœud DOM quel que soit le type de nœud
+sub getNodeText {
+	my $node = $_[0];
+	my $text = '';
+	if ($node->getNodeType == DOCUMENT_NODE) {
+    	$node = $node->getDocumentElement();
+	}
+	if ($node->getNodeType == TEXT_NODE || $node->getNodeType == CDATA_SECTION_NODE) {
+          $text = $node->getData();
+    }
+    elsif ($node->getNodeType == ATTRIBUTE_NODE) {
+          $text = $node->getValue();
+    }
+    elsif ($node->getNodeType == ELEMENT_NODE || $node->getNodeType == ENTITY_REFERENCE_NODE || $node->getNodeType == DOCUMENT_FRAGMENT_NODE) {
+    	foreach my $child ($node->getChildNodes()) {
+          $text .= getNodeText($child);
+        }
+    }
+    elsif ($node->getNodeType == COMMENT_NODE || $node->getNodeType == ENTITY_NODE || $node->getNodeType == PROCESSING_INSTRUCTION_NODE || $node->getNodeType == DOCUMENT_TYPE_NODE) {
+    	;
+    }
+    else {
+          $text = $node->toString();
+    }
+	return $text;
+}
+
+# Cette fonction convertit un XPath en balises ouvrantes
+sub xpath2opentag {
+	my $xpath = $_[0];
+	my $attribut = $_[1] || '';
+	if ($attribut ne '') {
+		$attribut = ' ' . $attribut;
+	}
+	$xpath =~ s/\/$//;
+	$xpath =~ s/^.*\//</;
+	$xpath .= $attribut . '>';
+}
+
+# ------------------------------------------------------------------------
+# Cette fonction convertit un XPath en une seule balise fermante
+sub xpath2closedtag {
+	my $xpath = $_[0];
+	my @xpath = reverse split(/\//,$xpath);
+	my $tag = $xpath[0];
+	if ($tag ne '') {
+		$tag = '</' . $tag . '>';	
+	}
+	return $tag;
+}
+
+# ------------------------------------------------------------------------
+# Cette fonction permet de calculer la différence entre deux XPath
+sub xpathdifference {
+	my $xpath = $_[0];
+	my $xpathcourt = $_[1];
+	$xpath =~ s/\/$//;
+	$xpathcourt =~ s/\/$//;
+	
+	my $len = length $xpathcourt;	
+	my $xpathcourt2 = substr($xpath,0,$len);
+	if ($xpathcourt eq $xpathcourt2) {
+		$xpath = substr($xpath,$len);
+	}
+	return $xpath;
 }
  
 # ------------------------------------------------------------------------

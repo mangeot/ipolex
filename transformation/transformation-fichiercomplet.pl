@@ -39,6 +39,11 @@ GetOptions(
   'verbeux|verbose|v'             	  	=> \$verbeux, 
   );
  
+ 
+my %CDMPOSGENERIQUE = ('turu bokkale' => 'nom',
+
+					);
+ 
 my $date = localtime;
 my $INFILE;
 my $OUTFILE;
@@ -95,12 +100,12 @@ if ($verbeux) {print STDERR "arbredepart: \n",Dumper($CDMArbreDepart);}
 if ($verbeux) {print STDERR "arbrearrivee: \n",Dumper($CDMArbreArrivee);}
 
 # On reconstruit les balises ouvrantes et fermantes du volume 
-my $headerdepart = xpath2opentag($cdmvolumedepart);
-my $footerdepart = xpath2closedtag($cdmvolumedepart);
+my $headerdepart = xpath2opentags($cdmvolumedepart);
+my $footerdepart = xpath2closedtags($cdmvolumedepart);
 
-my $closedtagentrydepart = xpath2closedtag(xpathdifference($cdmentrydepart,$cdmvolumedepart));
-my $opentagvolumearrivee = xpath2opentag($cdmvolumearrivee, 'creation-date="' . $date . '"');
-my $closedtagvolumearrivee = xpath2closedtag($cdmvolumearrivee);
+my $closedtagentrydepart = xpath2closedtags(xpathdifference($cdmentrydepart,$cdmvolumedepart));
+my $opentagvolumearrivee = xpath2opentags($cdmvolumearrivee, 'creation-date="' . $date . '"');
+my $closedtagvolumearrivee = xpath2closedtags($cdmvolumearrivee);
 
 # On va lire le fichier d'entrée article par article 
 # donc on coupe après une balise de fin d'article.
@@ -163,7 +168,7 @@ sub xpathdifference {
 }
 
 # Cette fonction convertit un XPath en balises ouvrantes
-sub xpath2opentag {
+sub xpath2opentags {
 	my $xpath = $_[0];
 	my $attribut = $_[1] || '';
 	if ($attribut ne '') {
@@ -176,7 +181,7 @@ sub xpath2opentag {
 }
 
 # Cette fonction convertit un XPath en balises fermantes
-sub xpath2closedtag {
+sub xpath2closedtags {
 	my $xpath = $_[0];
 	my $tags = '';
 	my @xpath = reverse split(/\//,$xpath);
@@ -266,6 +271,8 @@ sub copiePointeurs {
 
 			if ($noeudArrivee) {
 				if ($verbeux) {print STDERR 'cdmd: ', $pointeurDepart, ' cdma: ', $pointeurArrivee,"\n";}
+				
+				
 				my $noeudArriveeParent = $noeudArrivee->getParentNode();
 				my $noeudArriveeSuivant = $noeudArrivee->getNextSibling();
 				my @noeudsDepart = $ancetreDepart->findnodes($pointeurDepart);
@@ -293,6 +300,10 @@ sub copiePointeurs {
 					# Sinon, on recopie le texte
 					else {
 						my $noeudTexte = getNodeText($noeudDepart);
+						if ($pointeurDepart eq 'cdm-pos-generique') {
+							$noeudTexte = $CDMPOSGENERIQUE{$noeudTexte};
+						}	
+
 						if ($verbeux) {print STDERR "noeudTexte: $noeudTexte\n";}
 						$noeudClone->addText($noeudTexte);
 					}

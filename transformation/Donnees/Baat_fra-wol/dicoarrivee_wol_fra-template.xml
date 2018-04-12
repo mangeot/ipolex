@@ -8,7 +8,7 @@
 	  <variante/>
 	  <prononciation/>
     </bloc_forme>
-    <catégorie_grammaticale/>
+    <catégorie_grammaticale generique=""/>
     <classe_nominale/>
    <bloc_sens>
      <sens id="">
