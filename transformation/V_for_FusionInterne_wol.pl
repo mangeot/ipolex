@@ -40,6 +40,8 @@ use utf8;
 use locale;
 use IO::File; 
 use Getopt::Long; # pour gérer les arguments.
+use XML::DOM;
+use XML::DOM::XPath;
 
 #use Text::StripAccents; # non inclus dans le core de Perl
 use XML::Twig; # (non inclus dans le core de Perl), pour le parsing de la source.
@@ -49,38 +51,33 @@ use XML::Writer; # (non inclus dans le core de Perl), pour le fichier de sortie.
 use Unicode::Collate;
 
 
-binmode(STDOUT, ":utf8");
-binmode(STDERR, ":utf8");
-
 use POSIX qw(locale_h setlocale);
+my $unicode = "UTF-8";
 
-# =======================================================================================================================================
-###--- PROLOGUE ---###
-my $ref_root = 'database'; # la racine (par exemple : <volume> ou <dictionary>).
-my $ref_entry = 'article'; # l'élément de référence pour la fusion (pour MAM : 'entry' par exemple).
-my $ref_head = 'bloc_forme';
-my $ref_headword = 'mot_vedette'; # le sous-élément à comparer pour la fusion
-my $ref_sense = 'sens'; # le sous-élément qui sera récupéré puis inséré.
-my $ref_cat='catégorie_grammaticale';#le sous-élément à comparer dans le cas où ontrouve 2 entées de même headword.
-# ------------------------------------------------------------------------
 ##-- Gestion des options --##
-my ($date, $FichierOne, $FichierTwo, $FichierResultat, $erreur, $encoding) = ();
+my ($date, $FichierEntree, $metaArrivee, $FichierResultat, $erreur, $encoding) = ();
 my ($verbeux, $help, $pretty_print, $locale) = ();
 GetOptions( 
-  'date|time|t=s'        	    => \$date, # flag de type -date ou --date, ou -time ou --time, ou -t ou --t (=s : string)
-  'source|base|in|one|from|i=s' => \$FichierOne, 
+  'date|time|t=s'             => \$date, # flag de type -date ou --date, ou -time ou --time, ou -t ou --t (=s : string)
+  'source|base|in|one|from|i=s' => \$FichierEntree, 
+  'metasortie|mout|s=s'           => \$metaArrivee,
   'sortie|out|to|o=s'           => \$FichierResultat, 
-  'erreur|error|e=s'     	  	=> \$erreur, 
-  'encodage|encoding|enc|f=s' 	=> \$encoding, 
-  'help|h'                	  	=> \$help, 
-  'verbeux|v'             	  	=> \$verbeux, 
-  'print|pretty|p=s'       	  	=> \$pretty_print, 
-  'locale|locale|l=s'				=> \$locale,
+  'erreur|error|e=s'          => \$erreur, 
+  'encodage|encoding|enc|f=s'   => \$encoding, 
+  'help|h'                      => \$help, 
+  'verbeux|v'                   => \$verbeux, 
+  'print|pretty|p=s'            => \$pretty_print, 
+  'locale|locale|l=s'       => \$locale,
   );
  
+
 if (!(defined $date)) {$date = localtime;};
-if (!(defined $FichierOne)) {&help;}; # si le fichier source n'est pas spécifié, affichage de l'aide.
-if (!(defined $FichierResultat)) {$FichierResultat = "/home/khoule/Documents/dico_v118_fusion.XML";};
+if (!(defined $FichierEntree)) {&help;}; # si le fichier source n'est pas spécifié, affichage de l'aide.
+if (! ($metaArrivee)) {&help;}; # si le fichier metaArrivee n'est pas spécifié, affichage de l'aide.;
+if (defined $help) {&help;};
+
+if (!(defined $FichierResultat)) {&help;};
+
 if (!(defined $erreur)) {$erreur = "|ERROR| : problem opening file :";};
 if (!(defined $encoding)) {$encoding = "UTF-8";};
 if (!(defined $pretty_print)) {$pretty_print = "indented";};
@@ -92,6 +89,21 @@ if (defined $help) {&help;};
 
 my $collator = Unicode::Collate::->new();
 
+ # on initialise le parseur XML DOM
+my $parser= XML::DOM::Parser->new();
+#print STDERR "load cdm métaArrivée:\n";
+my %CDMSARRIVEE=load_cdm($metaArrivee);
+# =======================================================================================================================================
+###--- PROLOGUE ---###
+my $ref_root = $CDMSARRIVEE{'cdm-volume'}; # la racine (par exemple : <volume> ou <dictionary>).
+my $ref_entry = $CDMSARRIVEE{'cdm-entry'}; # l'élément de référence pour la fusion (pour MAM : 'entry' par exemple).
+my $ref_head = 'bloc_forme';
+my $ref_headword = $CDMSARRIVEE{'cdm-headword'}; # le sous-élément à comparer pour la fusion
+my $ref_sense = $CDMSARRIVEE{'cdm-sense'}; # le sous-élément qui sera récupéré puis inséré.
+my $ref_cat=$CDMSARRIVEE{'cdm-pos'};#le sous-élément à comparer dans le cas où ontrouve 2 entées de même headword.
+# ------------------------------------------------------------------------
+
+
 # ------------------------------------------------------------------------
 # Autres variables :
 my $count_one = 0; # pour compter les entrées issues de source1.
@@ -101,7 +113,7 @@ setlocale(LC_ALL,$locale); # pour indiquer la locale
 
 # ------------------------------------------------------------------------
 # Input/ Output
-open (FILEONE, "<:encoding($encoding)",$FichierOne) or die ("$erreur $!\n");
+open (FILEONE, "<:encoding($encoding)",$FichierEntree) or die ("$erreur $!\n");
 #open (STDERR, ">:encoding($encoding)", 'toto.txt') or die ("$erreur $!\n");
   
 # ------------------------------------------------------------------------
@@ -122,15 +134,15 @@ $writer->xmlDecl($encoding);
 $writer->startTag
 	(
 	"volume",
-	'name'              => "dico_wol_fr_" . $locale,
-	'source-language'   => $locale,
+#	'name'              => "dico_wol_fr_" . $locale,
+#	'source-language'   => $locale,
 	'creation-date'     => $date,
-	'xmlns:d'  	        => 'http://www-clips.imag.fr/geta/services/dml',
-	'xmlns'			    => 'http://www-clips.imag.fr/geta/services/dml/motamot',
-	'xmlns:m'			=> 'http://www-clips.imag.fr/geta/services/dml/motamot',
-	'xmlns:xsi'		    => 'http://www.w3.org/2001/XMLSchema-instance',
-	'xsi:schemaLocation'=> 'http://www-clips.imag.fr/geta/services/dml/motamot ' . 
-			'http://www-clips.imag.fr/geta/services/dml/motamot_fra.xsd',
+#	'xmlns:d'  	        => 'http://www-clips.imag.fr/geta/services/dml',
+#	'xmlns'			    => 'http://www-clips.imag.fr/geta/services/dml/motamot',
+#	'xmlns:m'			=> 'http://www-clips.imag.fr/geta/services/dml/motamot',
+#	'xmlns:xsi'		    => 'http://www.w3.org/2001/XMLSchema-instance',
+	#'xsi:schemaLocation'=> 'http://www-clips.imag.fr/geta/services/dml/motamot ' . 
+	#		'http://www-clips.imag.fr/geta/services/dml/motamot_fra.xsd',
 	);
  
 # =======================================================================================================================================
@@ -181,6 +193,26 @@ sub entry_two {
   return 1;
 }
  
+ sub load_cdm {
+  my ($fichier)=@_;
+  open (IN, "<:encoding($unicode)", $fichier);
+  my %dico=();
+  while(my $ligne=<IN>){
+      
+      if($ligne=~/^\s*<(\S+)\s+xpath=\"([^\"]+)(\"\sd:lang=\")?(\w+)?/){
+           my $cdm=$1; my $xpath=$2;  my $lang = $4;
+           if ($ligne=~/d:lang/)
+           {
+           $dico{$cdm.$lang}=$xpath;}
+           else
+           {$dico{$cdm}=$xpath;}
+  }
+ 
+}
+close(IN);
+ return %dico;
+
+ }
 # ------------------------------------------------------------------------
 if ( defined $verbeux ) {&info('b');};
  
@@ -392,7 +424,7 @@ elsif ($info =~ 'd')
 	"==================================================\n",
 	"RAPPORT : ~~~~ $0 ~~~~\n",
 	"--------------------------------------------------\n",
-	"Fichier source : $FichierOne\n",
+	"Fichier source : $FichierEntree\n",
 	"--------------------------------------------------\n",
 	"Fichier final : $FichierResultat\n",
 	"--------------------------------------------------\n",
