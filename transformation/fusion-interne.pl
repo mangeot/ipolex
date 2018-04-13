@@ -104,7 +104,7 @@ my $cdmvolume = $CDMSARRIVEE{'cdm-volume'}; # le volume
 my $cdmentry = $CDMSARRIVEE{'cdm-entry'}; # l'élément de référence pour la fusion (pour MAM : 'entry' par exemple).
 my $cdmheadword = $CDMSARRIVEE{'cdm-headword'}; # le sous-élément à comparer pour la fusion
 my $cdmsense = $CDMSARRIVEE{'cdm-sense'}; # le sous-élément qui sera récupéré puis inséré.
-my $cdmcat=$CDMSARRIVEE{'cdm-pos-generique'};#le sous-élément à comparer dans le cas où on trouve 2 entées de même headword.
+my $cdmcat=$CDMSARRIVEE{'cdm-pos'};#le sous-élément à comparer dans le cas où on trouve 2 entées de même headword.
 # ------------------------------------------------------------------------
 
 # On reconstruit les balises ouvrantes et fermantes du volume 
@@ -288,8 +288,9 @@ my $i = 0;
 # Pour ceux du second fichier, il existera un décalage selon Sn sense (n = le nombre de <sense> dans le premier fichier).
 my $last_sense = '';
 foreach my $sense_one ($entry_one->findnodes($cdmsense)) {
-	$last_sense = $sense_one;
 	$i++;
+	$last_sense = $sense_one;
+  	$sense_one->setAttribute('id','s'.$i);
 }
 my $doc = $last_sense->getOwnerDocument();
 my $noeudParent = $last_sense->getParentNode();
