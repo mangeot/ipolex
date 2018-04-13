@@ -35,6 +35,9 @@
   <cdm-example-block xpath="/volume/article/bloc_sens/sens/exemples/exemple"/>
   <cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-fra/text()" d:lang="fra" />
   <cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-wol/text()" d:lang="wol" />
+  <cdm-source-block xpath="/volume/article/sources"/>
+  <cdm-source-entry xpath="/volume/article/sources/entree-source"/>
+  <cdm-source-entry-origin xpath="/volume/article/sources/entree-source/@provenance"/>
   <cdm-classe-nominale xpath="/volume/article/classe_nominale/text()" index="true"  />	
   		<cdm-source-mot-vedette xpath="/volume/article/bloc_forme/source_mot_vedette/text()" index="true"  />	
   		<cdm-lexeme-source xpath="/volume/article/bloc_forme/lexème_source/text()" index="true"  />	

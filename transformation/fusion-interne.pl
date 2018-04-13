@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 
-# ./V_for_FusionInterne_wol.pl -v -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -from Donnees/fusion.xml > out.xml
+# ./fusion-interne.pl -v -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -from Donnees/fusion.xml > out.xml
 #
 # =======================================================================================================================================
 ######----- V_for_FusionInterne.pl -----#####
@@ -104,7 +104,9 @@ my $cdmvolume = $CDMSARRIVEE{'cdm-volume'}; # le volume
 my $cdmentry = $CDMSARRIVEE{'cdm-entry'}; # l'élément de référence pour la fusion (pour MAM : 'entry' par exemple).
 my $cdmheadword = $CDMSARRIVEE{'cdm-headword'}; # le sous-élément à comparer pour la fusion
 my $cdmsense = $CDMSARRIVEE{'cdm-sense'}; # le sous-élément qui sera récupéré puis inséré.
-my $cdmcat=$CDMSARRIVEE{'cdm-pos'};#le sous-élément à comparer dans le cas où on trouve 2 entées de même headword.
+my $cdmcat=$CDMSARRIVEE{'cdm-pos'};#le sous-élément à comparer dans le cas où on trouve 2 entrées de même headword.
+my $cdmsourceblock=$CDMSARRIVEE{'cdm-source-block'};# pour recopier les entrées source
+my $cdmsourceentry=$CDMSARRIVEE{'cdm-source-entry'};# pour recopier les entrées source
 # ------------------------------------------------------------------------
 
 # On reconstruit les balises ouvrantes et fermantes du volume 
@@ -315,7 +317,17 @@ foreach my $sense_two ($entry_two->findnodes($cdmsense))
 	}
 	$last_sense = $sense_two;
   }
-return ($entry_one);
+  my @sourceblocks_one = $entry_one->findnodes($cdmsourceblock);
+  my @sourceblocks_two = $entry_two->findnodes($cdmsourceblock);
+  if (scalar(@sourceblocks_one)>0 && scalar(@sourceblocks_two)>0) {
+  	  my $sourceblockone = $sourceblocks_one[0];
+  	  my $sourceblocktwo = $sourceblocks_two[0];
+  	  foreach my $child ($sourceblocktwo->getChildNodes()) {
+  	  	$child->setOwnerDocument($doc);
+  	  	$sourceblockone->appendChild($child);
+  	  }
+  }
+  return ($entry_one);
 }
 
 # ------------------------------------------------------------------------

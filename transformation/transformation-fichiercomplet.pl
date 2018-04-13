@@ -97,6 +97,9 @@ my $cdmentryarrivee = delete($CDMSARRIVEE{'cdm-entry'});
 
 my $cdmheadworddepart = $CDMSDEPART{'cdm-headword'};
 
+my $cdmentrysource = $CDMSARRIVEE{'cdm-source-entry'};
+my $cdmentrysourceorigin = $CDMSARRIVEE{'cdm-source-entry-origin'};
+
 # print STDERR "Transformation des tables CDM en arbres\n";
 my $CDMArbreDepart = arbre_cdm(\%CDMSDEPART);
 my $CDMArbreArrivee = arbre_cdm_complet(\%CDMSARRIVEE);
@@ -144,12 +147,17 @@ if ($verbeux) 	{print STDERR "Transformation article : $headword\n";}
 	my $entrydepart = $entrydepart[0];
 
 #	print STDERR "Recopie de l'article de départ tel quel dans l'article d'arrivée pour éventuel travail ultérieur\n";
-	my $elementsource = $docarrivee->createElement('entree-source');
-	$elementsource->setAttribute('provenance',$nomDicoDepart);
-	my $cloneEntrydepart = $entrydepart->cloneNode(1);
-	$cloneEntrydepart->setOwnerDocument($docarrivee);
-	$elementsource->appendChild($cloneEntrydepart);
-	$entryarrivee->appendChild($elementsource);
+	my @entrysourceorigin = $docarrivee->findnodes($cdmentrysourceorigin);
+	if (scalar(@entrysourceorigin)>0) {
+		my $entrysourceorigin = $entrysourceorigin[0];
+		$entrysourceorigin->addText($nomDicoDepart);
+	}
+	my @entrysource = $docarrivee->findnodes($cdmentrysource);
+	if (scalar(@entrysource)>0) {
+		my $elementsource = $entrysource[0];
+		$entrydepart->setOwnerDocument($docarrivee);
+		$elementsource->appendChild($entrydepart);
+	}
 	print $OUTFILE $entryarrivee->toString,"\n";
 #	print STDERR "Fin transformation article\n";
 }
