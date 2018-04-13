@@ -29,7 +29,6 @@
 <cdm-headword-variant xpath="/database/lexGroup/varW/text()"/>
 <cdm-pronunciation xpath="/database/lexGroup/uttW/text()"/>
 <cdm-pos xpath="/database/lexGroup/catWGroup/catW/text()"/>
-<cdm-pos-generique xpath="/database/lexGroup/catWGroup/catW/text()"/>
 <cdm-definition xpath="/database/lexGroup/defWGroup/defW/text()"/>
 <cdm-translation xpath="/database/lexGroup/tradFlexGroup/tradFlex/text()" d:lang="fra" />
   <cdm-example-block xpath="/database/lexGroup/phrWGroup"/>

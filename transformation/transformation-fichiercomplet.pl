@@ -7,7 +7,7 @@
 # ./transformation-fichiercomplet.pl -v -i Donnees/Baat_fra-wol/baat_wol_fra-prep.xml  -m Donnees/Baat_fra-wol/Baat_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -n 'Thierno' > out.xml
 #
 # Transformation extrait Cherif
-# ./transformation-fichiercomplet.pl -v -i Donnees/anaan.xml  -m Donnees/Baat_fra-wol/DicoCherif_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -n 'Chérif' > out.xml
+# ./transformation-fichiercomplet.pl -v -i Donnees/cherif.xml  -m Donnees/Baat_fra-wol/DicoCherif_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -n 'Chérif' > out.xml
 #
 # Transformation dico Chérif : 
 # ./transformation-fichiercomplet.pl -v -i Donnees/Baat_fra-wol/dicocherif_wol_fra-prep.xml  -m Donnees/Baat_fra-wol/DicoCherif_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -n 'Chérif' > out.xml
@@ -19,6 +19,7 @@ use utf8::all;
 
 use XML::DOM;
 use XML::DOM::XPath;
+use JSON;
 use Data::Dumper;
 use Getopt::Long; # pour gérer les arguments.
 
@@ -80,6 +81,10 @@ my %CDMSDEPART=load_cdm($metaEntree);
 #print STDERR "load cdm arrivée:\n";
 my %CDMSARRIVEE=load_cdm($metaSortie);
 
+#print STDERR "load tables arrivée:\n";
+my %TABLESARRIVEE = load_tables($metaSortie);
+# print STDERR "tablesarrivee:",Dumper(%TABLESARRIVEE);
+
 # on initialise le parseur XML DOM
 my $parser= XML::DOM::Parser->new();
 
@@ -133,7 +138,7 @@ if ($verbeux) 	{print STDERR "Transformation article : $headword\n";}
 	my @entryarrivee = $docarrivee->findnodes($cdmentryarrivee);
 	my $entryarrivee = $entryarrivee[0];
 
-	# print STDERR "copie de l'entrée source dans l'entrée arrivée\n";
+#	print STDERR "copie de l'entrée source $cdmentrydepart dans l'entrée arrivée\n";
 
 	my @entrydepart = $docdepart->findnodes($cdmentrydepart);
 	my $entrydepart = $entrydepart[0];
@@ -197,6 +202,7 @@ sub xpath2closedtags {
 sub getNodeText {
 	my $node = $_[0];
 	my $text = '';
+	if ($node) {
 	if ($node->getNodeType == DOCUMENT_NODE) {
     	$node = $node->getDocumentElement();
 	}
@@ -216,6 +222,10 @@ sub getNodeText {
     }
     else {
           $text = $node->toString();
+    }
+    }
+    else {
+    	print STDERR "Node undefined\n";
     }
 	return $text;
 }
@@ -242,6 +252,31 @@ close(IN);
  return %dico;
 
  }
+
+sub load_tables {
+  my ($fichier)=@_;
+  my $document = do {
+    local $/ = undef;
+    open (IN, "<:encoding($unicode)", $fichier);
+    <IN>;
+  };
+ close(IN);
+ $document =~ s/^.+<cdm\-tables>\s*//sm;
+ $document =~ s/\s*<\/cdm\-tables>.+$//sm;
+ 
+ print STDERR "doc: $document\n";
+ 
+  my @tables = split(/<\/[^>]+>\s*/sm,$document),
+
+  my %dico=();
+  foreach my $table (@tables){
+      $table =~ s/^\s*<table\-([^>]+)>//sm;
+  	 	print STDERR "table: [$table]\n";
+      my $tablename = $1;
+      $dico{$tablename} = decode_json($table);
+  }
+ return %dico; 
+}
 
 # Cette fonction copie le résultat d'un pointeur XPath de départ dans un résultat de pointeur XPath d'arrivée
 # Elle est récursive
@@ -300,10 +335,11 @@ sub copiePointeurs {
 					# Sinon, on recopie le texte
 					else {
 						my $noeudTexte = getNodeText($noeudDepart);
-						if ($pointeurDepart eq 'cdm-pos-generique') {
-							$noeudTexte = $CDMPOSGENERIQUE{$noeudTexte};
-						}	
-
+						my $table = $TABLESARRIVEE{$cle};
+						if ($table) {
+							$noeudTexte = $table->{$noeudTexte};
+							if ($verbeux) {print STDERR "conversion noeudTexte: $noeudTexte\n";}
+						}
 						if ($verbeux) {print STDERR "noeudTexte: $noeudTexte\n";}
 						$noeudClone->addText($noeudTexte);
 					}
