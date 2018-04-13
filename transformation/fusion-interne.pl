@@ -106,7 +106,6 @@ my $cdmheadword = $CDMSARRIVEE{'cdm-headword'}; # le sous-élément à comparer 
 my $cdmsense = $CDMSARRIVEE{'cdm-sense'}; # le sous-élément qui sera récupéré puis inséré.
 my $cdmcat=$CDMSARRIVEE{'cdm-pos'};#le sous-élément à comparer dans le cas où on trouve 2 entrées de même headword.
 my $cdmsourceblock=$CDMSARRIVEE{'cdm-source-block'};# pour recopier les entrées source
-my $cdmsourceentry=$CDMSARRIVEE{'cdm-source-entry'};# pour recopier les entrées source
 # ------------------------------------------------------------------------
 
 # On reconstruit les balises ouvrantes et fermantes du volume 
