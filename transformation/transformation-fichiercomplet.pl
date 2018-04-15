@@ -21,6 +21,8 @@ use XML::DOM;
 use XML::DOM::XPath;
 use JSON;
 use Data::Dumper;
+use Encode qw(encode_utf8);
+
 use Getopt::Long; # pour gérer les arguments.
 
 my $encoding = "UTF-8";
@@ -41,9 +43,7 @@ GetOptions(
   );
  
  
-my %CDMPOSGENERIQUE = ('turu bokkale' => 'nom',
-
-					);
+#my %CDMPOSGENERIQUE = ('turu bokkale' => 'nom','turu bopp' => 'verbe','adjectif qualificatif' => 'adjectif','verbe intransitif'=>'verbe','verbe transitif' => 'verbe');
  
 my $date = localtime;
 my $INFILE;
@@ -281,7 +281,9 @@ sub load_tables {
       $table =~ s/^\s*<table\-([^>]+)>//sm;
   	 	print STDERR "table: [$table]\n";
       my $tablename = $1;
-      $dico{$tablename} = decode_json($table);
+
+      my $json_data = encode_utf8( $table );
+      $dico{$tablename} = decode_json($json_data);
   }
  return %dico; 
 }
