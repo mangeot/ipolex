@@ -151,13 +151,13 @@ print STDERR 'next_entry:';
 $entry_one = next_entry(*INFILE); # obtenir la première entrée
 $headword_one = find_string($entry_one,$cdmheadword);
 $cat_one = find_string($entry_one,$cdmcat);
-print STDERR 'h1:',$headword_one;
+print STDERR "h1: $headword_one cat1: $cat_one\n";
 
 $entry_two = next_entry(*INFILE); # obtenir la deuxième entrée
 $headword_two = find_string($entry_two,$cdmheadword);
 $cat_two = find_string($entry_two,$cdmcat);
 
-print STDERR 'h2:',$headword_two;
+print STDERR "h2: $headword_two cat2: $cat_two\n";
 # ------------------------------------------------------------------------
 if ( defined $verbeux ) {&info('c');};
  
@@ -181,15 +181,16 @@ my $egaunotcat=0;
 # si =0  comparer les cat si manque une cat = message d erreur , si 2 cat diff cas compare < 0 si 2 cat = cas fusion
 
      if ( defined $verbeux ){
+      print STDERR "compare $headword_one cmp $headword_two = $compare; cpmcat $cat_one cmp $cat_two = $cmparecat\n";
       if ($compare==0 && $cmparecat==0){
         $egaux++;
-      print STDERR 'compare ', $headword_one , ' cmp ', $headword_two, ' = ', $compare, "\n";
+#      print STDERR 'compare ', $headword_one , ' cmp ', $headword_two, ' = ', $compare, "\n";
       }
     };
     # 1) si l'entrée 1 est inférieure à l'entrée 2 (ou s'il n'y a plus d'entrée 2):
     # On écrit l'entrée 1 dans le fichier de sortie.
     # On avance d'une entrée dans le fichier 1
-    if ($compare < 0 || ($compare==0 && $cmparecat<0)) {
+    if ($compare < 0 || ($compare==0 && $cmparecat!=0)) {
   		my @entries = $entry_one->findnodes($cdmentry);
 		my $entry = $entries[0];
  		print $OUTFILE $entry->toString,"\n";
@@ -221,7 +222,7 @@ my $egaunotcat=0;
 	  $headword_two = find_string($entry_two,$cdmheadword);
 	  $cat_two = find_string($entry_two,$cdmcat);
     }
-    # 3) le dernier cas : entrée 1 = entrée 2 :
+    # 3) le dernier cas : entrée 1 = entrée 2 et cat1 = cat2 :
     # On ajoute les éléments de entrée 2 dans entrée 1, qu'on écrit dans le fichier de sortie.
     # On avance d'une entrée dans le fichier 1 et dans le fichier 2.
     else
