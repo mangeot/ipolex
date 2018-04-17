@@ -149,17 +149,13 @@ my ($cat_one, $cat_two);
 print STDERR 'next_entry:';
 
 $entry_one = next_entry(*INFILE); # obtenir la première entrée
-my @headwords_one = $entry_one->findnodes($cdmheadword);
-$headword_one = getNodeText($headwords_one[0]);
+$headword_one = find_string($entry_one,$cdmheadword);
+$cat_one = find_string($entry_one,$cdmcat);
 print STDERR 'h1:',$headword_one;
 
 $entry_two = next_entry(*INFILE); # obtenir la deuxième entrée
-my @headwords_two = $entry_two->findnodes ($cdmheadword);
-$headword_two = getNodeText($headwords_two[0]);
-my @cats_one = $entry_one->findnodes ($cdmcat);
-$cat_one  = getNodeText($cats_one[0]);
-my @cats_two = $entry_two->findnodes ($cdmcat);
-$cat_two  = getNodeText($cats_two[0]);
+$headword_two = find_string($entry_two,$cdmheadword);
+$cat_two = find_string($entry_two,$cdmcat);
 
 print STDERR 'h2:',$headword_two;
 # ------------------------------------------------------------------------
@@ -182,7 +178,7 @@ my $egaunotcat=0;
     my $compare = $collator->cmp($headword_one,$headword_two);
     my $cmparecat=$collator->cmp($cat_one,$cat_two);
 
-# si =0  comparer les cat si manque une cat = messqge d erreur , si 2 cat diff cas compare < 0 si 2 cat = cas fusion
+# si =0  comparer les cat si manque une cat = message d erreur , si 2 cat diff cas compare < 0 si 2 cat = cas fusion
 
      if ( defined $verbeux ){
       if ($compare==0 && $cmparecat==0){
@@ -195,7 +191,7 @@ my $egaunotcat=0;
     # On avance d'une entrée dans le fichier 1
     if ($compare < 0 || ($compare==0 && $cmparecat<0)) {
   		my @entries = $entry_one->findnodes($cdmentry);
-		my $entry= $entries[0];
+		my $entry = $entries[0];
  		print $OUTFILE $entry->toString,"\n";
  		
       if ($compare==0 && $cmparecat<0){
@@ -204,19 +200,13 @@ my $egaunotcat=0;
       }
       # pour avoir l'entrée suivante dans le fichier 1.
       $entry_one = $entry_two;
-	  @headwords_one = $entry_one->findnodes($cdmheadword);
-	  $headword_one = getNodeText($headwords_one[0]);
-
-	  @cats_one = $entry_one->findnodes ($cdmcat);
-	  $cat_one  = getNodeText($cats_one[0]);
+	  $headword_one = find_string($entry_one,$cdmheadword);
+	  $cat_one = find_string($entry_one,$cdmcat);
     
 
     $entry_two = next_entry(*INFILE);
-	@headwords_two = $entry_two->findnodes ($cdmheadword);
-	$headword_two = getNodeText($headwords_two[0]);
-	
-	@cats_two = $entry_two->findnodes ($cdmcat);
-	$cat_two  = getNodeText($cats_two[0]);
+	$headword_two = find_string($entry_two,$cdmheadword);
+	$cat_two = find_string($entry_two,$cdmcat);
 
     }
     # 2) si l'entrée 1 est supérieure à l'entrée 2 (ou s'il n'y a plus d'entrée 1):
@@ -228,6 +218,8 @@ my $egaunotcat=0;
       #$entry_two->flush($output);
       # pour avoir l'entrée suivante dans le fichier 2.
       $entry_two = next_entry(*INFILE);
+	  $headword_two = find_string($entry_two,$cdmheadword);
+	  $cat_two = find_string($entry_two,$cdmcat);
     }
     # 3) le dernier cas : entrée 1 = entrée 2 :
     # On ajoute les éléments de entrée 2 dans entrée 1, qu'on écrit dans le fichier de sortie.
@@ -237,11 +229,8 @@ my $egaunotcat=0;
         fusion ($entry_one, $entry_two);
         $entry_two = next_entry(*INFILE);
         if ($entry_two) {
-			@headwords_two = $entry_two->findnodes ($cdmheadword);
-			$headword_two = getNodeText($headwords_two[0]);
-	
-			@cats_two = $entry_two->findnodes ($cdmcat);
-			$cat_two  = getNodeText($cats_two[0]);
+			$headword_two = find_string($entry_two,$cdmheadword);
+			$cat_two = find_string($entry_two,$cdmcat);
         }
       }
   }
@@ -257,7 +246,7 @@ close $OUTFILE;
 
 # ------------------------------------------------------------------------
 if ( defined $verbeux ) {
-  print STDERR "egaux; ",$egaux;
+  print STDERR "Nombre d'articles fusionnés : $egaux\n";
   &info('d');
 };
 
@@ -276,6 +265,26 @@ sub next_entry
 	}
 	return $doc;
 }
+ 
+sub find_string {
+	my $entry = $_[0];
+	my $cdm = $_[1];
+	my $text = '';
+	if ($entry) {
+		my @strings = $entry->findnodes($cdm);
+		if (scalar(@strings>0)) {
+			$text = getNodeText($strings[0]);
+		}
+		else {
+			if ($verbeux) {print STDERR "Problème avec find_string : XPath $cdm introuvable !\n"}; 
+		}
+	}
+	else {
+		if ($verbeux) {print STDERR "Problème avec find_string : objet XML vide !\n";} 
+	}
+	return $text;
+}
+ 
  
 # ------------------------------------------------------------------------
 sub fusion
@@ -334,25 +343,30 @@ foreach my $sense_two ($entry_two->findnodes($cdmsense))
 sub getNodeText {
 	my $node = $_[0];
 	my $text = '';
-	if ($node->getNodeType == DOCUMENT_NODE) {
-    	$node = $node->getDocumentElement();
-	}
-	if ($node->getNodeType == TEXT_NODE || $node->getNodeType == CDATA_SECTION_NODE) {
-          $text = $node->getData();
-    }
-    elsif ($node->getNodeType == ATTRIBUTE_NODE) {
-          $text = $node->getValue();
-    }
-    elsif ($node->getNodeType == ELEMENT_NODE || $node->getNodeType == ENTITY_REFERENCE_NODE || $node->getNodeType == DOCUMENT_FRAGMENT_NODE) {
-    	foreach my $child ($node->getChildNodes()) {
-          $text .= getNodeText($child);
-        }
-    }
-    elsif ($node->getNodeType == COMMENT_NODE || $node->getNodeType == ENTITY_NODE || $node->getNodeType == PROCESSING_INSTRUCTION_NODE || $node->getNodeType == DOCUMENT_TYPE_NODE) {
-    	;
+	if ($node) {
+		if ($node->getNodeType == DOCUMENT_NODE) {
+			$node = $node->getDocumentElement();
+		}
+		if ($node->getNodeType == TEXT_NODE || $node->getNodeType == CDATA_SECTION_NODE) {
+			  $text = $node->getData();
+		}
+		elsif ($node->getNodeType == ATTRIBUTE_NODE) {
+			  $text = $node->getValue();
+		}
+		elsif ($node->getNodeType == ELEMENT_NODE || $node->getNodeType == ENTITY_REFERENCE_NODE || $node->getNodeType == DOCUMENT_FRAGMENT_NODE) {
+			foreach my $child ($node->getChildNodes()) {
+			  $text .= getNodeText($child);
+			}
+		}
+		elsif ($node->getNodeType == COMMENT_NODE || $node->getNodeType == ENTITY_NODE || $node->getNodeType == PROCESSING_INSTRUCTION_NODE || $node->getNodeType == DOCUMENT_TYPE_NODE) {
+			;
+		}
+		else {
+			  $text = $node->toString();
+		}
     }
     else {
-          $text = $node->toString();
+    	if ($verbeux) {print STDERR "Problème avec getNodeText: nœud vide !\n";}
     }
 	return $text;
 }
@@ -364,7 +378,7 @@ sub getNodeText {
   my %dico=();
   while(my $ligne=<IN>){
       
-      if($ligne=~/^\s*<(\S+)\s+xpath=\"([^\"]+)(\"\sd:lang=\")?(\w+)?/){
+      if ($ligne=~/^\s*<(\S+)\s+xpath=\"([^\"]+)(\"\sd:lang=\")?(\w+)?/){
            my $cdm=$1; my $xpath=$2;  my $lang = $4;
            if ($ligne=~/d:lang/)
            {

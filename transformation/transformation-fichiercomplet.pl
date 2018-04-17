@@ -272,14 +272,14 @@ sub load_tables {
  $document =~ s/^.+<cdm\-tables>\s*//sm;
  $document =~ s/\s*<\/cdm\-tables>.+$//sm;
  
- print STDERR "doc: $document\n";
+if ($verbeux) {print STDERR "Load tables form doc: $document\n";}
  
   my @tables = split(/<\/[^>]+>\s*/sm,$document),
 
   my %dico=();
   foreach my $table (@tables){
       $table =~ s/^\s*<table\-([^>]+)>//sm;
-  	 	print STDERR "table: [$table]\n";
+ 	  if ($verbeux) {print STDERR "table: [$table]\n";} 	
       my $tablename = $1;
 
       my $json_data = encode_utf8( $table );
