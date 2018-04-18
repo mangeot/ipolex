@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 
-# usage : tri.pl infile.xml > infile-sorted.xml
+# ./tri.pl -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml  -i Donnees/Baat_fra-wol/dicoThiernoTransformePrep.xml -v > out.xml
+#
 # =======================================================================================================================================
 ######----- tri.pl -----#####
 # =======================================================================================================================================
@@ -15,7 +16,6 @@
 #
 # Pour les options avancées :
 #
-# -date "date" 				 	 : pour spécifier la date (par défaut : la date du jour (localtime)
 # -encoding "format d'encodage" : pour spécifier le format d'encodage (par défaut UTF-8)
 # -help 						 : pour afficher l'aide
 # =======================================================================================================================================
@@ -30,7 +30,6 @@ use XML::DOM::XPath;
 use locale; # si les variables d'environnement sont correctement positionnées, cela devrait suffire
 use POSIX qw(locale_h setlocale); # pour forcer une locale donnée
 setlocale(LC_ALL,"fr_FR.UTF-8"); # pour forcer la locale fr_FR
-#use Text::StripAccents;
 use Unicode::Collate;
 
 ##-- Gestion des options --##
@@ -65,8 +64,6 @@ else {
 	$FichierResultat = 'STDOUT';
 	$OUTFILE = *STDOUT;
 }
-if (!(defined $locale)) {$locale = "fr_FR.UTF-8";};
-
 
 my $collator = Unicode::Collate::->new();
 
@@ -94,10 +91,9 @@ my $closedtagentry = xpath2closedtag($cdmentry);
 # donc on coupe après une balise de fin d'article.
 $/ = $closedtagentry;
 
-my @lines = <$INFILE>;
 my @total = ();
 if ( $verbeux ) {print STDERR "Extrait les vedettes et cat avec XPath\n";}
-while (my $line = shift (@lines)) {
+while (my $line = <$INFILE>) {
 	my $entry = $headervolume . $line . $footervolume;
 	my $doc = $parser->parse($entry);
 	my $headword = find_string($doc,$cdmheadword);

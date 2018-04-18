@@ -24,7 +24,6 @@
 # Pour les options avancées :
 #
 # -date "date" 				 	 : pour spécifier la date (par défaut : la date du jour (localtime)
-# -erreur "message d'erreur" 	 : pour spécifier le message d'erreur (ouverture de fichiers)
 # -encoding "format d'encodage" : pour spécifier le format d'encodage (par défaut UTF-8)
 # -pretty "indentation" 		 : pour spécifier l'indentation XML ('none' ou 'indented', par exemple)
 # -locale "locale"				 : pour spécifier la locale (langue source) des ressources qui seront fusionnées
@@ -39,12 +38,9 @@ use strict;
 use warnings;
 use utf8::all;
 use locale;
-use IO::File; 
 use Getopt::Long; # pour gérer les arguments.
 use XML::DOM;
 use XML::DOM::XPath;
-
-use XML::Writer; # (non inclus dans le core de Perl), pour le fichier de sortie.
 
 use Unicode::Collate;
 
@@ -53,7 +49,7 @@ use POSIX qw(locale_h setlocale);
 my $unicode = "UTF-8";
 
 ##-- Gestion des options --##
-my ($date, $FichierEntree, $metaArrivee, $FichierResultat, $erreur, $encoding) = ();
+my ($date, $FichierEntree, $metaArrivee, $FichierResultat, $encoding) = ();
 my ($verbeux, $help, $pretty_print, $locale) = ();
 my $OUTFILE;
 
@@ -62,7 +58,6 @@ GetOptions(
   'source|base|in|one|from|i=s' => \$FichierEntree, 
   'metadonnees|metadata|m=s'           => \$metaArrivee,
   'sortie|out|to|o=s'           => \$FichierResultat, 
-  'erreur|error|e=s'          => \$erreur, 
   'encodage|encoding|enc|f=s'   => \$encoding, 
   'help|h'                      => \$help, 
   'verbeux|v'                   => \$verbeux, 
@@ -84,19 +79,18 @@ else {
 	$OUTFILE = *STDOUT;
 }
 
-if (!(defined $erreur)) {$erreur = "|ERROR| : problem opening file :";};
 if (!(defined $encoding)) {$encoding = "UTF-8";};
 if (!(defined $pretty_print)) {$pretty_print = "indented";};
 if (!(defined $locale)) {$locale = "fr_FR.UTF-8";};
 if (defined $help) {&help;};
  
- setlocale( LC_ALL, $locale);
+setlocale(LC_ALL,$locale); # pour indiquer la locale
 
 my $collator = Unicode::Collate::->new();
 
- # on initialise le parseur XML DOM
+# on initialise le parseur XML DOM
 my $parser= XML::DOM::Parser->new();
-print STDERR "load cdm métaArrivée:\n";
+if ( $verbeux ) {print STDERR "load cdm métaArrivée:\n";}
 my %CDMSARRIVEE=load_cdm($metaArrivee);
 # =======================================================================================================================================
 ###--- PROLOGUE ---###
@@ -115,11 +109,10 @@ my $closedtagentry = xpath2closedtag($cdmentry);
 my $opentagvolume = xpath2opentags($cdmvolume, 'creation-date="' . $date . '"');
 my $closedtagvolume = xpath2closedtags($cdmvolume);
 
-setlocale(LC_ALL,$locale); # pour indiquer la locale
 
 # ------------------------------------------------------------------------
 # Input/ Output
-open (INFILE, "<:encoding($encoding)",$FichierEntree) or die ("$erreur $!\n");
+open (INFILE, "<:encoding($encoding)",$FichierEntree) or die ("$! $FichierEntree\n");
 # On va lire le fichier d'entrée article par article 
 # donc on coupe après une balise de fin d'article.
 $/ = $closedtagentry;
@@ -146,18 +139,19 @@ my ($entry_one, $entry_two);
 my ($headword_one, $headword_two);
 my ($cat_one, $cat_two);
 
-print STDERR 'next_entry:';
+#print STDERR 'next_entry:';
 
+my $nbentries = 0;
 $entry_one = next_entry(*INFILE); # obtenir la première entrée
 $headword_one = find_string($entry_one,$cdmheadword);
 $cat_one = find_string($entry_one,$cdmcat);
-print STDERR "h1: $headword_one cat1: $cat_one\n";
+#print STDERR "h1: $headword_one cat1: $cat_one\n";
 
 $entry_two = next_entry(*INFILE); # obtenir la deuxième entrée
 $headword_two = find_string($entry_two,$cdmheadword);
 $cat_two = find_string($entry_two,$cdmcat);
 
-print STDERR "h2: $headword_two cat2: $cat_two\n";
+#print STDERR "h2: $headword_two cat2: $cat_two\n";
 # ------------------------------------------------------------------------
 if ( defined $verbeux ) {&info('c');};
  
@@ -171,6 +165,7 @@ if ( defined $verbeux ) {&info('c');};
 # Le traitement continuera tant qu'il y a des entrées dans l'une ou l'autre source.
 my $egaux = 0;
 my $egaunotcat=0;
+my $entreesresultat = 0;
     while ($entry_one && $entry_two)
   { 
     # on compare les deux headword 'lexicographiquement'
@@ -194,8 +189,9 @@ my $egaunotcat=0;
   		my @entries = $entry_one->findnodes($cdmentry);
 		my $entry = $entries[0];
  		print $OUTFILE $entry->toString,"\n";
+ 		$entreesresultat++;
  		
-      if ($compare==0 && $cmparecat<0){
+      if ($compare==0 && $cmparecat!=0){
       	$egaunotcat++;
 
       }
@@ -215,9 +211,12 @@ my $egaunotcat=0;
     # On écrit l'entrée 2 dans le fichier de sortie.
     # On avanc d'une entrée dans le fichier 2.
     elsif ($compare > 0) {
-      #$entry_two->print($output, "indented");
-      #$entry_two->flush($output);
+      print STDERR "Erreur: fichier non trié $headword_one > $headword_two\n";
+      exit 1;
       # pour avoir l'entrée suivante dans le fichier 2.
+  	  my @entries = $entry_two->findnodes($cdmentry);
+	  my $entry = $entries[0];
+ 	  print $OUTFILE $entry->toString,"\n";
       $entry_two = next_entry(*INFILE);
 	  $headword_two = find_string($entry_two,$cdmheadword);
 	  $cat_two = find_string($entry_two,$cdmcat);
@@ -238,6 +237,7 @@ my $egaunotcat=0;
  	my @entries = $entry_one->findnodes($cdmentry);
 	my $entry= $entries[0];
  	print $OUTFILE $entry->toString,"\n";
+ 	$entreesresultat++;
  
 # ------------------------------------------------------------------------
 # Fin de l'écriture :
@@ -247,7 +247,6 @@ close $OUTFILE;
 
 # ------------------------------------------------------------------------
 if ( defined $verbeux ) {
-  print STDERR "Nombre d'articles fusionnés : $egaux\n";
   &info('d');
 };
 
@@ -263,10 +262,13 @@ sub next_entry
 	if ($line) {
 		$line = $headervolume . $line . $footervolume;
 		$doc = $parser->parse($line);
+		$nbentries++;
 	}
 	return $doc;
 }
  
+# ------------------------------------------------------------------------
+# Cette fonction extrait une chaîne de caractères avec un pointeur XPath
 sub find_string {
 	my $entry = $_[0];
 	my $cdm = $_[1];
@@ -480,9 +482,15 @@ elsif ($info =~ 'd')
 	"--------------------------------------------------\n",
 	"Fichier final : $FichierResultat\n",
 	"--------------------------------------------------\n",
+	"Nombre d'entrées analysées : ", $nbentries, "\n",
+	"--------------------------------------------------\n",
+	"Nombre d'entrées fusionnées : ", $egaux, "\n",
+	"--------------------------------------------------\n",
+	"Nombre d'entrées affichées : ", $entreesresultat, "\n",
+	"--------------------------------------------------\n",
 	"Date du traitement : ", $date, "\n",
 	"--------------------------------------------------\n",
-	"Lapsed time : ", $time, " s\n",
+	"Durée du traitement : ", $time, " s\n",
 	"==================================================\n";
 	}
 }
@@ -499,6 +507,7 @@ print (STDERR "          -f le format d'encodage\n");
 print (STDERR "          -v mode verbeux (STDERR et LOG)\n");
 print (STDERR "          -t pour la gestion de la date (initialement : localtime)\n");
 print (STDERR "================================================================================\n");
+exit 0;
 }
  
 # =======================================================================================================================================
