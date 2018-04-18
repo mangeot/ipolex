@@ -59,7 +59,7 @@
   		</links>
 	</cdm-elements>
 	<cdm-tables>
-	 <table-cdm-pos>{"turu bokkaale":"nom","turu bopp":"nom","waxe-jëfin":"verbe","waxe-nekkin":"adjectif","adjectif qualificatif":"adjectif","verbe intransitif":"verbe","verbe transitif":"verbe"}</table-cdm-pos>
+	 <table-cdm-pos>{"turu bokkaale":"nom","turu bopp":"nom","waxe-jëfin":"verbe","waxe-nekkin":"adjectif","adjectif qualificatif":"adjectif","verbe intransitif":"verbe","verbe transitif":"verbe","verbe":"verbe","nom":"nom","adjectif":"adjectif","adverbe":"adverbe","conjonction":"conjonction","coverbe":"coverbe","interjection":"interjection","nom pluriel":"nom","numéral":"numéral"}</table-cdm-pos>
 	</cdm-tables>
 <administrators>
 		  <user-ref name="mangeot"/>
@@ -69,4 +69,3 @@
 <template-entry-ref xlink:href="dicoarrivee_wol_fra-template.xml"/>
 <xsl-stylesheet name="DicoArrivee_wol_fra" default="true" xlink:href="DicoArrivee_wol_fra-view.xsl"/>
  	</volume-metadata>
-œ
