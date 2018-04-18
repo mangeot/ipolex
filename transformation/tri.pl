@@ -1,6 +1,8 @@
 #!/usr/bin/env perl
 
 # ./tri.pl -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml  -i Donnees/Baat_fra-wol/dicoThiernoTransformePrep.xml -v > out.xml
+# ./tri.pl -v -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -from outcheriftpreptrie.xml > out.xml
+#
 #
 # =======================================================================================================================================
 ######----- tri.pl -----#####
@@ -27,9 +29,6 @@ use Getopt::Long; # pour gérer les arguments.
 use XML::DOM;
 use XML::DOM::XPath;
 
-use locale; # si les variables d'environnement sont correctement positionnées, cela devrait suffire
-use POSIX qw(locale_h setlocale); # pour forcer une locale donnée
-setlocale(LC_ALL,"fr_FR.UTF-8"); # pour forcer la locale fr_FR
 use Unicode::Collate;
 
 ##-- Gestion des options --##
@@ -101,17 +100,18 @@ while (my $line = <$INFILE>) {
 	my @array = ($headword, $pos, $line);
 	push @total, \@array;
 }
+close $INFILE;
 if ( $verbeux ) {print STDERR "Trie le tableau résultat\n";}
 my @dico = sort { 
 	my $cmp = $collator->cmp(${ $a }[0],${ $b }[0]);
 	if ($cmp == 0) {
 		$cmp = $collator->cmp(${ $a }[1],${ $b }[1]);	
 	}
-	return $cmp 
+	return $cmp;
 	} 
 	@total;
 if ( $verbeux ) {print STDERR "Affiche le résultat trié\n";}
-foreach my $row (@total) {
+foreach my $row (@dico) {
 	print $OUTFILE ${ $row }[2];
 }
 if ( $verbeux ) {fin();}

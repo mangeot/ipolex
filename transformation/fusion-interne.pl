@@ -2,6 +2,7 @@
 
 
 # ./fusion-interne.pl -v -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -from Donnees/fusion.xml > out.xml
+# ./fusion-interne.pl -v -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -from Donnees/outcheriftpreptrie.xml > out.xml
 #
 # =======================================================================================================================================
 ######----- V_for_FusionInterne.pl -----#####
@@ -50,7 +51,7 @@ my $unicode = "UTF-8";
 
 ##-- Gestion des options --##
 my ($date, $FichierEntree, $metaArrivee, $FichierResultat, $encoding) = ();
-my ($verbeux, $help, $pretty_print, $locale) = ();
+my ($verbeux, $help, $pretty_print) = ();
 my $OUTFILE;
 
 GetOptions( 
@@ -62,7 +63,6 @@ GetOptions(
   'help|h'                      => \$help, 
   'verbeux|v'                   => \$verbeux, 
   'print|pretty|p=s'            => \$pretty_print, 
-  'locale|locale|l=s'       => \$locale,
   );
  
 
@@ -81,11 +81,8 @@ else {
 
 if (!(defined $encoding)) {$encoding = "UTF-8";};
 if (!(defined $pretty_print)) {$pretty_print = "indented";};
-if (!(defined $locale)) {$locale = "fr_FR.UTF-8";};
 if (defined $help) {&help;};
  
-setlocale(LC_ALL,$locale); # pour indiquer la locale
-
 my $collator = Unicode::Collate::->new();
 
 # on initialise le parseur XML DOM
