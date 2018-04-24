@@ -5,8 +5,12 @@ require_once(RACINE_SITE.'include/fonctions.php');
 
 echo $_POST['nomvolume'];
 $dico = $_POST['nomdico'];
+$nomDicoArrivee='DicoArrivee_fra-wol';
 echo $dico;
 $chemin = DICTIONNAIRES_SITE.$dico.'/';
+$cheminArrivee = DICTIONNAIRES_SITE.$nomDicoArrivee.'/';
+
+
 
 //// Opération de  transformation :
 // récupérer metadonnes depart, donnes depart, metadonnes arrivee, tempalte arrivee d
@@ -50,9 +54,16 @@ $chemin = DICTIONNAIRES_SITE.$dico.'/';
 
 // appeler le script de réification
 
-$metadataFile = $chemin.$_POST['nomvolume'].'-metadata.xml';
+#$metadataFile = $chemin.$_POST['nomvolume'].'-metadata.xml';
+$metadataEntree = $chemin.$_POST['nomvolume'].'-metadata.xml';
+$metadataArrivee =$cheminArrivee.'DicoArrivee_wol_fra-metadata.xml';
+$modelArrivee = $cheminArrivee.'dicoarrivee_wol_fra-template.xml';
+$dataEntree = $chemin.strtolower($_POST['nomvolume']).'.xml';
+
+
+
   $doc = new DOMDocument();
-  $doc->load($metadataFile);
+  $doc->load($metadataEntree);
   $cdmvolume=$doc->getElementsByTagName("cdm-volume");
   $cdmentry=$doc->getElementsByTagName("cdm-entry");
   $cdmpos=$doc->getElementsByTagName("cdm-pos");
@@ -115,14 +126,32 @@ foreach($cdmpos as $pos)
 
   
 
+    if ($_POST['op']=='transformation')
+    {
+      
+      $resultat_prep = $chemin.strtolower($_POST['nomvolume']).'-prep.xml';
+      $resultat_tri=$chemin.strtolower($_POST['nomvolume'])."-tri.xml";
+      $resultat_transformation=$chemin.strtolower($_POST['nomvolume'])."-transfo.xml";
+      exec("perl /opt/lampp/htdocs/ipolex-transformation/transformation/prep_articles.pl $dataEntree $resultat_prep $cdment");
+      exec("perl /opt/lampp/htdocs/ipolex-transformation/transformation/tri.pl -v -m  $metadataEntree -from $resultat_prep > $resultat_tri");
+     exec ("perl /opt/lampp/htdocs/ipolex-transformation/transformation-fichiercomplet.pl -i $resultat_tri -n 'thierno' -m $metadataEntree -s metadataArrivee -t modelArrivee -o $resultat_transformation");
+       echo "opération de transformation réussie";
 
 
-    if ($_POST['op']=='prep')
+
+
+      #}else
+      # {echo "/projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $XML_FILE $cdment $cdm_head $cdmpos $VOLUME_NAME"."<br>probléme exec PERL  !!!!!!!!!!<br>";}
+      }
+
+
+
+    elseif ($_POST['op']=='prep')
     {
       $datafile_prep = $chemin.strtolower($_POST['nomvolume']).'.xml';
     $resultat_prep=$chemin . strtolower($_POST['nomvolume'])."-prep.xml";
-    echo "<br>perl /projets/iBaatukaay/Scripts/prep_articles.pl $datafile_prep $resultat_prep $cdment<br>";
-    exec("perl /projets/iBaatukaay/Scripts/prep_articles.pl $datafile_prep $resultat_prep $cdment");
+    echo "<br>perl /projets/iBaatukaay/Scripts/prep_articles.pl $dataEntree $resultat_prep $cdment<br>";
+    exec("perl /projets/iBaatukaay/Scripts/prep_articles.pl $dataEntree $resultat_prep $cdment");
     echo "opération de préparation réussie";
 
     }
@@ -135,12 +164,25 @@ foreach($cdmpos as $pos)
     //  exec("/projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $_POST['ressource'] $cdment $cdm_head $cdmpos $_POST['nomvolume']_tri.xml");
       echo "perl /projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $datafile_tri '$cdment' '$cdmhead' '$cdmpos' $resultat_tri";
       exec("perl /projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $datafile_tri $cdment $cdmhead $cdmpos $resultat_tri");
+      exec("perl tri.pl -v -m  $metadataFile -from $resultat_prep > $resultat_tri");
       echo "opération de tri réussie";
       #}else
       # {echo "/projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $XML_FILE $cdment $cdm_head $cdmpos $VOLUME_NAME"."<br>probléme exec PERL  !!!!!!!!!!<br>";}
       }
 
 
+    elseif ($_POST['op']=='transformation')
+    {
+      $datafile_tri = $chemin.strtolower($_POST['nomvolume']).'-prep.xml';
+       $resultat_tri=$chemin . strtolower($_POST['nomvolume'])."-tri.xml";
+    //  exec("/projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $_POST['ressource'] $cdment $cdm_head $cdmpos $_POST['nomvolume']_tri.xml");
+      echo "perl /projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $datafile_tri '$cdment' '$cdmhead' '$cdmpos' $resultat_tri";
+      exec("perl /projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $datafile_tri $cdment $cdmhead $cdmpos $resultat_tri");
+      exec("perl tri.pl -v -m  $metadataFile -from $resultat_prep > $resultat_tri");
+      echo "opération de tri réussie";
+      #}else
+      # {echo "/projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $XML_FILE $cdment $cdm_head $cdmpos $VOLUME_NAME"."<br>probléme exec PERL  !!!!!!!!!!<br>";}
+      }
 
 
 
