@@ -363,7 +363,11 @@ sub replace_entry_id {
 		$oldid =~ s/\//\\\//g;
 		$newid =~ s/\//\\\//g;
 		if ($verbeux) {print STDERR "sed -i'.bak' -e 's/$oldid/$newid/g' $file\n";}
-		`sed -i'.bak' -e 's/$oldid/$newid/g' $file`;
+		`sed -i'.bak' -e 's/"$oldid"/"$newid"/g' $file`;
+		`rm $file.bak`;
+		`sed -i'.bak' -e 's/>$oldid</>$newid</g' $file`;
+		`rm $file.bak`;
+		`sed -i'.bak' -e "s/'$oldid'/'$newid'/g" $file`;
 		`rm $file.bak`;
 	}
 
