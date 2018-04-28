@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<volume-metadata
+   xmlns="http://www-clips.imag.fr/geta/services/dml" 
+   xmlns:d="http://www-clips.imag.fr/geta/services/dml"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www-clips.imag.fr/geta/services/dml
+   http://www-clips.imag.fr/geta/services/dml/dml.xsd"
+   location="local"
+   creation-date="2018-03-19T16:01:18+01:00" 
+   installation-date="2018-03-19T16:01:18+01:00" 
+   last-modification-date="2018-03-29T15:51:39+02:00" 
+   hw-number="1 " 
+   encoding="utf-8" 
+   format="xml" 
+   name="DicoArrivee_fra"
+   dbname="dicoarriveefra" 
+   version="1"
+   source-language="fra"
+   target-languages="wol"
+   reverse-lookup="false">
+ <authors>Mouhamadou KHOULE</authors>
+ <comments></comments>
+ <cdm-elements>
+  <cdm-volume xpath="/volume"/>
+<cdm-entry xpath="/volume/article"/>
+<cdm-entry-id xpath="/volume/article/@id"/>
+<cdm-headword xpath="/volume/article/bloc_forme/mot_vedette/text()"/>
+<cdm-headword-variant xpath="/volume/article/bloc_forme/variante/text()"/>
+<cdm-pronunciation xpath="/volume/article/bloc_forme/prononciation/text()"/>
+<cdm-pos xpath="/volume/article/catégorie_grammaticale/text()"/>
+<cdm-definition xpath="/volume/article/bloc_sens/sens/définition/text()"/>
+<cdm-sense xpath="/volume/article/bloc_sens/sens"/>
+<cdm-translation-block xpath="/volume/article/bloc_sens/sens/bloc_traduction" d:lang="fra" />
+<cdm-translation xpath="/volume/article/bloc_sens/sens/bloc_traduction/traduction_française/text()" d:lang="wol" />
+<cdm-translation-pos xpath="/volume/article/bloc_sens/sens/bloc_traduction/catégorie_grammaticale_traduction_française_mot_vedette/text()" d:lang="wol" />
+  <cdm-example-block xpath="/volume/article/bloc_sens/sens/exemples/exemple"/>
+  <cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-fra/text()" d:lang="fra" />
+  <cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-wol/text()" d:lang="wol" />
+  <cdm-source-block xpath="/volume/article/sources"/>
+  <cdm-source-entry xpath="/volume/article/sources/entree-source"/>
+  <cdm-source-entry-origin xpath="/volume/article/sources/entree-source/@provenance"/>
+  <cdm-classe-nominale xpath="/volume/article/classe_nominale/text()" index="true"  />	
+  		<cdm-source-mot-vedette xpath="/volume/article/bloc_forme/source_mot_vedette/text()" index="true"  />	
+  		<cdm-lexeme-source xpath="/volume/article/bloc_forme/lexème_source/text()" index="true"  />	
+  		<cdm-synonyme xpath="/volume/article/bloc_sens/sens/synonyme/text()" index="true"  />	
+  		<cdm-homonyme xpath="/volume/article/bloc_sens/sens/homonyme/text()" index="true"  />	
+  		<cdm-note-usage xpath="/volume/article/bloc_sens/sens/note_usage/text()" index="true"  />	
+  		<cdm-expression-derivee xpath="/volume/article/bloc_sens/sens/bloc_dérivés/expression_dérivée/text()" index="true"  />	
+  		<cdm-source-definition xpath="/volume/article/bloc_sens/sens/source_définition/text()" index="true"  />	
+  		<links>
+  <link name="translation" xpath="/volume/article/bloc_sens/sens/bloc_traduction/lien-traduction">
+  		<volume xpath="target-volume-name"/>
+  <value xpath="@id"/>
+  <type xpath="@type"/>
+  <lang xpath="@d:lang"/>
+  <label xpath="@label"/>
+  <weight xpath="@weight"/>
+  <volume xpath="@volume"/>
+  </link>
+  		</links>
+	</cdm-elements>
+	<cdm-tables>
+	 <table-cdm-pos>{"turu bokkaale":"nom","turu bopp":"nom","waxe-jëfin":"verbe","waxe-nekkin":"adjectif","adjectif qualificatif":"adjectif","verbe intransitif":"verbe","verbe transitif":"verbe","verbe":"verbe","nom":"nom","adjectif":"adjectif","adverbe":"adverbe","conjonction":"conjonction","coverbe":"coverbe","interjection":"interjection","nom pluriel":"nom","numéral":"numéral"}</table-cdm-pos>
+	</cdm-tables>
+<administrators>
+		  <user-ref name="mangeot"/>
+ </administrators>
+ <volume-ref xlink:href="dicoarrivee_wol_fra.xml" source-language="wol"/>
+ <xmlschema-ref xlink:href="dicoarrivee_wol_fra.xsd"/>
+<template-entry-ref xlink:href="dicoarrivee_wol_fra-template.xml"/>
+<xsl-stylesheet name="DicoArrivee_wol_fra" default="true" xlink:href="DicoArrivee_wol_fra-view.xsl"/>
+ 	</volume-metadata>
