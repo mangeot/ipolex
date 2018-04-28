@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 
-# ./creation-liens-traduction.pl -v -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_fra-template.xml -from Donnees/fusion.xml > out.xml
+# ./creation-liens-traduction.pl -v -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_fra-metadata.xml -n Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -u Donnees/Baat_fra-wol/dicoarrivee_fra-template.xml -from Donnees/fusion.xml -g target.xml -o out.xml
 #
 # =======================================================================================================================================
 ######----- creation-liens-traduction.pl -----#####
@@ -44,17 +44,19 @@ use Unicode::Collate;
 my $unicode = "UTF-8";
 
 ##-- Gestion des options --##
-my ($date, $FichierEntree, $entreeModele, $metaEntree, $metaSortie, $FichierResultat, $encoding) = ();
+my ($date, $FichierEntree, $modeleEntree, $modeleCible, $metaEntree, $metaSortie, $FichierResultat, $FichierCible, $encoding) = ();
 my ($verbeux, $help, $pretty_print) = ();
-my $OUTFILE;
+my ($OUTFILE, $TARGETFILE);
 
 GetOptions( 
   'date|time|t=s'             => \$date, # flag de type -date ou --date, ou -time ou --time, ou -t ou --t (=s : string)
   'source|in|from|i=s' => \$FichierEntree, 
   'metaentree|min|m=s' => \$metaEntree, 
   'metasortie|mout|s=s'           => \$metaSortie, 
-  'modele|template|t=s'           => \$entreeModele, 
+  'modeleentree|tin|n=s'           => \$modeleEntree, 
+  'modelecible|tout|u=s'           => \$modeleCible, 
   'sortie|out|to|o=s'           => \$FichierResultat, 
+  'cible|target|g=s'           => \$FichierCible, 
   'encodage|encoding|enc|f=s'   => \$encoding, 
   'aide|help|h'                      => \$help, 
   'verbeux|verbose|v'                   => \$verbeux, 
@@ -64,7 +66,7 @@ GetOptions(
 
 if (!(defined $date)) {$date = localtime;};
 if (!$FichierEntree) {&help;}; # si le fichier source n'est pas spécifié, affichage de l'aide.
-if (!$metaEntree || !$metaSortie || !$entreeModele) {help();} # si les fichiers meta ne sont pas spécifiés, affichage de l'aide.
+if (!$metaEntree || !$metaSortie || !$modeleEntree || !$modeleCible || !$FichierCible) {help();} # si les fichiers ne sont pas spécifiés, affichage de l'aide.
 if (defined $help) {&help;};
 
 if ($FichierResultat) {
@@ -79,21 +81,37 @@ if (!(defined $encoding)) {$encoding = "UTF-8";};
 if (!(defined $pretty_print)) {$pretty_print = "indented";};
 if (defined $help) {&help;};
  
+
+# =======================================================================================================================================
+###--- PROLOGUE ---###
+
+open $TARGETFILE, ">:encoding($unicode)",$FichierCible or die ("$! $FichierCible \n");
+
 my $collator = Unicode::Collate::->new();
 
 # on initialise le parseur XML DOM
 my $parser= XML::DOM::Parser->new();
+
 if ( $verbeux ) {print STDERR "load cdm FichierMeta:\n";}
 my $metaentreestring = read_file($metaEntree);
 my %CDMSENTREE = load_cdm($metaentreestring);
+my %LINKSENTREE = load_links($metaentreestring);
+
+# ATTENTION, il faudra spécifier comment trouver le bon link dans des métadonnées !!!
+my $keyentree = (keys %LINKSENTREE)[0];
+my $cdmtranslationlinkinfoentree = $LINKSENTREE{$keyentree};
+
 my $metasortiestring = read_file($metaSortie);
 my %CDMSARRIVEE = load_cdm($metasortiestring);
 my %LINKSARRIVEE = load_links($metasortiestring);
+# ATTENTION, il faudra spécifier comment trouver le bon link dans des métadonnées !!!
+my $keysortie = (keys %LINKSARRIVEE)[0];
+my $cdmtranslationlinkinfosortie = $LINKSARRIVEE{$keysortie};
 
-my $entreemodele = read_file($entreeModele);
+my $modeleentree = read_file($modeleEntree);
+my $modelesortie = read_file($modeleCible);
 
-# =======================================================================================================================================
-###--- PROLOGUE ---###
+my $srclang = load_source_language($metaentreestring);
 my $trglang = load_source_language($metasortiestring);
 my $volumedepart = load_volume_name($metaentreestring);
 my $volumearrivee = load_volume_name($metasortiestring);
@@ -113,11 +131,15 @@ my $cdmposarrivee = $CDMSARRIVEE{'cdm-pos'}; # le mot-vedette
 
 $cdmheadwordarrivee =~ s/\/$//;
 $cdmheadwordarrivee =~ s/\/text\(\)$//;
+$cdmposarrivee =~ s/\/$//;
+$cdmposarrivee =~ s/\/text\(\)$//;
+
+my $docentree = $parser->parse($modeleentree);
+my $linknodedepart = create_link_node($cdmtranslationlinkinfoentree,$docentree);
 
 
-print STDERR "cdmtranslationdepart: cdm-translation-pos:$trglang $cdmtranslationblockdepart\n";
 #print STDERR Dumper(\%CDMSENTREE);
-print STDERR Dumper(\%LINKSARRIVEE);
+#print STDERR Dumper(\%LINKSARRIVEE);
 
 # ------------------------------------------------------------------------
 
@@ -125,6 +147,9 @@ print STDERR Dumper(\%LINKSARRIVEE);
 my $headervolumedepart = xpath2opentags($cdmvolumedepart);
 my $footervolumedepart = xpath2closedtags($cdmvolumedepart);
 my $closedtagentrydepart = xpath2closedtag($cdmentrydepart);
+my $opentagvolumedepart = xpath2opentags($cdmvolumedepart, 'creation-date="' . $date . '"');
+my $closedtagvolumedepart = xpath2closedtags($cdmvolumedepart);
+
 my $opentagvolumearrivee = xpath2opentags($cdmvolumearrivee, 'creation-date="' . $date . '"');
 my $closedtagvolumearrivee = xpath2closedtags($cdmvolumearrivee);
 
@@ -144,7 +169,11 @@ if ( defined $verbeux ) {&info('a');};
 ##-- Début de l'écriture : en-tête XML--##
 print $OUTFILE '<?xml version="1.0" encoding="UTF-8" ?>
 ';
-print $OUTFILE $opentagvolumearrivee,"\n";
+print $OUTFILE $opentagvolumedepart,"\n";
+
+print $TARGETFILE '<?xml version="1.0" encoding="UTF-8" ?>
+';
+print $TARGETFILE $opentagvolumearrivee,"\n";
 
 
 # =======================================================================================================================================
@@ -164,6 +193,10 @@ if ($verbeux) {&info('c');};
  
 # =======================================================================================================================================
 ###--- ALGORITHME DE CRÉATION DE LIENS ---###
+$cdmtranslationdepart =~ s/\/$//;
+$cdmtranslationdepart =~ s/\/text\(\)$//;
+$cdmtranslationposdepart =~ s/\/$//;
+$cdmtranslationposdepart =~ s/\/text\(\)$//;
 if ($cdmtranslationblockdepart && $cdmtranslationposdepart) {
 	$cdmtranslationdepart =~ s/^\Q$cdmtranslationblockdepart\E/\./;
 	$cdmtranslationposdepart =~ s/^\Q$cdmtranslationblockdepart\E/\./;
@@ -171,41 +204,75 @@ if ($cdmtranslationblockdepart && $cdmtranslationposdepart) {
 
 while (my $entry = next_entry(*INFILE)) {
 	my $entryid = find_string($entry,$cdmentryiddepart,1);
-	
 	if ($entryid && $cdmtranslationdepart) {	
-		if ($cdmtranslationblockdepart && $cdmtranslationposdepart) {
+		if ($cdmtranslationblockdepart) {
 			my @tblocks = $entry->findnodes($cdmtranslationblockdepart);
 			foreach my $tblock (@tblocks) {
-				my $translation = find_string($tblock,$cdmtranslationdepart);
-				my $tpos = find_string($tblock,$cdmtranslationposdepart);
+				my @translations = $tblock->findnodes($cdmtranslationdepart);
+				my $translation = $translations[0];
 				if ($translation) {
-					create_and_print_entry($entreemodele, $translation, $tpos, $entryid);
+					my $transtring = getNodeText($translation);
+					if ($transtring) {
+						my $tpos = '';
+						my @poss = $tblock->findnodes($cdmtranslationposdepart);
+						if (scalar(@poss>0)) {
+							$tpos = getNodeText($poss[0]);
+							my $parent = $poss[0]->getParentNode();
+							$parent->removeChild($poss[0]);
+						}
+						my $targetid = create_and_print_entry($modelesortie, $transtring, $tpos, $cdmtranslationlinkinfosortie, $volumedepart, $entryid, $srclang);
+						my $locallinknode = $linknodedepart->cloneNode(1);
+						$locallinknode->setOwnerDocument($entry->getOwnerDocument());
+						replace_translation_by_link($cdmtranslationlinkinfoentree, $translation, $locallinknode, $volumearrivee, $targetid, $trglang);
+					}
 				}
 			}
 		}
 		elsif ($cdmtranslationposdepart) {
-			my $translation = find_string($entry,$cdmtranslationdepart);
-			my $tpos = find_string($entry,$cdmtranslationposdepart);			
-			if ($translation) {
-				create_and_print_entry($entreemodele, $translation, $tpos, $entryid);
+			my @translations = $entry->findnodes($cdmtranslationdepart);
+			my $translation = $translations[0];
+			my $transstring = find_string($entry,$cdmtranslationdepart);
+			if ($transstring) {
+				my $tpos = '';
+				my @poss = $entry->findnodes($cdmtranslationposdepart);
+				if (scalar(@poss>0)) {
+					$tpos = getNodeText($poss[0]);
+					my $parent = $poss[0]->getParentNode();
+					$parent->removeChild($poss[0]);
+				}
+				my $targetid = create_and_print_entry($modelesortie, $transstring, $tpos, $volumedepart, $entryid, $srclang);
+				my $locallinknode = $linknodedepart->cloneNode(1);
+				$locallinknode->setOwnerDocument($entry->getOwnerDocument());
+				replace_translation_by_link($cdmtranslationlinkinfoentree, $translation, $locallinknode, $volumearrivee, $targetid, $trglang);
 			}
 		}
 		else {
-			my $translation = find_string($entry,$cdmtranslationdepart);		
-			if ($translation) {
-				create_and_print_entry($entreemodele, $translation, '', $entryid);
+			my @translations = $entry->findnodes($cdmtranslationdepart);
+			foreach my $translation (@translations) {
+				my $transtring = getNodeText($translation);
+				if ($transtring) {
+					my $targetid = create_and_print_entry($modelesortie, $transtring, '', $volumedepart, $entryid, $srclang);
+					my $locallinknode = $linknodedepart->cloneNode(1);
+					$locallinknode->setOwnerDocument($entry->getOwnerDocument());
+					replace_translation_by_link($cdmtranslationlinkinfoentree, $translation, $locallinknode, $volumearrivee, $targetid, $trglang);
+				}
 			}
 		}	
 	}
 	else {
 		if ($verbeux) {print STDERR "un vide : $entryid ou $cdmtranslationdepart\n";}
 	}
+	my @entrydepart = $entry->findnodes($cdmentrydepart);
+	my $entrydepart = $entrydepart[0];
+ 	print $OUTFILE $entrydepart->toString,"\n";
 } 
 
  
 # ------------------------------------------------------------------------
 # Fin de l'écriture :
-print $OUTFILE $closedtagvolumearrivee;
+print $TARGETFILE $closedtagvolumearrivee;
+close $TARGETFILE;
+print $OUTFILE $closedtagvolumedepart;
 close $OUTFILE;
  
 
@@ -408,18 +475,73 @@ sub xpathdifference {
 	return $xpath;
 }
  
+ 
+#------------------------------------------------------------------------
+sub create_link_node {
+	my $translationlinkinfo = $_[0];
+	my $doc = $_[1];
+	my $cdmlinkxpath = $translationlinkinfo->{'xpath'};
+	my @linknodes = $doc->findnodes($cdmlinkxpath);
+	return $linknodes[0];
+}
+ 
+#------------------------------------------------------------------------
+sub fill_link {
+	my $translationlinkinfo = $_[0];
+	my $linknode = $_[1];
+	my $targetvolume = $_[2];
+	my $targetid = $_[3];
+	my $targetlang = $_[4];
+		
+	if ($translationlinkinfo) {
+		my $langpath = $translationlinkinfo->{'lang'};
+		if ($langpath) {
+			my @langs = $linknode->findnodes($langpath);
+			my $lang = $langs[0];
+			$lang->addText($targetlang);
+		}
+		my $typepath = $translationlinkinfo->{'type'};
+		if ($typepath) {
+			my @types = $linknode->findnodes($typepath);
+			my $type = $types[0];
+			$type->addText('direct');
+		}
+		my $volumepath = $translationlinkinfo->{'volume'};
+		if ($volumepath) {
+			my @volumes = $linknode->findnodes($volumepath);
+			my $volume = $volumes[0];
+			$volume->addText($targetvolume);
+		}
+		my $valuepath = $translationlinkinfo->{'value'};
+		if ($valuepath) {
+			my @values = $linknode->findnodes($valuepath);
+			my $value = $values[0];
+			$value->addText($targetid);
+		}
+	}
+	else {
+		if ($verbeux) {print STDERR "Erreur : Pas de lien trouvé!\n"}
+	}
+	return $linknode;
+}
+	
+
 # ------------------------------------------------------------------------
 sub create_and_print_entry {
 	my $newentry = $_[0];
 	my $newheadword = $_[1];
 	my $newpos = $_[2];
-	my $targetid = $_[3];
+	my $linkinfo = $_[3];
+	my $sourcevolume  = $_[4];
+	my $targetid = $_[5];
+	my $targetlang = $_[6];
 	
 	if ($verbeux) {print STDERR "create_and_print_entry: $newheadword [$newpos] -> $targetid\n";}
 				
 	my $docarrivee = $parser->parse($newentry);
 	$entreesresultat++;
-	my $newentryid = $trglang . '.' . $newheadword . '.' .$entreesresultat . '.e';
+	my $newentryid = $trglang . '.' . $newheadword . '.' .$entreesresultat . '.e';	
+	
 	if ($cdmentryidarrivee =~ /@[^\/]+$/) {
 		$cdmentryidarrivee =~ s/\/@([^\/]+)$//;
 		my $attributename = $1;
@@ -440,50 +562,35 @@ sub create_and_print_entry {
 		my $posarrivee = $posarrivee[0];
 		$posarrivee->addText($newpos);
 	}
-	
-	# ATTENTION, il faudra spécifier comment trouver le bon link dans des métadonnées !!!
-	my $key = (keys %LINKSARRIVEE)[0];
-	my $cdmtranslationlinkinfo = $LINKSARRIVEE{$key};
-	
-	if ($cdmtranslationlinkinfo) {
-		my $cdmlinkxpath = $cdmtranslationlinkinfo->{'xpath'};
-		my @linknodes = $docarrivee->findnodes($cdmlinkxpath);
-		my $linknode = $linknodes[0];
-		my $langpath = $cdmtranslationlinkinfo->{'lang'};
-		if ($langpath) {
-			my @langs = $linknode->findnodes($langpath);
-			my $lang = $langs[0];
-			$lang->addText($trglang);
-		}
-		my $typepath = $cdmtranslationlinkinfo->{'type'};
-		if ($typepath) {
-			my @types = $linknode->findnodes($typepath);
-			my $type = $types[0];
-			$type->addText('direct');
-		}
-		my $volumepath = $cdmtranslationlinkinfo->{'volume'};
-		print STDERR "volname: $volumedepart, path: $volumepath\n";
-		if ($volumepath) {
-			my @volumes = $linknode->findnodes($volumepath);
-			my $volume = $volumes[0];
-			$volume->addText($volumedepart);
-		}
-		if ($verbeux) {print STDERR "Ici 8\n"}
-		my $valuepath = $cdmtranslationlinkinfo->{'value'};
-		if ($valuepath) {
-			my @values = $linknode->findnodes($valuepath);
-			my $value = $values[0];
-			$value->addText($targetid);
-		}
-		if ($verbeux) {print STDERR "Ici 10\n"}
+		
+	if ($linkinfo) {
+		my $linknode = create_link_node($linkinfo,$docarrivee);
+		fill_link($linkinfo, $linknode, $volumedepart, $targetid, $targetlang);
 	}
 	else {
 		if ($verbeux) {print STDERR "Erreur : Pas de lien trouvé!\n"}
 	}
 	my @entryarrivee = $docarrivee->findnodes($cdmentryarrivee);
 	my $entryarrivee = $entryarrivee[0];
- 	print $OUTFILE $entryarrivee->toString,"\n";
+ 	print $TARGETFILE $entryarrivee->toString,"\n";
+ 	return $newentryid;
 } 
+ 
+# ------------------------------------------------------------------------
+sub replace_translation_by_link {
+	my $linkinfo = $_[0];
+	my $transnode = $_[1];
+	my $linkelement = $_[2];
+	my $targetvolume = $_[3];
+	my $targetid = $_[4];
+	my $targetlang = $_[5];
+	
+	$linkelement->setOwnerDocument($transnode->getOwnerDocument());
+	my $parent = $transnode->getParentNode();
+	$parent->replaceChild($linkelement, $transnode);
+	fill_link($linkinfo, $linkelement, $targetvolume, $targetid, $targetlang);
+}	
+
  
 # ------------------------------------------------------------------------
   

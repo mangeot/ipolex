@@ -49,8 +49,7 @@
   		<cdm-expression-derivee xpath="/volume/article/bloc_sens/sens/bloc_dérivés/expression_dérivée/text()" index="true"  />	
   		<cdm-source-definition xpath="/volume/article/bloc_sens/sens/source_définition/text()" index="true"  />	
   		<links>
-  <link name="translation" xpath="/volume/article/bloc_sens/sens/bloc_traduction/lien-traduction">
-  		<volume xpath="target-volume-name"/>
+  <link name="translation" xpath="/volume/article/bloc_sens/sens/bloc_traduction/lien_traduction">
   <value xpath="@id"/>
   <type xpath="@type"/>
   <lang xpath="@d:lang"/>

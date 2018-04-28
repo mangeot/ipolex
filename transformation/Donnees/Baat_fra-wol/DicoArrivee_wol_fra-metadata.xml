@@ -31,7 +31,9 @@
 <cdm-pos xpath="/volume/article/catégorie_grammaticale/text()"/>
 <cdm-definition xpath="/volume/article/bloc_sens/sens/définition/text()"/>
 <cdm-sense xpath="/volume/article/bloc_sens/sens"/>
+<cdm-translation-block xpath="/volume/article/bloc_sens/sens/bloc_traduction" d:lang="fra" />
 <cdm-translation xpath="/volume/article/bloc_sens/sens/bloc_traduction/traduction_française/text()" d:lang="fra" />
+<cdm-translation-pos xpath="/volume/article/bloc_sens/sens/bloc_traduction/catégorie_grammaticale_traduction_française_mot_vedette/text()" d:lang="fra" />
   <cdm-example-block xpath="/volume/article/bloc_sens/sens/exemples/exemple"/>
   <cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-fra/text()" d:lang="fra" />
   <cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-wol/text()" d:lang="wol" />
@@ -41,20 +43,19 @@
   <cdm-classe-nominale xpath="/volume/article/classe_nominale/text()" index="true"  />	
   		<cdm-source-mot-vedette xpath="/volume/article/bloc_forme/source_mot_vedette/text()" index="true"  />	
   		<cdm-lexeme-source xpath="/volume/article/bloc_forme/lexème_source/text()" index="true"  />	
-  		<cdm-pos-translation xpath="/volume/article/bloc_sens/sens/bloc_traduction/catégorie_grammaticale_traduction_française_mot_vedette/text()" index="true"  />	
   		<cdm-synonyme xpath="/volume/article/bloc_sens/sens/synonyme/text()" index="true"  />	
   		<cdm-homonyme xpath="/volume/article/bloc_sens/sens/homonyme/text()" index="true"  />	
   		<cdm-note-usage xpath="/volume/article/bloc_sens/sens/note_usage/text()" index="true"  />	
   		<cdm-expression-derivee xpath="/volume/article/bloc_sens/sens/bloc_dérivés/expression_dérivée/text()" index="true"  />	
   		<cdm-source-definition xpath="/volume/article/bloc_sens/sens/source_définition/text()" index="true"  />	
   		<links>
-  <link name="translation" xpath="/volume/entry/translation-ref">
-  		<volume xpath="target-volume-name"/>
+  <link name="translation" xpath="/volume/article/bloc_sens/sens/bloc_traduction/lien_traduction">
   <value xpath="@id"/>
   <type xpath="@type"/>
-  <lang xpath="@lang"/>
+  <lang xpath="@d:lang"/>
   <label xpath="@label"/>
   <weight xpath="@weight"/>
+  <volume xpath="@volume"/>
   </link>
   		</links>
 	</cdm-elements>

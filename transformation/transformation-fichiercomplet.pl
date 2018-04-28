@@ -71,9 +71,7 @@ sub help {
 }
 
 # print STDERR "Chargement du modèle\n";
-open my $MODELEFILE, "<:encoding($unicode)", $entreeModele or die "error opening $entreeModele: $!";
-my $xmlarrivee = do { local $/; <$MODELEFILE> };
-close $MODELEFILE;
+my $xmlarrivee = read_file($entreeModele);
 #print STDERR "XMLarrivée : [",$xmlarrivee,"]",$entreeModele;
 
 #print STDERR "load cdm départ:\n";
@@ -138,9 +136,6 @@ if ($verbeux) 	{print STDERR "Transformation article : $headword\n";}
 	copiePointeurs($CDMArbreDepart, $CDMArbreArrivee, $docdepart, $docarrivee);
 	#	print STDERR "fin des copiePointeurs\n";
 
-	my @entryarrivee = $docarrivee->findnodes($cdmentryarrivee);
-	my $entryarrivee = $entryarrivee[0];
-
 #	print STDERR "copie de l'entrée source $cdmentrydepart dans l'entrée arrivée\n";
 
 	my @entrydepart = $docdepart->findnodes($cdmentrydepart);
@@ -158,6 +153,8 @@ if ($verbeux) 	{print STDERR "Transformation article : $headword\n";}
 		$entrydepart->setOwnerDocument($docarrivee);
 		$elementsource->appendChild($entrydepart);
 	}
+	my @entryarrivee = $docarrivee->findnodes($cdmentryarrivee);
+	my $entryarrivee = $entryarrivee[0];
 	print $OUTFILE $entryarrivee->toString,"\n";
 #	print STDERR "Fin transformation article\n";
 }
@@ -238,6 +235,14 @@ sub getNodeText {
 	return $text;
 }
 
+# cette fonction permet de lire un fichier dans une chaîne de caractères.
+sub read_file {
+  	my $fichier = $_[0];
+	open my $FILE, "<:encoding($unicode)", $fichier or die "error opening $fichier: $!";
+	my $string = do { local $/; <$FILE> };
+	close $FILE;
+	return $string;
+}
 
 # cette fonction permet de récupérer les pointeurs cdm à partir du fichier metada.
 sub load_cdm {
