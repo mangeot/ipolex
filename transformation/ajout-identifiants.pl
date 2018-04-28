@@ -163,6 +163,8 @@ while (my $entry = next_entry(*INFILE)) {
 			$entryidnode->addText($newentryid);
 		}
 	}
+ 	my @entries = $entry->findnodes($cdmentry);
+	my $entry = $entries[0];
  	print $OUTFILE $entry->toString,"\n";
  	$entreesresultat++;
 } 
