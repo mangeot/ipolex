@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 
-# ./fusion-interne.pl -v -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -from Donnees/fusion.xml > out.xml
+# ./fusion-interne.pl -v -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -from Donnees/fusion.xml -g targets.xml > out.xml
 # ./fusion-interne.pl -v -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -from Donnees/outcheriftpreptrie.xml > out.xml
 #
 # =======================================================================================================================================
@@ -50,15 +50,16 @@ use POSIX qw(locale_h setlocale);
 my $unicode = "UTF-8";
 
 ##-- Gestion des options --##
-my ($date, $FichierEntree, $metaArrivee, $FichierResultat, $encoding) = ();
-my ($verbeux, $help, $pretty_print) = ();
+my ($date, $FichierEntree, $metaDonnees, $FichierResultat, @fichiersCibles) = ();
+my ($encoding, $verbeux, $help, $pretty_print) = ();
 my $OUTFILE;
 
 GetOptions( 
   'date|time|t=s'             => \$date, # flag de type -date ou --date, ou -time ou --time, ou -t ou --t (=s : string)
   'source|base|in|one|from|i=s' => \$FichierEntree, 
-  'metadonnees|metadata|m=s'           => \$metaArrivee,
+  'metadonnees|metadata|m=s'           => \$metaDonnees,
   'sortie|out|to|o=s'           => \$FichierResultat, 
+  'cibles|targets|g=s'			=> \@fichiersCibles,
   'encodage|encoding|enc|f=s'   => \$encoding, 
   'help|h'                      => \$help, 
   'verbeux|v'                   => \$verbeux, 
@@ -68,7 +69,7 @@ GetOptions(
 
 if (!(defined $date)) {$date = localtime;};
 if (!(defined $FichierEntree)) {&help;}; # si le fichier source n'est pas spécifié, affichage de l'aide.
-if (! ($metaArrivee)) {&help;}; # si le fichier metaArrivee n'est pas spécifié, affichage de l'aide.;
+if (! ($metaDonnees)) {&help;}; # si le fichier metaArrivee n'est pas spécifié, affichage de l'aide.;
 if (defined $help) {&help;};
 
 if ($FichierResultat) {
@@ -87,17 +88,21 @@ my $collator = Unicode::Collate::->new();
 
 # on initialise le parseur XML DOM
 my $parser= XML::DOM::Parser->new();
-if ( $verbeux ) {print STDERR "load cdm métaArrivée:\n";}
-my %CDMSARRIVEE=load_cdm($metaArrivee);
+my $metaentreestring = read_file($metaDonnees);
+my %CDMSENTREE = load_cdm($metaentreestring);
+
 # =======================================================================================================================================
 ###--- PROLOGUE ---###
-my $cdmvolume = $CDMSARRIVEE{'cdm-volume'}; # le volume
-my $cdmentry = $CDMSARRIVEE{'cdm-entry'}; # l'élément de référence pour la fusion (pour MAM : 'entry' par exemple).
-my $cdmheadword = $CDMSARRIVEE{'cdm-headword'}; # le sous-élément à comparer pour la fusion
-my $cdmsense = $CDMSARRIVEE{'cdm-sense'}; # le sous-élément qui sera récupéré puis inséré.
-my $cdmcat=$CDMSARRIVEE{'cdm-pos'};#le sous-élément à comparer dans le cas où on trouve 2 entrées de même headword.
-my $cdmsourceblock=$CDMSARRIVEE{'cdm-source-block'};# pour recopier les entrées source
+my $cdmvolume = $CDMSENTREE{'cdm-volume'}; # le volume
+my $cdmentry = $CDMSENTREE{'cdm-entry'}; # l'élément de référence pour la fusion (pour MAM : 'entry' par exemple).
+my $cdmentryid = $CDMSENTREE{'cdm-entry-id'}; # l'élément de référence pour la fusion (pour MAM : 'entry' par exemple).
+my $cdmheadword = $CDMSENTREE{'cdm-headword'}; # le sous-élément à comparer pour la fusion
+my $cdmsense = $CDMSENTREE{'cdm-sense'}; # le sous-élément qui sera récupéré puis inséré.
+my $cdmcat=$CDMSENTREE{'cdm-pos'};#le sous-élément à comparer dans le cas où on trouve 2 entrées de même headword.
+my $cdmsourceblock=$CDMSENTREE{'cdm-source-block'};# pour recopier les entrées source
 # ------------------------------------------------------------------------
+$cdmentryid =~ s/\/$//;
+$cdmentryid =~ s/\/text\(\)$//;
 
 # On reconstruit les balises ouvrantes et fermantes du volume 
 my $headervolume = xpath2opentags($cdmvolume);
@@ -269,6 +274,7 @@ sub next_entry
 sub find_string {
 	my $entry = $_[0];
 	my $cdm = $_[1];
+	my $verbose = !$_[2] && $verbeux;
 	my $text = '';
 	if ($entry) {
 		my @strings = $entry->findnodes($cdm);
@@ -276,11 +282,11 @@ sub find_string {
 			$text = getNodeText($strings[0]);
 		}
 		else {
-			if ($verbeux) {print STDERR "Problème avec find_string : XPath $cdm introuvable !\n"}; 
+			if ($verbose) {print STDERR "Problème avec find_string : XPath $cdm introuvable !\n"}; 
 		}
 	}
 	else {
-		if ($verbeux) {print STDERR "Problème avec find_string : objet XML vide !\n";} 
+		if ($verbose) {print STDERR "Problème avec find_string : objet XML vide !\n";} 
 	}
 	return $text;
 }
@@ -296,6 +302,11 @@ my $i = 0;
 # Il ne faut pas oublier pour cela la gestion de la numérotation des sense.
 # Pour les éléments <sense> du premier fichier, rien ne change.
 # Pour ceux du second fichier, il existera un décalage selon Sn sense (n = le nombre de <sense> dans le premier fichier).
+# Il faut également modifier les liens extérieurs qui pointent vers ce fichier
+my $oldentryid = find_string($entry_two,$cdmentryid);
+my $newentryid = find_string($entry_one,$cdmentryid);
+replace_entry_id($oldentryid,$newentryid);
+
 my $last_sense = '';
 foreach my $sense_one ($entry_one->findnodes($cdmsense)) {
 	$i++;
@@ -335,7 +346,27 @@ foreach my $sense_two ($entry_two->findnodes($cdmsense))
   	  	$sourceblockone->appendChild($child);
   	  }
   }
+  
+  
   return ($entry_one);
+}
+# ------------------------------------------------------------------------
+# Cette fonction remplace l'ancien id par le nouveau dans les volumes reliés
+sub replace_entry_id {
+	my $oldid = $_[0];
+	my $newid = $_[1];
+	if ($verbeux) {print STDERR "Replace $oldid with $newid:\n"};
+
+	foreach my $file (@fichiersCibles) {
+		$oldid =~ s/\./\\\./g;
+		$newid =~ s/\./\\\./g;
+		$oldid =~ s/\//\\\//g;
+		$newid =~ s/\//\\\//g;
+		if ($verbeux) {print STDERR "sed -i'.bak' -e 's/$oldid/$newid/g' $file\n";}
+		`sed -i'.bak' -e 's/$oldid/$newid/g' $file`;
+		`rm $file.bak`;
+	}
+
 }
 
 # ------------------------------------------------------------------------
@@ -371,27 +402,34 @@ sub getNodeText {
 	return $text;
 }
 
+sub read_file {
+  	my $fichier = $_[0];
+	open my $FILE, "<:encoding($unicode)", $fichier or die "error opening $fichier: $!";
+	my $string = do { local $/; <$FILE> };
+	close $FILE;
+	return $string;
+}
+
+
 # cette fonction permet de récupérer les pointeurs cdm à partir du fichier metada.
  sub load_cdm {
-  my ($fichier)=@_;
-  open (IN, "<:encoding($unicode)", $fichier);
+  my $fichier = $_[0];
+  my $doc = $parser->parse($fichier);
   my %dico=();
-  while(my $ligne=<IN>){
-      
-      if ($ligne=~/^\s*<(\S+)\s+xpath=\"([^\"]+)(\"\sd:lang=\")?(\w+)?/){
-           my $cdm=$1; my $xpath=$2;  my $lang = $4;
-           if ($ligne=~/d:lang/)
-           {
-           $dico{$cdm.$lang}=$xpath;}
-           else
-           {$dico{$cdm}=$xpath;}
+  my @cdmelements = $doc->findnodes('/volume-metadata/cdm-elements/*');
+  foreach my $cdmelement (@cdmelements) {
+  	my $name = $cdmelement->getNodeName();
+  	if ($name ne 'links') {
+		my $xpath = find_string($cdmelement,'@xpath');
+		my $lang = find_string($cdmelement,'@d:lang',1);
+		if ($lang) {
+			$dico{$name.':'.$lang}=$xpath;}
+		else
+    	{$dico{$name}=$xpath;}
+  	}
   }
- 
+  return %dico;
 }
-close(IN);
- return %dico;
-
- }
 
 # Cette fonction convertit un XPath en balises ouvrantes
 sub xpath2opentags {
