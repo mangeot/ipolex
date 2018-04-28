@@ -18,7 +18,7 @@
 # Pour les options avancées :
 # -date "date" : pour spécifier la date (par défaut : la date du jour (localtime)
 # -erreur "message d'erreur" : pour spécifier le message d'erreur (ouverture de fichiers)
-# -encodding "format d'encodage" : pour spécifier le format d'encodage (par défaut UTF-8)
+# -encoding "format d'encodage" : pour spécifier le format d'encodage (par défaut UTF-8)
 # -help : pour afficher l'aide
 # -total : pour indiquer le nombre total d'entrées de la source (pour la barre de progression)
 # =======================================================================================================================================
@@ -40,7 +40,7 @@ my $unicode = "UTF-8";
 
 ##-- Gestion des options --##
 
-my ($date, $FichierEntree,metaEntree,$FichierResultat, $erreur, $encoding, $src, $trg) = ();
+my ($date, $FichierEntree,$metaEntree,$FichierResultat, $erreur, $encoding, $src, $trg) = ();
 my ($verbeux, $help) = ();
 GetOptions( 
   'date|time|d=s'        	  => \$date, # flag de type -date ou --date, ou -time ou --time, ou -t ou --t (=s : string)
@@ -115,44 +115,6 @@ my $cdmheadworddepart = $CDMSDEPART{'cdm-headword'};
 
 my $name = "FraKhm";
 
-<volume>
-  <article id="">
-    <bloc_forme>
-      <mot_vedette/>
-      <source_mot_vedette/>
-      <lexème_source/>
-	  <variante/>
-	  <prononciation/>
-    </bloc_forme>
-    <catégorie_grammaticale/>
-    <classe_nominale/>
-   <bloc_sens>
-     <sens id="">
-      <définition/>
-      <source_définition/>
-      <bloc_traduction>
-        <traduction_française/>
-        <catégorie_grammaticale_traduction_française_mot_vedette/>
-      </bloc_traduction>
-      <exemples>
-      <exemple>
-        <exemple-wol/>
-        <exemple-fra/>
-      </exemple>
-      </exemples>
-      <synonyme/>
-      <homonyme/>
-      <note_usage/>
-     <bloc_dérivés>
-      <expression_dérivée/>
-    </bloc_dérivés>
-   </sens>
-    </bloc_sens>
-    <sources>
-     <entree-source provenance="" />
-    </sources>
-  </article>
-</volume>
 my  $in_root 		   = 'dictionnaire'; 
 my  $in_entry 		   = 'article'; 				 # l'élément dans la source qui correspond à <m:entry> dans MAM.
 my	$in_head 	   = 'forme';
