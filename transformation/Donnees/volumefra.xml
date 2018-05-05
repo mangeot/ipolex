@@ -1,0 +1,37 @@
+<article id="fra.coutumes.1.e">
+    <bloc_forme>
+      <mot_vedette>coutumes</mot_vedette>
+      <source_mot_vedette/>
+      <lexème_source/>
+	  <variante/>
+	  <prononciation/>
+    </bloc_forme>
+    <catégorie_grammaticale>nom</catégorie_grammaticale>
+    <classe_nominale/>
+   <bloc_sens>
+     <sens id="">
+      <définition/>
+      <source_définition/>
+      <bloc_traduction>
+        <traduction_française/>
+        <catégorie_grammaticale_traduction_française_mot_vedette/>
+        <lien_traduction d:lang="wol" id="aada1" type="direct" volume="DicoArrivee_wol_fra"/>
+      </bloc_traduction>
+      <exemples>
+      <exemple>
+        <exemple-wol/>
+        <exemple-fra/>
+      </exemple>
+      </exemples>
+      <synonyme/>
+      <homonyme/>
+      <note_usage/>
+     <bloc_dérivés>
+      <expression_dérivée/>
+    </bloc_dérivés>
+   </sens>
+    </bloc_sens>
+    <sources>
+     <entree-source provenance=""/>
+    </sources>
+  </article>

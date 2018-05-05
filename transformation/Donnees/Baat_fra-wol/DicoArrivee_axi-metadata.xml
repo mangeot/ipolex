@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<volume-metadata
+   xmlns="http://www-clips.imag.fr/geta/services/dml" 
+   xmlns:d="http://www-clips.imag.fr/geta/services/dml"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www-clips.imag.fr/geta/services/dml
+   http://www-clips.imag.fr/geta/services/dml/dml.xsd"
+   location="local"
+   creation-date="2018-03-19T16:01:18+01:00" 
+   installation-date="2018-03-19T16:01:18+01:00" 
+   last-modification-date="2018-03-29T15:51:39+02:00" 
+   hw-number="1 " 
+   encoding="utf-8" 
+   format="xml" 
+   name="DicoArrivee_axi"
+   dbname="dicoarriveeaxi" 
+   version="1"
+   source-language="axi"
+   target-languages="fra wol"
+   reverse-lookup="false">
+ <authors>Mouhamadou KHOULE</authors>
+ <comments></comments>
+ <cdm-elements>
+  <cdm-volume xpath="/volume"/>
+<cdm-entry xpath="/volume/axie"/>
+<cdm-entry-id xpath="/volume/axie/@id"/>
+<cdm-headword xpath="/volume/axie/mot_vedette/text()"/>
+<cdm-translation-block xpath="/volume/axie/reflexies"/>
+  <links>
+  <link name="final" xpath="/volume/axie/reflexies/reflexie">
+  <value xpath="@idarticle"/>
+  <type xpath="@type"/>
+  <lang xpath="@d:lang"/>
+  <label xpath="@label"/>
+  <weight xpath="@weight"/>
+  <volume xpath="@volume"/>
+  </link>
+  		</links>
+	</cdm-elements>
+<administrators>
+		  <user-ref name="mangeot"/>
+ </administrators>
+ <volume-ref xlink:href="dicoarrivee_axi.xml" source-language="axi"/>
+ <xmlschema-ref xlink:href="dicoarrivee_axi.xsd"/>
+<template-entry-ref xlink:href="dicoarrivee_axi-template.xml"/>
+<xsl-stylesheet name="DicoArrivee_axi" default="true" xlink:href="DicoArrivee_axi-view.xsl"/>
+ 	</volume-metadata>
