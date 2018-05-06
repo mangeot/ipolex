@@ -182,9 +182,6 @@ if ( defined $verbeux ) {&info('a');};
 print $OUTSOURCE '<?xml version="1.0" encoding="UTF-8" ?>
 ',$opentagvolumesource,"\n";
 
-print $OUTTARGET '<?xml version="1.0" encoding="UTF-8" ?>
-',$opentagvolumecible,"\n";
-
 print $OUTPIVOT '<?xml version="1.0" encoding="UTF-8" ?>
 ',$opentagvolumepivot,"\n";
 
@@ -208,7 +205,7 @@ if ($verbeux) {&info('c');};
 ###--- ALGORITHME DE CRÉATION DE LIENS ---###
 
 my %lienscible = ();
-while (my $entry = next_entry(*SOURCEFILE)) {
+while (my $entry = next_entry_source(*SOURCEFILE)) {
 	my $entryid = find_string($entry,$cdmentryidsource,1);
 
 # ATTENTION, il faudra spécifier comment trouver le bon link dans des métadonnées !!!
@@ -246,6 +243,51 @@ print $OUTSOURCE $closedtagvolumesource;
 close $OUTSOURCE;
  
 
+print $OUTTARGET '<?xml version="1.0" encoding="UTF-8" ?>
+',$opentagvolumecible,"\n";
+
+# ------------------------------------------------------------------------
+# Input/ Output
+open (TARGETFILE, "<:encoding($encoding)",$FichierCible) or die ("$! $FichierCible\n");
+# On va lire le fichier d'entrée article par article 
+# donc on coupe après une balise de fin d'article.
+$/ = $closedtagentrycible;
+
+while (my $entry = next_entry_cible(*TARGETFILE)) {
+	my $entryid = find_string($entry,$cdmentryidcible,1);
+
+# ATTENTION, il faudra spécifier comment trouver le bon link dans des métadonnées !!!
+	foreach my $clelien (keys %LINKSCIBLE) {
+		my $cdmtranslationlinkinfocible = $LINKSCIBLE{$clelien};
+		my @links = $entry->findnodes($cdmtranslationlinkinfocible->{'xpath'});
+		foreach my $link (@links) {
+			my $type = find_string($link,$cdmtranslationlinkinfocible->{'type'});
+			my $volume = find_string($link,$cdmtranslationlinkinfocible->{'volume'});
+			my $value = find_string($link,$cdmtranslationlinkinfocible->{'value'});
+			if ($type eq 'direct' && $volume eq $volumesource && $value ne '') {
+				if (defined($lienscible{$value})) {
+					my $pivotid = $lienscible{$value};
+					print STDERR 'liencible : ',$value, ' => ', $pivotid,"\n";
+					my $locallinknode = $linknodecible->cloneNode(1);
+					$locallinknode->setOwnerDocument($entry->getOwnerDocument());
+					replace_direct_by_pivot_link($cdmtranslationlinkinfocible, $link, $locallinknode, $volumepivot, $pivotid, $pivotlang);
+				}
+			}
+		}
+	}
+	print STDERR 'cdmentrycible : ',$cdmentrycible,"\n";
+	my @entrycible = $entry->findnodes($cdmentrycible);
+	my $entrycible = $entrycible[0];
+ 	print $OUTTARGET $entrycible->toString,"\n";
+} 
+
+ 
+# ------------------------------------------------------------------------
+# Fin de l'écriture :
+print $OUTTARGET $closedtagvolumecible;
+close $OUTTARGET;
+
+
 # ------------------------------------------------------------------------
 if ( defined $verbeux ) {
   &info('d');
@@ -254,14 +296,17 @@ if ( defined $verbeux ) {
 
 # =======================================================================================================================================
 ###--- SUBROUTINES ---###
-sub next_entry 
+sub next_entry
 {
 	my $file = $_[0];
+	my $stop = $_[1];
+	my $header = $_[2];
+	my $footer = $_[3];
 	my $doc = '';
-	$/ = $closedtagentrysource;
+	$/ = $stop;
 	my $line = <$file>;
 	if ($line) {
-		$line = $headervolumesource . $line . $footervolumesource;
+		$line = $header . $line . $footer;
 		eval {
 			$doc = $parser->parse($line);
     		1;
@@ -272,6 +317,16 @@ sub next_entry
 		$nbentries++;
 	}
 	return $doc;
+}
+
+sub next_entry_source {
+	my $file = $_[0];
+	return next_entry($file,$closedtagentrysource, $headervolumesource, $footervolumesource);	
+}
+
+sub next_entry_cible {
+	my $file = $_[0];
+	return next_entry($file,$closedtagentrycible, $headervolumecible, $footervolumecible);	
 }
  
 # ------------------------------------------------------------------------
@@ -631,7 +686,9 @@ elsif ($info =~ 'd')
 	"Fichier source : $FichierSource\n",
 	"Fichier cible : $FichierCible\n",
 	"--------------------------------------------------\n",
-	"Fichier final : $FichierResultat\n",
+	"Fichiers finaux : $FichierResultat\n",
+	"                  $sortieSource\n",
+	"                  $sortieCible\n",
 	"--------------------------------------------------\n",
 	"Nombre d'entrées analysées : ", $nbentries, "\n",
 	"--------------------------------------------------\n",
