@@ -22,6 +22,7 @@ use XML::DOM::XPath;
 use JSON;
 use Data::Dumper;
 use Encode qw(encode_utf8);
+use Clone 'clone';
 
 use Getopt::Long; # pour gérer les arguments.
 
@@ -70,21 +71,24 @@ sub help {
 	exit 0;
 }
 
+# on initialise le parseur XML DOM
+my $parser= XML::DOM::Parser->new();
+
 # print STDERR "Chargement du modèle\n";
 my $xmlarrivee = read_file($entreeModele);
 #print STDERR "XMLarrivée : [",$xmlarrivee,"]",$entreeModele;
 
 #print STDERR "load cdm départ:\n";
-my %CDMSDEPART=load_cdm($metaEntree);
+my $metaentreestring = read_file($metaEntree);
+my %CDMSDEPART=load_cdm($metaentreestring);
 #print STDERR "load cdm arrivée:\n";
-my %CDMSARRIVEE=load_cdm($metaSortie);
+my $metasortiestring = read_file($metaSortie);
+my %CDMSARRIVEE=load_cdm($metasortiestring);
 
 #print STDERR "load tables arrivée:\n";
 my %TABLESARRIVEE = load_tables($metaSortie);
 # print STDERR "tablesarrivee:",Dumper(%TABLESARRIVEE);
 
-# on initialise le parseur XML DOM
-my $parser= XML::DOM::Parser->new();
 
 # print STDERR "Récupération de quelques pointeurs CDM utiles pour la suite\n";
 my $cdmvolumedepart = delete($CDMSDEPART{'cdm-volume'});
@@ -132,7 +136,7 @@ while( my $line = <$INFILE>)  {
 	my @headwords = $docdepart->findnodes($cdmheadworddepart);
 	my $headword = getNodeText($headwords[0]);
 	
-if ($verbeux) 	{print STDERR "Transformation article : $headword\n";}
+if ($verbeux) 	{print STDERR "\nTransformation article : $headword\n";}
 	copiePointeurs($CDMArbreDepart, $CDMArbreArrivee, $docdepart, $docarrivee);
 	#	print STDERR "fin des copiePointeurs\n";
 
@@ -235,6 +239,28 @@ sub getNodeText {
 	return $text;
 }
 
+
+# Cette fonction extrait une chaîne de caractères avec un pointeur XPath
+sub find_string {
+	my $entry = $_[0];
+	my $cdm = $_[1];
+	my $verbose = !$_[2] && $verbeux;
+	my $text = '';
+	if ($entry) {
+		my @strings = $entry->findnodes($cdm);
+		if (scalar(@strings>0)) {
+			$text = getNodeText($strings[0]);
+		}
+		else {
+			if ($verbose) {print STDERR "Problème avec find_string : XPath $cdm introuvable !\n"}; 
+		}
+	}
+	else {
+		if ($verbose) {print STDERR "Problème avec find_string : objet XML vide !\n";} 
+	}
+	return $text;
+}
+
 # cette fonction permet de lire un fichier dans une chaîne de caractères.
 sub read_file {
   	my $fichier = $_[0];
@@ -245,26 +271,24 @@ sub read_file {
 }
 
 # cette fonction permet de récupérer les pointeurs cdm à partir du fichier metada.
-sub load_cdm {
-  my ($fichier)=@_;
-  open (IN, "<:encoding($unicode)", $fichier);
+ sub load_cdm {
+  my $fichier = $_[0];
+  my $doc = $parser->parse($fichier);
   my %dico=();
-  while(my $ligne=<IN>){
-      
-      if($ligne=~/^\s*<(\S+)\s+xpath=\"([^\"]+)(\"\sd:lang=\")?(\w+)?/){
-           my $cdm=$1; my $xpath=$2;  my $lang = $4;
-           if ($ligne=~/d:lang/)
-           {
-           $dico{$cdm.$lang}=$xpath;}
-           else
-           {$dico{$cdm}=$xpath;}
+  my @cdmelements = $doc->findnodes('/volume-metadata/cdm-elements/*');
+  foreach my $cdmelement (@cdmelements) {
+  	my $name = $cdmelement->getNodeName();
+  	if ($name ne 'links') {
+		my $xpath = find_string($cdmelement,'@xpath');
+		my $lang = find_string($cdmelement,'@d:lang',1);
+		if ($lang) {
+			$dico{$name.':'.$lang}=$xpath;}
+		else
+    	{$dico{$name}=$xpath;}
+  	}
   }
- 
+  return %dico;
 }
-close(IN);
- return %dico;
-
- }
 
 sub load_tables {
   my ($fichier)=@_;
@@ -446,44 +470,33 @@ sub arbre_cdm_complet {
 		my @feuille = ( $pointeur );
 		$tableauDepart->{$key} = \@feuille;
 	}	
-	my $i=0;
-	my $keyssize = scalar(@keys);
 	foreach my $firstkey (@keys) {
 #		print STDERR "FK: $firstkey\n";
 		my $fpointeur = $tableauDepart->{$firstkey};
 		my @fpointeur = @$fpointeur;
 		$fpointeur = $fpointeur[0];
-		my $j=$i+1;
-		while ($j<$keyssize) {
-			my $secondkey = $keys[$j];
-#			print STDERR "$firstkey , $secondkey\n";
+		my $j=0;
+		foreach my $secondkey (@keys) {
 			my $spointeur = $tableauDepart->{$secondkey};
 			my @spointeur = @$spointeur;
 			$spointeur = $spointeur[0];
-			if ($fpointeur =~ s/^\Q$spointeur\E(.)/\.$1/) {
-#				print STDERR 'sp:',$spointeur, 'fp:',$fpointeur,"\n";
+#			print STDERR "fk: $firstkey , sk: $secondkey, fp: $fpointeur, sp: $spointeur\n";
+			if ($fpointeur =~ /^\Q$spointeur\E./) {
+				my $fpointeurtmp = $fpointeur;
+				my $tfpointeurtmp = clone(\@fpointeur);
+				$fpointeurtmp =~ s/^\Q$spointeur\E/\./;
+				$tfpointeurtmp->[0] = $fpointeurtmp;
+#				print STDERR 'fp:',$fpointeurtmp,'sp:',$spointeur, "\n";
 				my %hash = ();
 				if (scalar (@spointeur)>1) {
 					my $hash = $spointeur[1];
 					%hash = %$hash;
 				}
-				if (scalar(@fpointeur)>1) {
-					@fpointeur = ($fpointeur,$fpointeur[1]);
-				}
-				else {
-					@fpointeur = ($fpointeur);
-				}
-				$hash{$firstkey} = \@fpointeur;
+				$hash{$firstkey} = $tfpointeurtmp;
 				@spointeur = ($spointeur, \%hash);
-#				if ($secondkey eq 'cdm-example-block') { print STDERR "change eb\n";}
 				$tableauDepart->{$secondkey} = \@spointeur;
- 				$j = $keyssize;
-			}
-			else {
-				$j++;
 			}
 		}
-		$i++;
 	}
 	return $tableauDepart;
 }
