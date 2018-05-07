@@ -9,7 +9,7 @@ $nomDicoArrivee='DicoArrivee_fra-wol';
 echo $dico;
 $chemin = DICTIONNAIRES_SITE.$dico.'/';
 $cheminArrivee = DICTIONNAIRES_SITE.$nomDicoArrivee.'/';
-
+echo $cheminArrivee;
 
 
 //// Opération de  transformation :
@@ -56,8 +56,11 @@ $cheminArrivee = DICTIONNAIRES_SITE.$nomDicoArrivee.'/';
 
 #$metadataFile = $chemin.$_POST['nomvolume'].'-metadata.xml';
 $metadataEntree = $chemin.$_POST['nomvolume'].'-metadata.xml';
-$metadataArrivee =$cheminArrivee.'DicoArrivee_wol_fra-metadata.xml';
-$modelArrivee = $cheminArrivee.'dicoarrivee_wol_fra-template.xml';
+$metadataArrivee ="/donnees/Dicos/DicoArrivee_fra-wol/DicoArrivee_wol_fra-metadata.xml"; 
+#$cheminArrivee.'DicoArrivee_wol_fra-metadata.xml';
+$modelArrivee = "/donnees/Dicos/DicoArrivee_fra-wol/dicoarrivee_wol_fra-template.xml";
+#$cheminArrivee.'dicoarrivee_wol_fra-template.xml';
+echo $modelArrivee;
 $dataEntree = $chemin.strtolower($_POST['nomvolume']).'.xml';
 
 
@@ -130,20 +133,22 @@ foreach($cdmpos as $pos)
     {
       
       $resultat_prep = $chemin.strtolower($_POST['nomvolume']).'-prep.xml';
-      $resultat_tri=$chemin.strtolower($_POST['nomvolume'])."-tri.xml";
       $resultat_transformation=$chemin.strtolower($_POST['nomvolume'])."-transfo.xml";
       exec("perl /opt/lampp/htdocs/ipolex-transformation/transformation/prep_articles.pl $dataEntree $resultat_prep $cdment");
-      exec("perl /opt/lampp/htdocs/ipolex-transformation/transformation/tri.pl -v -m  $metadataEntree -from $resultat_prep > $resultat_tri");
-     exec ("perl /opt/lampp/htdocs/ipolex-transformation/transformation-fichiercomplet.pl -i $resultat_tri -n 'thierno' -m $metadataEntree -s metadataArrivee -t modelArrivee -o $resultat_transformation");
-       echo "opération de transformation réussie";
-
-
-
-
-      #}else
-      # {echo "/projets/iBaatukaay/Scripts/W_for_Sort_wol.pl $XML_FILE $cdment $cdm_head $cdmpos $VOLUME_NAME"."<br>probléme exec PERL  !!!!!!!!!!<br>";}
+      exec ("perl /opt/lampp/htdocs/ipolex-transformation/transformation-fichiercomplet.pl -i $resultat_prep -n $dico -m $metadataEntree -s metadataArrivee -t modelArrivee > $resultat_transformation");
+      echo "opération de transformation réussie";
       }
-
+   elseif ($_POST['op']=='fusion simple')
+    {
+      $resultat_transfo=$chemin.strtolower($_POST['nomvolume'])."-transfo.xml";
+      $resultat_fus = $chemin.strtolower($_POST['nomvolume']).'-fus.xml';
+      $resultat_transfoPrep=$chemin.strtolower($_POST['nomvolume'])."-transfoPrep.xml";
+      $resultat_transfoPrepTrie=$chemin.strtolower($_POST['nomvolume'])."-transfo.PrepTrie.xml";
+      exec("perl /opt/lampp/htdocs/ipolex-transformation/transformation/prep_articles.pl $resultat_transfo $resultat_transfoPrep $cdment");
+      exec("perl /opt/lampp/htdocs/ipolex-transformation/transformation/tri.pl -v -m  $metadataEntree -from $resultat_transfoPrep > $resultat_transfoPrepTrie");
+      exec("perl /opt/lampp/htdocs/ipolex-transformation/fusion-interne.pl -v -m  metadataArrivee -from $resultat_transfoPrepTrie > $resultat_fus");
+      echo "opération de fusion simple réussie";
+      }
 
 
     elseif ($_POST['op']=='prep')

@@ -29,8 +29,8 @@
 <cdm-headword-variant xpath="/dilaf/dog/weneen_waxin/text()"/>
 <cdm-pronunciation xpath="/dilaf/dog/tëggin/text()"/>
 <cdm-pos xpath="/dilaf/dog/xeet/text()"/>
-<cdm-definition xpath="/dilaf/dog/sayu_tekki/tekki/nettali/text()"/>
 <cdm-sense xpath="/dilaf/dog/sayu_tekki"/>
+<cdm-translation xpath="/dilaf/dog/sayu_tekki/tekki/nettali[@làkk='fr']/text()" d:lang="fra" />
 <cdm-example-block xpath="/dilaf/dog/sayu_tekki/misaal"/>
 <cdm-example xpath="/dilaf/dog/sayu_tekki/misaal/nettali[@làkk='fr']/text()" d:lang="fra" />
   <cdm-example xpath="/dilaf/dog/sayu_tekki/misaal/nettali[@làkk='wo']/text()" d:lang="wol" />

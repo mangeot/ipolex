@@ -33,7 +33,7 @@
 <cdm-sense xpath="/volume/article/bloc_sens/sens"/>
 <cdm-translation-block xpath="/volume/article/bloc_sens/sens/bloc_traduction" d:lang="fra" />
 <cdm-translation xpath="/volume/article/bloc_sens/sens/bloc_traduction/traduction_française/text()" d:lang="fra" />
-<cdm-translation-pos xpath="/volume/article/bloc_sens/sens/bloc_traduction/catégorie_grammaticale_traduction_française_mot_vedette/text()" d:lang="fra" />
+<cdm-pos-translation xpath="/volume/article/bloc_sens/sens/bloc_traduction/catégorie_grammaticale_traduction_française_mot_vedette/text()"  index="true" />
   <cdm-example-block xpath="/volume/article/bloc_sens/sens/exemples/exemple"/>
   <cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-fra/text()" d:lang="fra" />
   <cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-wol/text()" d:lang="wol" />

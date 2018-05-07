@@ -216,6 +216,10 @@ $volumes = $dict['Volumes'];
 	<input type="radio" value="prep" id="prep" name="op" /><label for="prep"> Préparation</label><br/>
 	<input type="radio" value="tri" id="tri" name="op" /><label for="tri"> Tri</label><br/>
 	<input type="radio" value="transformation" id="transfo" name="op" /><label for="transfo"> transformation</label><br/>
+        <input type="radio" value="fusion simple" id="fusion simple" name="op" /><label for="fusion sipmle"> Fusion Simple</label><br/>
+        <input type="radio" value="fusion interne" id="fusion interne" name="op" /><label for="fusion interne">Fusion interne</label><br/>
+ 	<input type="radio" value="réification" id="réification" name="op" /><label for="réification">Réification</label><br/>
+
 	</p>
 	<p style="text-align:center;">
 
