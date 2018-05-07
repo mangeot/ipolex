@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 
-# ./ajout-identifiants.pl -v -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -from Donnees/fusion.xml > out.xml
+# ./ajout-identifiants.pl -v -r -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -from Donnees/fusion.xml > out.xml
 # ./ajout-identifiants.pl -v -m Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -from Donnees/outcheriftpreptrie.xml > out.xml
 #
 # =======================================================================================================================================
@@ -12,7 +12,7 @@
 # Dernières modifications : 28 avril 2018
 # Synopsis :  - ajout d'identifiants pour les articles
 # ---------------------------------------------------------------------------------------------------------------------------------------
-# Usage : perl ajout-identifiants.pl -v -metadata fichier-metadata.xml -from source1.xml -to out.xml 
+# Usage : perl ajout-identifiants.pl -v -r -metadata fichier-metadata.xml -from source1.xml -to out.xml 
 #
 # -v : affiche les informations du STDERR
 #
@@ -21,7 +21,6 @@
 # -date "date" 				 	 : pour spécifier la date (par défaut : la date du jour (localtime)
 # -encoding "format d'encodage" : pour spécifier le format d'encodage (par défaut UTF-8)
 # -pretty "indentation" 		 : pour spécifier l'indentation XML ('none' ou 'indented', par exemple)
-# -locale "locale"				 : pour spécifier la locale (langue source) des ressources qui seront fusionnées
 # -help 						 : pour afficher l'aide
 # =======================================================================================================================================
 
@@ -45,7 +44,7 @@ use Unicode::Collate;
 my $unicode = "UTF-8";
 
 ##-- Gestion des options --##
-my ($date, $FichierEntree, $FichierMeta, $FichierResultat, $encoding) = ();
+my ($date, $FichierEntree, $FichierMeta, $FichierResultat, $remplace, $encoding) = ();
 my ($verbeux, $help, $pretty_print) = ();
 my $OUTFILE;
 
@@ -54,6 +53,7 @@ GetOptions(
   'source|base|in|one|from|i=s' => \$FichierEntree, 
   'metadonnees|metadata|m=s'           => \$FichierMeta,
   'sortie|out|to|o=s'           => \$FichierResultat, 
+  'remplace|replace|r'           => \$remplace, 
   'encodage|encoding|enc|f=s'   => \$encoding, 
   'help|h'                      => \$help, 
   'verbeux|v'                   => \$verbeux, 
@@ -94,6 +94,9 @@ my $cdmentryid = $CDMSARRIVEE{'cdm-entry-id'}; # l'id de l'article
 my $cdmheadword = $CDMSARRIVEE{'cdm-headword'}; # le mot-vedette
 
 my $srclang = load_source_language($metastring);
+
+$cdmentryid =~ s/\/$//;
+$cdmentryid =~ s/\/text\(\)$//;
 
 # ------------------------------------------------------------------------
 
@@ -136,23 +139,23 @@ my $entreesresultat = 0;
 
 # ------------------------------------------------------------------------
 if ( defined $verbeux ) {&info('c');};
- 
+
+my $attributename = '';
+if ($cdmentryid =~ s/\/@([^\/]+)$//) {
+	$attributename = $1;
+}
  
 # =======================================================================================================================================
 ###--- ALGORITHME D'AJOUT d'IDS ---###
  
 while (my $entry = next_entry(*INFILE)) {
 	my $entryid = find_string($entry,$cdmentryid,1);
-	if (!$entryid) {
+	if (!$entryid || $remplace) {
 		my $headword = find_string($entry,$cdmheadword);
 		$headword =~ s/['" ]/_/g;
 		my $newentryid = $srclang . '.' . $headword . '.' . $nbentries .'.e';
-
-		$cdmentryid =~ s/\/$//;
-		$cdmentryid =~ s/\/text\(\)$//;
-		if ($cdmentryid =~ /@[^\/]+$/) {
-			$cdmentryid =~ s/\/@([^\/]+)$//;
-			my $attributename = $1;
+		if ( defined $verbeux ) {print STDERR "New entry id: $newentryid\n";};	
+		if ($attributename ne '') {
 			my @entryidnodes = $entry->findnodes($cdmentryid);
 			my $entryidnode = $entryidnodes[0];
 			$entryidnode->setAttribute($attributename,$newentryid);
@@ -167,14 +170,12 @@ while (my $entry = next_entry(*INFILE)) {
 	my $entry = $entries[0];
  	print $OUTFILE $entry->toString,"\n";
  	$entreesresultat++;
-} 
-
+}
  
 # ------------------------------------------------------------------------
 # Fin de l'écriture :
 print $OUTFILE $closedtagvolume;
 close $OUTFILE;
- 
 
 # ------------------------------------------------------------------------
 if ( defined $verbeux ) {
@@ -261,7 +262,6 @@ sub read_file {
 	close $FILE;
 	return $string;
 }
-
 
 # cette fonction permet de récupérer les pointeurs cdm à partir du fichier metada.
  sub load_cdm_from_string {
@@ -393,11 +393,11 @@ sub help
 print (STDERR "================================================================================\n");  
 print (STDERR "HELP\n");
 print (STDERR "================================================================================\n");
-print (STDERR "usage : $0 -i <sourcefile.xml> -o <outfile.xml>\n\n") ;
+print (STDERR "usage : $0 -m <metadatafile.xml> -i <sourcefile.xml> -o <outfile.xml>\n\n") ;
 print (STDERR "options : -h affichage de l'aide\n") ;
-print (STDERR "          -e le message d'erreur (ouverture de fichiers)\n") ;
+print (STDERR "          -r mode de remplacement des identifiants (sinon n'ajoute que les ids vides)\n") ;
 print (STDERR "          -f le format d'encodage\n");
-print (STDERR "          -v mode verbeux (STDERR et LOG)\n");
+print (STDERR "          -v mode verbeux (STDERR)\n");
 print (STDERR "          -t pour la gestion de la date (initialement : localtime)\n");
 print (STDERR "================================================================================\n");
 exit 0;

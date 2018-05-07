@@ -124,8 +124,8 @@ my $cdmtranslationposdepart = $CDMSENTREE{'cdm-translation-pos'.':'.$trglang}; #
 my $cdmtranslationdepart = $CDMSENTREE{'cdm-translation'.':'.$trglang}; # l'id de l'article
 
 my $cdmvolumearrivee = $CDMSARRIVEE{'cdm-volume'}; # le mot-vedette
-my $cdmentryarrivee = $CDMSENTREE{'cdm-entry'}; # l'article
-my $cdmentryidarrivee = $CDMSENTREE{'cdm-entry-id'}; # l'id de l'article
+my $cdmentryarrivee = $CDMSARRIVEE{'cdm-entry'}; # l'article
+my $cdmentryidarrivee = $CDMSARRIVEE{'cdm-entry-id'}; # l'id de l'article
 my $cdmheadwordarrivee = $CDMSARRIVEE{'cdm-headword'}; # le mot-vedette
 my $cdmposarrivee = $CDMSARRIVEE{'cdm-pos'}; # le mot-vedette
 
