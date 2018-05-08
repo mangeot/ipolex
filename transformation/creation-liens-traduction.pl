@@ -187,77 +187,83 @@ if ($verbeux) {&info('b');};
 my $nbentries = 0;
 my $entreesresultat = 0;
 
+$cdmtranslationdepart =~ s/\/$//;
+$cdmtranslationdepart =~ s/\/text\(\)$//;
+if ($cdmtranslationposdepart) {
+	$cdmtranslationposdepart =~ s/\/$//;
+	$cdmtranslationposdepart =~ s/\/text\(\)$//;
+}
+if ($cdmtranslationblockdepart && $cdmtranslationposdepart) {
+	$cdmtranslationdepart =~ s/^\Q$cdmtranslationblockdepart\E/\./;
+	$cdmtranslationposdepart =~ s/^\Q$cdmtranslationblockdepart\E/\./;
+}
+
 # ------------------------------------------------------------------------
 if ($verbeux) {&info('c');};
  
  
 # =======================================================================================================================================
 ###--- ALGORITHME DE CRÉATION DE LIENS ---###
-$cdmtranslationdepart =~ s/\/$//;
-$cdmtranslationdepart =~ s/\/text\(\)$//;
-$cdmtranslationposdepart =~ s/\/$//;
-$cdmtranslationposdepart =~ s/\/text\(\)$//;
-if ($cdmtranslationblockdepart && $cdmtranslationposdepart) {
-	$cdmtranslationdepart =~ s/^\Q$cdmtranslationblockdepart\E/\./;
-	$cdmtranslationposdepart =~ s/^\Q$cdmtranslationblockdepart\E/\./;
-}
 
 while (my $entry = next_entry(*INFILE)) {
 	my $entryid = find_string($entry,$cdmentryiddepart,1);
-	if ($entryid && $cdmtranslationdepart) {	
+	if ($verbeux) {print STDERR "Next entry id: $entryid\n";}
+	if ($entryid && $cdmtranslationdepart) {
 		if ($cdmtranslationblockdepart) {
 			my @tblocks = $entry->findnodes($cdmtranslationblockdepart);
 			foreach my $tblock (@tblocks) {
 				my @translations = $tblock->findnodes($cdmtranslationdepart);
-				my $translation = $translations[0];
-				if ($translation) {
-					my $transtring = getNodeText($translation);
+				my $translationnode = $translations[0];
+				if ($translationnode) {
+					my $transtring = getNodeText($translationnode);
 					if ($transtring) {
 						my $tpos = '';
-						my @poss = $tblock->findnodes($cdmtranslationposdepart);
-						if (scalar(@poss>0)) {
-							$tpos = getNodeText($poss[0]);
-							my $parent = $poss[0]->getParentNode();
-							$parent->removeChild($poss[0]);
+						if ($cdmtranslationposdepart) {
+							my @poss = $tblock->findnodes($cdmtranslationposdepart);
+							if (scalar(@poss>0)) {
+								$tpos = getNodeText($poss[0]);
+								my $parent = $poss[0]->getParentNode();
+								$parent->removeChild($poss[0]);
+							}
 						}
-						my $targetid = create_and_print_entry($modelesortie, $transtring, $tpos, $cdmtranslationlinkinfosortie, $volumedepart, $entryid, $srclang);
-						my $locallinknode = $linknodedepart->cloneNode(1);
-						$locallinknode->setOwnerDocument($entry->getOwnerDocument());
-						replace_translation_by_link($cdmtranslationlinkinfoentree, $translation, $locallinknode, $volumearrivee, $targetid, $trglang);
+						my @transtrings = split_string($transtring);
+						foreach my $trans (@transtrings) {
+							my $targetid = create_and_print_entry($modelesortie, $trans, $tpos, $cdmtranslationlinkinfosortie, $volumedepart, $entryid, $srclang);
+							my $locallinknode = $linknodedepart->cloneNode(1);
+							$locallinknode->setOwnerDocument($entry->getOwnerDocument());
+							add_link($cdmtranslationlinkinfoentree, $translationnode, $locallinknode, $volumearrivee, $targetid, $trglang);
+						}
+						my $parentnode = $translationnode->getParentNode();
+						$parentnode->removeChild($translationnode);
 					}
 				}
 			}
 		}
-		elsif ($cdmtranslationposdepart) {
+		else {
 			my @translations = $entry->findnodes($cdmtranslationdepart);
-			my $translation = $translations[0];
+			my $translationnode = $translations[0];
 			my $transstring = find_string($entry,$cdmtranslationdepart);
 			if ($transstring) {
 				my $tpos = '';
-				my @poss = $entry->findnodes($cdmtranslationposdepart);
-				if (scalar(@poss>0)) {
-					$tpos = getNodeText($poss[0]);
-					my $parent = $poss[0]->getParentNode();
-					$parent->removeChild($poss[0]);
+				if ($cdmtranslationposdepart) {
+					my @poss = $entry->findnodes($cdmtranslationposdepart);
+					if (scalar(@poss>0)) {
+						$tpos = getNodeText($poss[0]);
+						my $parent = $poss[0]->getParentNode();
+						$parent->removeChild($poss[0]);
+					}
 				}
-				my $targetid = create_and_print_entry($modelesortie, $transstring, $tpos, $volumedepart, $entryid, $srclang);
-				my $locallinknode = $linknodedepart->cloneNode(1);
-				$locallinknode->setOwnerDocument($entry->getOwnerDocument());
-				replace_translation_by_link($cdmtranslationlinkinfoentree, $translation, $locallinknode, $volumearrivee, $targetid, $trglang);
-			}
-		}
-		else {
-			my @translations = $entry->findnodes($cdmtranslationdepart);
-			foreach my $translation (@translations) {
-				my $transtring = getNodeText($translation);
-				if ($transtring) {
-					my $targetid = create_and_print_entry($modelesortie, $transtring, '', $volumedepart, $entryid, $srclang);
+				my @transtrings = split_string($transstring);
+				foreach my $trans (@transtrings) {
+					my $targetid = create_and_print_entry($modelesortie, $trans, $tpos, $cdmtranslationlinkinfosortie, $volumedepart, $entryid, $srclang);
 					my $locallinknode = $linknodedepart->cloneNode(1);
 					$locallinknode->setOwnerDocument($entry->getOwnerDocument());
-					replace_translation_by_link($cdmtranslationlinkinfoentree, $translation, $locallinknode, $volumearrivee, $targetid, $trglang);
+					add_link($cdmtranslationlinkinfoentree, $translationnode, $locallinknode, $volumearrivee, $targetid, $trglang);
 				}
+				my $parentnode = $translationnode->getParentNode();
+				$parentnode->removeChild($translationnode);
 			}
-		}	
+		}
 	}
 	else {
 		if ($verbeux) {print STDERR "un vide : $entryid ou $cdmtranslationdepart\n";}
@@ -354,6 +360,7 @@ sub getNodeText {
 	return $text;
 }
 
+# ------------------------------------------------------------------------
 sub read_file {
   	my $fichier = $_[0];
 	open my $FILE, "<:encoding($unicode)", $fichier or die "error opening $fichier: $!";
@@ -363,6 +370,7 @@ sub read_file {
 }
 
 
+# ------------------------------------------------------------------------
 # cette fonction permet de récupérer les pointeurs cdm à partir du fichier metada.
  sub load_cdm {
   my $fichier = $_[0];
@@ -383,6 +391,7 @@ sub read_file {
   return %dico;
 }
 
+# ------------------------------------------------------------------------
 # cette fonction permet de récupérer les links pointeurs cdm à partir du fichier metada.
  sub load_links {
   my $fichier = $_[0];
@@ -411,12 +420,15 @@ sub read_file {
 }
 
 
+# ------------------------------------------------------------------------
 # cette fonction permet de récupérer les pointeurs cdm à partir du fichier metada.
  sub load_source_language {
   my $fichier = $_[0];
   my $doc = $parser->parse($fichier);
   return find_string($doc, '/volume-metadata/@source-language');
 }
+
+# ------------------------------------------------------------------------
 # cette fonction permet de récupérer le nom du volume
  sub load_volume_name {
   my $fichier = $_[0];
@@ -425,6 +437,7 @@ sub read_file {
 }
 
 
+# ------------------------------------------------------------------------
 # Cette fonction convertit un XPath en balises ouvrantes
 sub xpath2opentags {
 	my $xpath = $_[0];
@@ -438,6 +451,7 @@ sub xpath2opentags {
 	$xpath .= $attribut . '>';
 }
 
+# ------------------------------------------------------------------------
 # Cette fonction convertit un XPath en balises fermantes
 sub xpath2closedtags {
 	my $xpath = $_[0];
@@ -451,6 +465,7 @@ sub xpath2closedtags {
 	return $tags;
 }
 
+# ------------------------------------------------------------------------
 # Cette fonction convertit un XPath en une balise fermante
 sub xpath2closedtag {
 	my $xpath = $_[0];
@@ -474,9 +489,28 @@ sub xpathdifference {
 	}
 	return $xpath;
 }
+
+# ------------------------------------------------------------------------
+# Cette fonction découpe une chaîne de caractères en mots
+sub split_string {
+	my $string = $_[0];
+	my @res = ();
+	my @strings = split(/ *[,;] */,$string);
+	foreach my $s (@strings) {
+		$s =~ s/^ +//;
+		$s =~ s/ +$//;
+		$s =~ s/^l[ea]s? +//;
+		$s =~ s/ +\([^\)]+\) *//;
+		if ($s ne '') {
+			push @res,$s;
+		}
+	}
+	return @res;
+}
+
  
- 
-#------------------------------------------------------------------------
+# ------------------------------------------------------------------------
+# Cette fonction crée un noeud DOM de lien
 sub create_link_node {
 	my $translationlinkinfo = $_[0];
 	my $doc = $_[1];
@@ -485,7 +519,8 @@ sub create_link_node {
 	return $linknodes[0];
 }
  
-#------------------------------------------------------------------------
+# ------------------------------------------------------------------------
+# Cette fonction ajoute les informations d'un noeud DOM de lien
 sub fill_link {
 	my $translationlinkinfo = $_[0];
 	my $linknode = $_[1];
@@ -527,6 +562,7 @@ sub fill_link {
 	
 
 # ------------------------------------------------------------------------
+# Cette fonction crée une entrée cible pour une traduction et l'affiche
 sub create_and_print_entry {
 	my $newentry = $_[0];
 	my $newheadword = $_[1];
@@ -577,17 +613,18 @@ sub create_and_print_entry {
 } 
  
 # ------------------------------------------------------------------------
-sub replace_translation_by_link {
+# Cette fonction ajoute un noeud de lien dans l'arbre DOM de l'entrée
+sub add_link {
 	my $linkinfo = $_[0];
-	my $transnode = $_[1];
+	my $refnode = $_[1];
 	my $linkelement = $_[2];
 	my $targetvolume = $_[3];
 	my $targetid = $_[4];
 	my $targetlang = $_[5];
 	
-	$linkelement->setOwnerDocument($transnode->getOwnerDocument());
-	my $parent = $transnode->getParentNode();
-	$parent->replaceChild($linkelement, $transnode);
+	$linkelement->setOwnerDocument($refnode->getOwnerDocument());
+	my $parent = $refnode->getParentNode();
+	$parent->insertBefore($linkelement, $refnode);
 	fill_link($linkinfo, $linkelement, $targetvolume, $targetid, $targetlang);
 }	
 
@@ -612,7 +649,7 @@ elsif ($info=~ 'b')
 elsif ($info=~ 'c')
 	{
 	print (STDERR "================================================================================\n");
-	print (STDERR "lancement du processus de fusion\n");
+	print (STDERR "lancement du processus de création de liens\n");
 	print (STDERR "--------------------------------------------------------------------------------\n");
 	}
 elsif ($info =~ 'd')
