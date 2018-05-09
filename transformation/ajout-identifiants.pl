@@ -141,7 +141,8 @@ my $entreesresultat = 0;
 if ( defined $verbeux ) {&info('c');};
 
 my $attributename = '';
-if ($cdmentryid =~ s/\/@([^\/]+)$//) {
+my $cdmentryidelement = $cdmentryid;
+if ($cdmentryidelement =~ s/\/@([^\/]+)$//) {
 	$attributename = $1;
 }
  
@@ -154,9 +155,9 @@ while (my $entry = next_entry(*INFILE)) {
 		my $headword = find_string($entry,$cdmheadword);
 		$headword =~ s/['" ]/_/g;
 		my $newentryid = $srclang . '.' . $headword . '.' . $nbentries .'.e';
-		if ( defined $verbeux ) {print STDERR "New entry id: $newentryid\n";};	
+		if ( defined $verbeux ) {print STDERR "Article [$headword], nouvel id : '$newentryid'\n";};	
 		if ($attributename ne '') {
-			my @entryidnodes = $entry->findnodes($cdmentryid);
+			my @entryidnodes = $entry->findnodes($cdmentryidelement);
 			my $entryidnode = $entryidnodes[0];
 			$entryidnode->setAttribute($attributename,$newentryid);
 		}
@@ -165,11 +166,11 @@ while (my $entry = next_entry(*INFILE)) {
 			my $entryidnode = $entryidnodes[0];
 			$entryidnode->addText($newentryid);
 		}
+	 	$entreesresultat++;
 	}
  	my @entries = $entry->findnodes($cdmentry);
 	my $entry = $entries[0];
  	print $OUTFILE $entry->toString,"\n";
- 	$entreesresultat++;
 }
  
 # ------------------------------------------------------------------------
@@ -361,7 +362,7 @@ elsif ($info=~ 'b')
 elsif ($info=~ 'c')
 	{
 	print (STDERR "================================================================================\n");
-	print (STDERR "lancement du processus de fusion\n");
+	print (STDERR "lancement du processus d'ajout d'identifiants\n");
 	print (STDERR "--------------------------------------------------------------------------------\n");
 	}
 elsif ($info =~ 'd')
