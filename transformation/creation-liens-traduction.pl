@@ -576,12 +576,14 @@ sub create_and_print_entry {
 				
 	my $docarrivee = $parser->parse($newentry);
 	$entreesresultat++;
-	my $newentryid = $trglang . '.' . $newheadword . '.' .$entreesresultat . '.e';	
+	my $newentryid = $trglang . '.' . $newheadword . '.' .$entreesresultat . '.e';
+	$newentryid =~ s/['" ]/_/g;
 	
 	if ($cdmentryidarrivee =~ /@[^\/]+$/) {
-		$cdmentryidarrivee =~ s/\/@([^\/]+)$//;
+		my $cdmentryidarriveenode = $cdmentryidarrivee;
+		$cdmentryidarriveenode =~ s/\/@([^\/]+)$//;
 		my $attributename = $1;
-		my @entryidnodes = $docarrivee->findnodes($cdmentryidarrivee);
+		my @entryidnodes = $docarrivee->findnodes($cdmentryidarriveenode);
 		my $entryidnode = $entryidnodes[0];
 		$entryidnode->setAttribute($attributename,$newentryid);
 	}
@@ -621,7 +623,7 @@ sub add_link {
 	my $targetvolume = $_[3];
 	my $targetid = $_[4];
 	my $targetlang = $_[5];
-	
+	if ($verbeux) {print STDERR "Ajout de lien : -> $targetvolume <$targetid:$targetlang>\n";}
 	$linkelement->setOwnerDocument($refnode->getOwnerDocument());
 	my $parent = $refnode->getParentNode();
 	$parent->insertBefore($linkelement, $refnode);
