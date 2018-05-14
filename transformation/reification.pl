@@ -208,6 +208,7 @@ my %lienscible = ();
 while (my $entry = next_entry_source(*SOURCEFILE)) {
 	my $entryid = find_string($entry,$cdmentryidsource,1);
 
+	if ($entryid) {
 # ATTENTION, il faudra spécifier comment trouver le bon link dans des métadonnées !!!
 	foreach my $clelien (keys %LINKSSOURCE) {
 		my $cdmtranslationlinkinfosource = $LINKSSOURCE{$clelien};
@@ -229,9 +230,12 @@ while (my $entry = next_entry_source(*SOURCEFILE)) {
 			}
 		}
 	}
+	}
 	my @entrysource = $entry->findnodes($cdmentrysource);
-	my $entrysource = $entrysource[0];
- 	print $OUTSOURCE $entrysource->toString,"\n";
+	if (scalar(@entrysource)>0) {
+		my $entrysource = $entrysource[0];
+ 		print $OUTSOURCE $entrysource->toString,"\n";
+	}
 } 
 
  
@@ -255,7 +259,7 @@ $/ = $closedtagentrycible;
 
 while (my $entry = next_entry_cible(*TARGETFILE)) {
 	my $entryid = find_string($entry,$cdmentryidcible,1);
-
+	if ($entryid) {
 # ATTENTION, il faudra spécifier comment trouver le bon link dans des métadonnées !!!
 	foreach my $clelien (keys %LINKSCIBLE) {
 		my $cdmtranslationlinkinfocible = $LINKSCIBLE{$clelien};
@@ -267,7 +271,7 @@ while (my $entry = next_entry_cible(*TARGETFILE)) {
 			if ($type eq 'direct' && $volume eq $volumesource && $value ne '') {
 				if (defined($lienscible{$value})) {
 					my $pivotid = $lienscible{$value};
-					print STDERR 'liencible : ',$value, ' => ', $pivotid,"\n";
+					if ($verbeux) {print STDERR 'liencible : ',$value, ' => ', $pivotid,"\n";}
 					my $locallinknode = $linknodecible->cloneNode(1);
 					$locallinknode->setOwnerDocument($entry->getOwnerDocument());
 					replace_direct_by_pivot_link($cdmtranslationlinkinfocible, $link, $locallinknode, $volumepivot, $pivotid, $pivotlang);
@@ -275,10 +279,12 @@ while (my $entry = next_entry_cible(*TARGETFILE)) {
 			}
 		}
 	}
-	print STDERR 'cdmentrycible : ',$cdmentrycible,"\n";
+	}
 	my @entrycible = $entry->findnodes($cdmentrycible);
-	my $entrycible = $entrycible[0];
- 	print $OUTTARGET $entrycible->toString,"\n";
+	if (scalar(@entrycible)>0) {
+		my $entrycible = $entrycible[0];
+ 		print $OUTTARGET $entrycible->toString,"\n";
+	}
 } 
 
  
