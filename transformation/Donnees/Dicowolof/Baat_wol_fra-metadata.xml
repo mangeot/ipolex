@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<volume-metadata
+   xmlns="http://www-clips.imag.fr/geta/services/dml" 
+   xmlns:d="http://www-clips.imag.fr/geta/services/dml"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www-clips.imag.fr/geta/services/dml
+   http://www-clips.imag.fr/geta/services/dml/dml.xsd"
+   location="local"
+   creation-date="2016-08-30T13:23:57+02:00" 
+   installation-date="2016-08-30T13:23:57+02:00" 
+   last-modification-date="2018-04-02T23:55:36+02:00" 
+   hw-number="734 " 
+   encoding="UTF-8" 
+   format="xml" 
+   name="Baat_wol_fra"
+   dbname="baatwolfra" 
+   version="1"
+   source-language="wol"
+   target-languages="fra"
+   reverse-lookup="false">
+ <authors></authors>
+ <comments></comments>
+ <cdm-elements>
+  <cdm-volume xpath="/database"/>
+<cdm-entry xpath="/database/lexGroup"/>
+<cdm-entry-id xpath="/database/lexGroup/@id"/>
+<cdm-headword xpath="/database/lexGroup/lex/text()"/>
+<cdm-headword-variant xpath="/database/lexGroup/varW/text()"/>
+<cdm-pronunciation xpath="/database/lexGroup/uttW/text()"/>
+<cdm-pos xpath="/database/lexGroup/catWGroup/catW/text()"/>
+<cdm-definition xpath="/database/lexGroup/defWGroup/defW/text()"/>
+<cdm-translation xpath="/database/lexGroup/tradFlexGroup/tradFlex/text()" d:lang="fra" />
+  <cdm-example-block xpath="/database/lexGroup/phrWGroup"/>
+  <cdm-example xpath="/database/lexGroup/phrWGroup/tradPhrW/text()" d:lang="fra" />
+  <cdm-example xpath="/database/lexGroup/phrWGroup/phrW/text()" d:lang="wol" />
+  <cdm-classe-nominale xpath="/database/lexGroup/catWGroup/clasW/text()" index="true"  />	
+  		<cdm-source-mot-vedette xpath="/database/lexGroup/SrcLW/text()" index="true"  />	
+  		<cdm-lexeme-source xpath="/database/lexGroup/lexSrcW/text()" index="true"  />	
+  		<cdm-pos-translation xpath="/database/lexGroup/tradFlexGroup/catF/text()" index="true"  />	
+  		<cdm-synonyme xpath="/database/lexGroup/synW/text()" index="true"  />	
+  		<cdm-homonyme xpath="/database/lexGroup/homW/text()" index="true"  />	
+  		<cdm-note-usage xpath="/database/lexGroup/nusW/text()" index="true"  />	
+  		<cdm-expression-derivee xpath="/database/lexGroup/exDerWGroup/exDerW/text()" index="true"  />	
+  		<cdm-source-definition xpath="/database/lexGroup/defWGroup/srcDW/text()" index="true"  />	
+  		<links>
+  </links>
+  <pos-conversion>
+  
+  </pos-conversion>
+	</cdm-elements>
+<administrators>
+		  <user-ref name="mangeot"/>
+ </administrators>
+ <volume-ref xlink:href="baat_wol_fra.xml" source-language="wol"/>
+ <xmlschema-ref xlink:href="baat_wol_fra.xsd"/>
+<template-entry-ref xlink:href="baat_wol_fra-template.xml"/>
+<xsl-stylesheet name="Baat_wol_fra" default="true" xlink:href="Baat_wol_fra-view.xsl"/>
+ 	</volume-metadata>

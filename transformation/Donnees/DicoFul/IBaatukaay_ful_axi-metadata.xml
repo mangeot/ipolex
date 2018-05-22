@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<volume-metadata
+   xmlns="http://www-clips.imag.fr/geta/services/dml" 
+   xmlns:d="http://www-clips.imag.fr/geta/services/dml"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www-clips.imag.fr/geta/services/dml
+   http://www-clips.imag.fr/geta/services/dml/dml.xsd"
+   location="local"
+   creation-date="2018-05-22T14:18:17+02:00" 
+   installation-date="2018-05-22T14:18:17+02:00" 
+   last-modification-date="2018-05-22T14:24:44+02:00" 
+   hw-number="11407" 
+   encoding="UTF-8" 
+   format="xml" 
+   name="IBaatukaay_ful_axi"
+   dbname="ibaatukaayfulaxi" 
+   version="1"
+   source-language="ful"
+   target-languages="axi"
+   reverse-lookup="false">
+ <authors>IBaatukaay</authors>
+ <comments></comments>
+ <cdm-elements>
+  <cdm-volume xpath="/volume"/>
+<cdm-entry xpath="/volume/article"/>
+<cdm-entry-id xpath="/volume/article/@id"/>
+<cdm-headword xpath="/volume/article/bloc_forme/mot_vedette/text()"/>
+<cdm-headword-variant xpath="/volume/article/bloc_forme/variante/text()"/>
+<cdm-pronunciation xpath="/volume/article/bloc_forme/prononciation/text()"/>
+<cdm-pos xpath="/volume/article/catégorie_grammaticale/text()"/>
+<cdm-definition xpath="/volume/article/bloc_sens/sens/définition/text()"/>
+<cdm-translation xpath="/volume/article/bloc_sens/sens/bloc_traduction/traduction_française/text()" d:lang="fra" />
+<cdm-translation-pos xpath="/volume/article/bloc_sens/sens/bloc_traduction/catégorie_grammaticale_traduction_française_mot_vedette/text()" d:lang="fra" />
+<cdm-sense-block xpath="/volume/article/bloc_sens"/>
+<cdm-sense xpath="/volume/article/bloc_sens/sens"/>
+<cdm-example-block xpath="/volume/article/bloc_sens/sens/exemples/exemple"/>
+<cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-ful/text()" d:lang="ful" />
+<cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-fra/text()" d:lang="fra" />
+  <cdm-source-entry xpath="/volume/article/sources/entree-source"/>
+  <cdm-source-entry-origin xpath="/volume/article/sources/entree-source/@provenance"/>
+  <links>
+  <link name="translation" xpath="/volume/article/bloc_sens/sens/bloc_traduction/lien_traduction">
+  		<volume xpath="IBaatukaay_axi"/>
+  <value xpath="@id"/>
+  <type xpath="@type"/>
+  <lang xpath="@lang"/>
+  <label xpath="@label"/>
+  <weight xpath="@weight"/>
+  </link>
+  		</links>
+	</cdm-elements>
+<administrators>
+		  <user-ref name="khoule"/>
+		  <user-ref name="mangeot"/>
+ </administrators>
+ <volume-ref xlink:href="ibaatukaay_ful_axi.xml" source-language="ful"/>
+ <xmlschema-ref xlink:href="ibaatukaay_ful_axi.xsd"/>
+<template-entry-ref xlink:href="ibaatukaay_ful_axi-template.xml"/>
+<xsl-stylesheet name="IBaatukaay_ful_axi" default="true" xlink:href="IBaatukaay_ful_axi-view.xsl"/>
+ 	</volume-metadata>

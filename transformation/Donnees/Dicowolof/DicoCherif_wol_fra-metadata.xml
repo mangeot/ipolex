@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<volume-metadata
+   xmlns="http://www-clips.imag.fr/geta/services/dml" 
+   xmlns:d="http://www-clips.imag.fr/geta/services/dml"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www-clips.imag.fr/geta/services/dml
+   http://www-clips.imag.fr/geta/services/dml/dml.xsd"
+   location="local"
+   creation-date="2016-03-09T14:37:55+01:00" 
+   installation-date="2016-03-09T14:37:55+01:00" 
+   last-modification-date="2018-04-05T12:20:09+02:00" 
+   hw-number="4928" 
+   encoding="UTF-8" 
+   format="xml" 
+   name="DicoCherif_wol_fra"
+   dbname="dicocherifwolfra" 
+   version="1"
+   source-language="wol"
+   target-languages="fra"
+   reverse-lookup="false">
+ <authors></authors>
+ <comments></comments>
+ <cdm-elements>
+  <cdm-volume xpath="/dilaf"/>
+<cdm-entry xpath="/dilaf/dog"/>
+<cdm-entry-id xpath="/dilaf/dog/@mandarga"/>
+<cdm-headword xpath="/dilaf/dog/mbirmi/text()"/>
+<cdm-headword-variant xpath="/dilaf/dog/weneen_waxin/text()"/>
+<cdm-pronunciation xpath="/dilaf/dog/tëggin/text()"/>
+<cdm-pos xpath="/dilaf/dog/xeet/text()"/>
+<cdm-sense xpath="/dilaf/dog/sayu_tekki"/>
+<cdm-translation xpath="/dilaf/dog/sayu_tekki/tekki/nettali[@làkk='fr']/text()" d:lang="fra" />
+<cdm-example-block xpath="/dilaf/dog/sayu_tekki/misaal"/>
+<cdm-example xpath="/dilaf/dog/sayu_tekki/misaal/nettali[@làkk='fr']/text()" d:lang="fra" />
+  <cdm-example xpath="/dilaf/dog/sayu_tekki/misaal/nettali[@làkk='wo']/text()" d:lang="wol" />
+  <cdm-classe-nominale xpath="/dilaf/dog/maas/text()" index="true"  />	
+  		<cdm-synonyme xpath="/dilaf/dog/sayu_tekki/bokk_tekki/text()" index="true"  />	
+  		<cdm-expression-derivee xpath="/dilaf/dog/sayu_tekki/guddalinu_méngale/bind/text()" index="true"  />	
+  		<links>
+  <link name="translation" xpath="/volume/entry/translation-ref">
+  		<volume xpath="target-volume-name"/>
+  <value xpath="@id"/>
+  <type xpath="@type"/>
+  <lang xpath="@lang"/>
+  <label xpath="@label"/>
+  <weight xpath="@weight"/>
+  </link>
+  		<link name="translation" xpath="/volume/entry/translation-ref">
+  		<volume xpath="target-volume-name"/>
+  <value xpath="@id"/>
+  <type xpath="@type"/>
+  <lang xpath="@lang"/>
+  <label xpath="@label"/>
+  <weight xpath="@weight"/>
+  </link>
+  		</links>
+	</cdm-elements>
+<administrators>
+		  <user-ref name="mangeot"/>
+ </administrators>
+ <volume-ref xlink:href="dicocherif_wol_fra.xml" source-language="wol"/>
+ <xmlschema-ref xlink:href="dicocherif_wol_fra.xsd"/>
+<template-entry-ref xlink:href="dicocherif_wol_fra-template.xml"/>
+<xsl-stylesheet name="DicoCherif_wol_fra" default="true" xlink:href="DicoCherif_wol_fra-view.xsl"/>
+ 	</volume-metadata>

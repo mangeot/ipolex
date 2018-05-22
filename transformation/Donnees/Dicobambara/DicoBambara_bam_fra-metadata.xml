@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<volume-metadata
+   xmlns="http://www-clips.imag.fr/geta/services/dml" 
+   xmlns:d="http://www-clips.imag.fr/geta/services/dml"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www-clips.imag.fr/geta/services/dml
+   http://www-clips.imag.fr/geta/services/dml/dml.xsd"
+   location="local"
+   creation-date="2018-05-19T18:09:38+02:00" 
+   installation-date="2018-05-19T18:09:38+02:00" 
+   last-modification-date="2018-05-22T12:27:15+02:00" 
+   hw-number="11071" 
+   encoding="UTF-8" 
+   format="xml" 
+   name="DicoBambara_bam_fra"
+   dbname="dicobambarabamfra" 
+   version="1"
+   source-language="bam"
+   target-languages="fra"
+   reverse-lookup="false">
+ <authors>Mouhamadou KHOULE</authors>
+ <comments></comments>
+ <cdm-elements>
+  <cdm-volume xpath="/dilaf"/>
+<cdm-entry xpath="/dilaf/item"/>
+<cdm-entry-id xpath="/dilaf/item/@id"/>
+<cdm-headword xpath="/dilaf/item/forme/text()"/>
+<cdm-headword-variant xpath="/dilaf/item/variante/forme/text()"/>
+<cdm-pos xpath="/dilaf/item/cat/text()"/>
+<cdm-sense xpath="/dilaf/item/bloc/sens"/>
+<cdm-translation xpath="/dilaf/item/bloc/sens/francais/text()" d:lang="fra" />
+  <cdm-example xpath="/dilaf/item/bloc/sens/exemple/ba/text()" d:lang="bam" />
+  <cdm-example xpath="/dilaf/item/bloc/sens/exemple/fr/text()" d:lang="fra" />
+  <links>
+  </links>
+	</cdm-elements>
+<administrators>
+		  <user-ref name="mangeot"/>
+ </administrators>
+ <volume-ref xlink:href="dicobambara_bam_fra.xml" source-language="bam"/>
+ <xmlschema-ref xlink:href="dicobambara_bam_fra.xsd"/>
+<template-entry-ref xlink:href="dicobambara_bam_fra-template.xml"/>
+<xsl-stylesheet name="DicoBambara_bam_fra" default="true" xlink:href="DicoBambara_bam_fra-view.xsl"/>
+ 	</volume-metadata>
