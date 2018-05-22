@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<volume nom="" src="" trg="">
+  <ArticleRacine>
+    <Racine/>
+    <Etymologie/>
+    <Note/>
+  </ArticleRacine>
+  <Article>
+    <Vedette/>
+    <Gram/>
+    <Etymologie/>
+    <Anglais>
+      <Peul/>
+      <Gram/>
+    </Anglais>
+    <Français>
+      <Peul/>
+      <Gram/>
+    </Français>
+    <Note/>
+    <Reference/>
+    <Peul/>
+  </Article>
+</volume>

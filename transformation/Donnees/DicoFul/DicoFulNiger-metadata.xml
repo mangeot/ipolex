@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<dictionary-metadata
+   xmlns="http://www-clips.imag.fr/geta/services/dml"
+   xmlns:d="http://www-clips.imag.fr/geta/services/dml" 
+   xmlns:xlink="http://www.w3.org/1999/xlink" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www-clips.imag.fr/geta/services/dml
+   http://www-clips.imag.fr/geta/services/dml/dml.xsd"
+   category="bilingual" 
+   creation-date="2014-06-12T18:18:32+02:00" 
+   installation-date="2014-06-12T18:18:32+02:00" 
+   last-modification-date="2014-06-12T18:19:24+02:00" 
+   fullname="Dictionnaire fulfulde-français"
+   name="DicoFulNiger" 
+   owner="Projet Soutéba" 
+   type="monodirectional"> 
+ <languages>
+ <source-language d:lang="ful"/>
+ <target-language d:lang="fra"/>
+ </languages>
+ <contents>vocabulaire général</contents>
+ <domain>général</domain> 
+ <source>GETALP</source>
+ <authors>Projet Soutéba</authors>
+ <legal>Creative Commons, CC by SA</legal>
+ <access>public</access>
+ <comments></comments>
+ <administrators>
+		  <user-ref name="mangeot"/>
+ </administrators>
+ <volumes>
+  <volume-metadata-ref name="DicoFulNiger_ful_fra" xlink:href="DicoFulNiger_ful_fra-metadata.xml" source-language="ful" target-languages="fra" />
+ </volumes>
+  
+</dictionary-metadata>

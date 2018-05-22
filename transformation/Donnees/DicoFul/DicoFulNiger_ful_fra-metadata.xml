@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<volume-metadata
+   xmlns="http://www-clips.imag.fr/geta/services/dml" 
+   xmlns:d="http://www-clips.imag.fr/geta/services/dml"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www-clips.imag.fr/geta/services/dml
+   http://www-clips.imag.fr/geta/services/dml/dml.xsd"
+   location="local"
+   creation-date="2014-06-12T18:19:50+02:00" 
+   installation-date="2014-06-12T18:19:50+02:00" 
+   last-modification-date="2014-06-29T06:58:00+02:00" 
+   hw-number="4525" 
+   encoding="UTF-8" 
+   format="xml" 
+   name="DicoFulNiger_ful_fra"
+   dbname="dicofulnigerfulfra" 
+   version="1"
+   source-language="ful"
+   target-languages="fra"
+   reverse-lookup="false">
+ <authors>Projet Soutéba</authors>
+ <comments></comments>
+ <cdm-elements>
+  <cdm-volume xpath="/volume"/>
+<cdm-entry xpath="/volume/Article"/>
+<cdm-entry-id xpath="/volume/Article/@id"/>
+<cdm-headword xpath="/volume/Article/Vedette/text()"/>
+<cdm-pos xpath="/volume/Article/Gram/text()"/>
+<cdm-definition xpath="/volume/Article/Definition/text()"/>
+<cdm-translation xpath="/volume/Article/Français/text()" d:lang="fra" />
+  <links>
+  </links>
+	</cdm-elements>
+<administrators>
+		  <user-ref name="mangeot"/>
+ </administrators>
+ <volume-ref xlink:href="dicofulniger_ful_fra.xml" source-language="ful"/>
+ <xmlschema-ref xlink:href="dicofulniger_ful_fra.xsd"/>
+<template-entry-ref xlink:href="dicofulniger_ful_fra-template.xml"/>
+<xsl-stylesheet name="DicoFulNiger_ful_fra" default="true" xlink:href="DicoFulNiger_ful_fra-view.xsl"/>
+ 	</volume-metadata>

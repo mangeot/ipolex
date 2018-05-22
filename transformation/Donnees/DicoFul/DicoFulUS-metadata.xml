@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<dictionary-metadata
+   xmlns="http://www-clips.imag.fr/geta/services/dml"
+   xmlns:d="http://www-clips.imag.fr/geta/services/dml" 
+   xmlns:xlink="http://www.w3.org/1999/xlink" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www-clips.imag.fr/geta/services/dml
+   http://www-clips.imag.fr/geta/services/dml/dml.xsd"
+   category="multilingual" 
+   creation-date="2014-06-12T16:54:51+02:00" 
+   installation-date="2014-06-12T16:54:51+02:00" 
+   last-modification-date="2014-06-12T18:13:44+02:00" 
+   fullname="Dictionnaire fulfulde américain"
+   name="DicoFulUS" 
+   owner="DicoFulUS" 
+   type="mixed"> 
+ <languages>
+ <source-language d:lang="eng"/>
+ <source-language d:lang="fra"/>
+ <source-language d:lang="ful"/>
+ <target-language d:lang="eng"/>
+ <target-language d:lang="fra"/>
+ <target-language d:lang="ful"/>
+ </languages>
+ <contents>vocabulaire général</contents>
+ <domain>général</domain> 
+ <source>GETALP</source>
+ <authors>DicoFulUS</authors>
+ <legal>Pas de licence pour l\'instant. En attente de négociation.</legal>
+ <access>public</access>
+ <comments></comments>
+ <administrators>
+		  <user-ref name="mangeot"/>
+ </administrators>
+ <volumes>
+  <volume-metadata-ref name="DicoFulUS_fra_ful" xlink:href="DicoFulUS_fra_ful-metadata.xml" source-language="fra" target-languages="ful" />
+  <volume-metadata-ref name="DicoFulUS_eng_ful" xlink:href="DicoFulUS_eng_ful-metadata.xml" source-language="eng" target-languages="ful" />
+  <volume-metadata-ref name="DicoFulUS_ful_fra-eng" xlink:href="DicoFulUS_ful_fra-eng-metadata.xml" source-language="ful" target-languages="fra eng" />
+ </volumes>
+  
+</dictionary-metadata>
