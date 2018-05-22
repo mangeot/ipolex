@@ -12,6 +12,8 @@
 # Transformation dico Chérif : 
 # ./transformation-fichiercomplet.pl -v -i Donnees/Baat_fra-wol/dicocherif_wol_fra-prep.xml  -m Donnees/Baat_fra-wol/DicoCherif_wol_fra-metadata.xml -s Donnees/Baat_fra-wol/DicoArrivee_wol_fra-metadata.xml -t Donnees/Baat_fra-wol/dicoarrivee_wol_fra-template.xml -n 'Chérif' > out.xml
 
+# ./transformation-fichiercomplet.pl -v -i Donnees/DicoSereer/dicosereercretois_srr_fra-prep.xml -n 'DicoSereerCretois' -m Donnees/DicoSereer/DicoSereerCretois_srr_fra-metadata.xml -s /Volumes/ipolex/IBaatukaay_axi-bam-fra-ful-srr-wol/IBaatukaay_srr_axi-metadata.xml -t /Volumes/ipolex/IBaatukaay_axi-bam-fra-ful-srr-wol/ibaatukaay_srr_axi-template.xml > out.xml
+
 
 use strict;
 use warnings;
@@ -138,24 +140,24 @@ while( my $line = <$INFILE>)  {
 	
 if ($verbeux) 	{print STDERR "\nTransformation article : $headword\n";}
 	copiePointeurs($CDMArbreDepart, $CDMArbreArrivee, $docdepart, $docarrivee);
-	#	print STDERR "fin des copiePointeurs\n";
 
-#	print STDERR "copie de l'entrée source $cdmentrydepart dans l'entrée arrivée\n";
+	if ($cdmentrysourceorigin) {
+	#	Recopie de l'article de départ tel quel dans l'article d'arrivée pour éventuel travail ultérieur
+		if ($verbeux) {print STDERR "copie de l'article source $cdmentrydepart tel quel dans l'article arrivée $cdmentrysourceorigin\n";}
+		my @entrydepart = $docdepart->findnodes($cdmentrydepart);
+		my $entrydepart = $entrydepart[0];
 
-	my @entrydepart = $docdepart->findnodes($cdmentrydepart);
-	my $entrydepart = $entrydepart[0];
-
-#	print STDERR "Recopie de l'article de départ tel quel dans l'article d'arrivée pour éventuel travail ultérieur\n";
-	my @entrysourceorigin = $docarrivee->findnodes($cdmentrysourceorigin);
-	if (scalar(@entrysourceorigin)>0) {
-		my $entrysourceorigin = $entrysourceorigin[0];
-		$entrysourceorigin->addText($nomDicoDepart);
-	}
-	my @entrysource = $docarrivee->findnodes($cdmentrysource);
-	if (scalar(@entrysource)>0) {
-		my $elementsource = $entrysource[0];
-		$entrydepart->setOwnerDocument($docarrivee);
-		$elementsource->appendChild($entrydepart);
+		my @entrysourceorigin = $docarrivee->findnodes($cdmentrysourceorigin);
+		if (scalar(@entrysourceorigin)>0) {
+			my $entrysourceorigin = $entrysourceorigin[0];
+			$entrysourceorigin->addText($nomDicoDepart);
+		}
+		my @entrysource = $docarrivee->findnodes($cdmentrysource);
+		if (scalar(@entrysource)>0) {
+			my $elementsource = $entrysource[0];
+			$entrydepart->setOwnerDocument($docarrivee);
+			$elementsource->appendChild($entrydepart);
+		}
 	}
 	my @entryarrivee = $docarrivee->findnodes($cdmentryarrivee);
 	my $entryarrivee = $entryarrivee[0];
@@ -310,9 +312,10 @@ if ($verbeux) {print STDERR "Load tables form doc: $document\n";}
       $table =~ s/^\s*<table\-([^>]+)>//sm;
  	  if ($verbeux) {print STDERR "table: [$table]\n";} 	
       my $tablename = $1;
-
-      my $json_data = encode_utf8( $table );
-      $dico{$tablename} = decode_json($json_data);
+	  if ($tablename) {
+     	 my $json_data = encode_utf8( $table );
+    	 $dico{$tablename} = decode_json($json_data);
+	  }
   }
  return %dico; 
 }
@@ -354,6 +357,7 @@ sub copiePointeurs {
 					$noeudArriveeParent->removeChild($noeudArrivee);
 				}
 				foreach my $noeudDepart (@noeudsDepart) {
+					
 					my $noeudClone = $noeudArrivee;
 					# S'il y a plusieurs nœuds de départ, il faut cloner le nœud d'arrivée
 					if (scalar(@noeudsDepart)>1) {
