@@ -94,11 +94,13 @@ my @total = ();
 if ( $verbeux ) {print STDERR "Extrait les vedettes et cat avec XPath\n";}
 while (my $line = <$INFILE>) {
 	my $entry = $headervolume . $line . $footervolume;
+	print STDERR "[$entry]\n";
 	my $doc = $parser->parse($entry);
 	my $headword = find_string($doc,$cdmheadword);
 	my $pos = find_string($doc,$cdmpos);
 	my @array = ($headword, $pos, $line);
 	push @total, \@array;
+	exit 0;
 }
 close $INFILE;
 if ( $verbeux ) {print STDERR "Trie le tableau résultat\n";}

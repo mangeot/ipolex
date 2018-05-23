@@ -399,11 +399,11 @@ sub copiePointeurs {
 				}
 			}
 			else {
-				if ($verbeux) {print STDERR "noeudArrivee donne une valeur nulle\n";}
+				if ($verbeux) {print STDERR "noeudArrivee $pointeurArrivee donne une valeur nulle\n";}
 			}
 		}
 		else {
-			if ($verbeux) {print STDERR "pointeurArrivee donne une valeur nulle\n";}
+			if ($verbeux) {print STDERR "pointeurArrivee $cle donne une valeur nulle\n";}
 		}
 	}	
 }

@@ -45,9 +45,6 @@
   		<cdm-source-definition xpath="/database/lexGroup/defWGroup/srcDW/text()" index="true"  />	
   		<links>
   </links>
-  <pos-conversion>
-  
-  </pos-conversion>
 	</cdm-elements>
 <administrators>
 		  <user-ref name="mangeot"/>
