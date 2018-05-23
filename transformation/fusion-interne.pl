@@ -314,6 +314,7 @@ foreach my $sense_one ($entry_one->findnodes($cdmsense)) {
   	$sense_one->setAttribute('id','s'.$i);
 }
 my $doc = $last_sense->getOwnerDocument();
+
 my $noeudParent = $last_sense->getParentNode();
 my $noeudSuivant = $last_sense->getNextSibling();
 foreach my $sense_two ($entry_two->findnodes($cdmsense))
@@ -336,15 +337,20 @@ foreach my $sense_two ($entry_two->findnodes($cdmsense))
 	}
 	$last_sense = $sense_two;
   }
-  my @sourceblocks_one = $entry_one->findnodes($cdmsourceblock);
-  my @sourceblocks_two = $entry_two->findnodes($cdmsourceblock);
-  if (scalar(@sourceblocks_one)>0 && scalar(@sourceblocks_two)>0) {
-  	  my $sourceblockone = $sourceblocks_one[0];
-  	  my $sourceblocktwo = $sourceblocks_two[0];
-  	  foreach my $child ($sourceblocktwo->getChildNodes()) {
-  	  	$child->setOwnerDocument($doc);
-  	  	$sourceblockone->appendChild($child);
-  	  }
+  if ($cdmsourceblock) {
+	  my @sourceblocks_one = $entry_one->findnodes($cdmsourceblock);
+	  my @sourceblocks_two = $entry_two->findnodes($cdmsourceblock);
+	  if (scalar(@sourceblocks_one)>0 && scalar(@sourceblocks_two)>0) {
+		  my $sourceblockone = $sourceblocks_one[0];
+		  my $sourceblocktwo = $sourceblocks_two[0];
+		  foreach my $child ($sourceblocktwo->getChildNodes()) {
+			$child->setOwnerDocument($doc);
+			$sourceblockone->appendChild($child);
+		  }
+	  }
+  }
+  else {
+  	print STDERR "Pas de pointeur cdm-source-block!\n";
   }
   
   
