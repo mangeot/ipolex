@@ -381,7 +381,7 @@ sub read_file {
   	my $name = $cdmelement->getNodeName();
   	if ($name ne 'links') {
 		my $xpath = find_string($cdmelement,'@xpath');
-		my $lang = find_string($cdmelement,'@d:lang',1);
+		my $lang = find_string($cdmelement,'@lang',1);
 		if ($lang) {
 			$dico{$name.':'.$lang}=$xpath;}
 		else

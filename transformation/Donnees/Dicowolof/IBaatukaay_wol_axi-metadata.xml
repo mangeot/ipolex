@@ -36,6 +36,7 @@
 <cdm-sense xpath="/volume/article/bloc_sens/sens"/>
 <cdm-example-block xpath="/volume/article/bloc_sens/sens/exemples/exemple"/>
 <cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-wol/text()" d:lang="wol" />
+<cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-fra/text()" d:lang="fra"/>
   <cdm-source-entry xpath="/volume/article/sources/entree-source"/>
   <cdm-source-entry-origin xpath="/volume/article/sources/entree-source/@provenance"/>
   <links>
