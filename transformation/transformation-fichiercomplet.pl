@@ -145,18 +145,19 @@ if ($verbeux) 	{print STDERR "\nTransformation article : $headword\n";}
 	#	Recopie de l'article de départ tel quel dans l'article d'arrivée pour éventuel travail ultérieur
 		if ($verbeux) {print STDERR "copie de l'article source $cdmentrydepart tel quel dans l'article arrivée $cdmentrysourceorigin\n";}
 		my @entrydepart = $docdepart->findnodes($cdmentrydepart);
-		my $entrydepart = $entrydepart[0];
-
-		my @entrysourceorigin = $docarrivee->findnodes($cdmentrysourceorigin);
-		if (scalar(@entrysourceorigin)>0) {
-			my $entrysourceorigin = $entrysourceorigin[0];
-			$entrysourceorigin->addText($nomDicoDepart);
-		}
-		my @entrysource = $docarrivee->findnodes($cdmentrysource);
-		if (scalar(@entrysource)>0) {
-			my $elementsource = $entrysource[0];
-			$entrydepart->setOwnerDocument($docarrivee);
-			$elementsource->appendChild($entrydepart);
+		if (scalar(@entrydepart)>0) {
+			my $entrydepart = $entrydepart[0];
+			my @entrysourceorigin = $docarrivee->findnodes($cdmentrysourceorigin);
+			if (scalar(@entrysourceorigin)>0) {
+				my $entrysourceorigin = $entrysourceorigin[0];
+				$entrysourceorigin->addText($nomDicoDepart);
+			}
+			my @entrysource = $docarrivee->findnodes($cdmentrysource);
+			if (scalar(@entrysource)>0) {
+				my $elementsource = $entrysource[0];
+				$entrydepart->setOwnerDocument($docarrivee);
+				$elementsource->appendChild($entrydepart);
+			}
 		}
 	}
 	my @entryarrivee = $docarrivee->findnodes($cdmentryarrivee);
@@ -399,11 +400,11 @@ sub copiePointeurs {
 				}
 			}
 			else {
-				if ($verbeux) {print STDERR "noeudArrivee $pointeurArrivee donne une valeur nulle\n";}
+				if ($verbeux) {print STDERR "L'élément $pointeurArrivee est manquant dans le fichier de modèle $entreeModele\n";}
 			}
 		}
 		else {
-			if ($verbeux) {print STDERR "pointeurArrivee $cle donne une valeur nulle\n";}
+			if ($verbeux) {print STDERR "Le pointeur CDM $cle est manquant dans le fichier de métadonnées $metaSortie\n";}
 		}
 	}	
 }
