@@ -92,7 +92,7 @@ my $collator = Unicode::Collate::->new();
 # on initialise le parseur XML DOM
 my $parser= XML::DOM::Parser->new();
 
-if ( $verbeux ) {print STDERR "load cdm FichierMeta:\n";}
+if ( $verbeux ) {print STDERR "load cdm FichierMeta $metaEntree:\n";}
 my $metaentreestring = read_file($metaEntree);
 my %CDMSENTREE = load_cdm($metaentreestring);
 my %LINKSENTREE = load_links($metaentreestring);
@@ -101,6 +101,7 @@ my %LINKSENTREE = load_links($metaentreestring);
 my $keyentree = (keys %LINKSENTREE)[0];
 my $cdmtranslationlinkinfoentree = $LINKSENTREE{$keyentree};
 
+if ( $verbeux ) {print STDERR "load cdm FichierMeta $metaSortie:\n";}
 my $metasortiestring = read_file($metaSortie);
 my %CDMSARRIVEE = load_cdm($metasortiestring);
 my %LINKSARRIVEE = load_links($metasortiestring);
@@ -137,7 +138,10 @@ $cdmposarrivee =~ s/\/text\(\)$//;
 my $docentree = $parser->parse($modeleentree);
 my $linknodedepart = create_link_node($cdmtranslationlinkinfoentree,$docentree);
 
-
+if (!$cdmtranslationdepart) {
+	print STDERR "Le pointeur CDM cdm-translation:$trglang est vide!\n";
+	exit 0;
+}
 #print STDERR Dumper(\%CDMSENTREE);
 #print STDERR Dumper(\%LINKSARRIVEE);
 
@@ -266,11 +270,13 @@ while (my $entry = next_entry(*INFILE)) {
 		}
 	}
 	else {
-		if ($verbeux) {print STDERR "un vide : $entryid ou $cdmtranslationdepart\n";}
+		if ($verbeux) {print STDERR "Entryid est vide [$entryid]\n";}
 	}
 	my @entrydepart = $entry->findnodes($cdmentrydepart);
-	my $entrydepart = $entrydepart[0];
- 	print $OUTFILE $entrydepart->toString,"\n";
+	if (scalar(@entrydepart)>0) {
+		my $entrydepart = $entrydepart[0];
+ 		print $OUTFILE $entrydepart->toString,"\n";
+	}
 } 
 
  
@@ -381,7 +387,7 @@ sub read_file {
   	my $name = $cdmelement->getNodeName();
   	if ($name ne 'links') {
 		my $xpath = find_string($cdmelement,'@xpath');
-		my $lang = find_string($cdmelement,'@lang',1);
+		my $lang = find_string($cdmelement,'@d:lang',1);
 		if ($lang) {
 			$dico{$name.':'.$lang}=$xpath;}
 		else
@@ -532,30 +538,55 @@ sub fill_link {
 		my $langpath = $translationlinkinfo->{'lang'};
 		if ($langpath) {
 			my @langs = $linknode->findnodes($langpath);
-			my $lang = $langs[0];
-			$lang->addText($targetlang);
+			if (scalar(@langs)>0) {
+				my $lang = $langs[0];
+				$lang->addText($targetlang);
+			}
+			else {
+				print STDERR "Erreur : pointeur CDM link $langpath : pas d'attribut lang trouvé!\n";
+				exit 0;
+			}
 		}
 		my $typepath = $translationlinkinfo->{'type'};
 		if ($typepath) {
 			my @types = $linknode->findnodes($typepath);
-			my $type = $types[0];
-			$type->addText('direct');
+			if (scalar(@types)>0) {
+				my $type = $types[0];
+				$type->addText('direct');
+			}
+			else {
+				print STDERR "Erreur : pointeur CDM link $typepath : pas d'attribut type trouvé!\n";
+				exit 0;
+			}
 		}
 		my $volumepath = $translationlinkinfo->{'volume'};
 		if ($volumepath) {
 			my @volumes = $linknode->findnodes($volumepath);
-			my $volume = $volumes[0];
-			$volume->addText($targetvolume);
+			if (scalar(@volumes)>0) {
+				my $volume = $volumes[0];
+				$volume->addText($targetvolume);
+			}
+			else {
+				print STDERR "Erreur : pointeur CDM link $volumepath : pas d'attribut volume trouvé!\n";
+				exit 0;
+			}
 		}
 		my $valuepath = $translationlinkinfo->{'value'};
 		if ($valuepath) {
 			my @values = $linknode->findnodes($valuepath);
-			my $value = $values[0];
-			$value->addText($targetid);
+			if (scalar(@values)>0) {
+				my $value = $values[0];
+				$value->addText($targetid);
+			}
+			else {
+				print STDERR "Erreur : pointeur CDM link $valuepath : pas d'attribut value trouvé!\n";
+				exit 0;
+			}
 		}
 	}
 	else {
-		if ($verbeux) {print STDERR "Erreur : Pas de lien trouvé!\n"}
+		print STDERR "Erreur : Pas de lien trouvé!\n"; 
+		exit 0;
 	}
 	return $linknode;
 }
