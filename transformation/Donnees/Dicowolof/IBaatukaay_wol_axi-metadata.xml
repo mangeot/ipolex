@@ -50,7 +50,7 @@
   <cdm-source-entry-origin xpath="/volume/article/sources/entree-source/@provenance"/>
   <links>
   <link name="translation" xpath="/volume/article/bloc_sens/sens/bloc_traduction/lien_traduction">
-  		<volume xpath="IBaatukaay_axi"/>
+  		<volume xpath="@volume"/>
   <value xpath="@id"/>
   <type xpath="@type"/>
   <lang xpath="@lang"/>
