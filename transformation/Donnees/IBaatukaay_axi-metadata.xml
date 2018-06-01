@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<volume-metadata
+   xmlns="http://www-clips.imag.fr/geta/services/dml" 
+   xmlns:d="http://www-clips.imag.fr/geta/services/dml"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www-clips.imag.fr/geta/services/dml
+   http://www-clips.imag.fr/geta/services/dml/dml.xsd"
+   location="local"
+   creation-date="2018-05-22T14:12:55+02:00" 
+   installation-date="2018-05-22T14:12:55+02:00" 
+   last-modification-date="2018-05-22T14:15:26+02:00" 
+   hw-number="8418" 
+   encoding="UTF-8" 
+   format="xml" 
+   name="IBaatukaay_axi"
+   dbname="ibaatukaayaxi" 
+   version="1"
+   source-language="axi"
+   target-languages=""
+   reverse-lookup="false">
+ <authors>IBaatukaay</authors>
+ <comments></comments>
+ <cdm-elements>
+  <cdm-volume xpath="/volume"/>
+<cdm-entry xpath="/volume/axie"/>
+<cdm-entry-id xpath="/volume/axie/@id"/>
+<cdm-headword xpath="/volume/axie/mot_vedette/text()"/>
+<links>
+  <link name="translation" xpath="/volume/axie/reflexies/reflexie">
+  		<volume xpath="IBaatukaay_fra"/>
+  <value xpath="@id"/>
+  <type xpath="@type"/>
+  <lang xpath="@lang"/>
+  <label xpath="@label"/>
+  <weight xpath="@weight"/>
+  </link>
+  		</links>
+	</cdm-elements>
+<administrators>
+		  <user-ref name="khoule"/>
+		  <user-ref name="mangeot"/>
+ </administrators>
+ <volume-ref xlink:href="ibaatukaay_axi.xml" source-language="axi"/>
+ <xmlschema-ref xlink:href="ibaatukaay_axi.xsd"/>
+<template-entry-ref xlink:href="ibaatukaay_axi-template.xml"/>
+<xsl-stylesheet name="IBaatukaay_axi" default="true" xlink:href="IBaatukaay_axi-view.xsl"/>
+ 	</volume-metadata>
