@@ -28,8 +28,8 @@
 <cdm-headword xpath="/volume/Article/Vedette/text()"/>
 <cdm-pos xpath="/volume/Article/Gram/text()"/>
 <cdm-definition xpath="/volume/Article/Peul/text()"/>
-<cdm-translation xpath="/volume/Article/Anglais/text()" d:lang="eng" />
   <cdm-translation xpath="/volume/Article/Français/text()" d:lang="fra" />
+  <cdm-translation-anglaise xpath="/volume/Article/Anglais/text()" index="true" />
   <links>
   </links>
 	</cdm-elements>

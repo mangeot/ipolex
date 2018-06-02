@@ -31,30 +31,30 @@
 <cdm-pos xpath="/volume/article/catégorie_grammaticale/text()"/>
 <cdm-definition xpath="/volume/article/bloc_sens/sens/définition/text()"/>
 <cdm-translation xpath="/volume/article/bloc_sens/sens/bloc_traduction/traduction_française/text()" d:lang="fra" />
-<cdm-translation-pos xpath="/volume/article/bloc_sens/sens/bloc_traduction/catégorie_grammaticale_traduction_française_mot_vedette/text()" d:lang="fra" />
 <cdm-sense-block xpath="/volume/article/bloc_sens"/>
 <cdm-sense xpath="/volume/article/bloc_sens/sens"/>
 <cdm-example-block xpath="/volume/article/bloc_sens/sens/exemples/exemple"/>
 <cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-srr/text()" d:lang="srr" />
+<cdm-example xpath="/volume/article/bloc_sens/sens/exemples/exemple/exemple-fra/text()" d:lang="fra" />
   <cdm-source-entry xpath="/volume/article/sources/entree-source"/>
   <cdm-source-entry-origin xpath="/volume/article/sources/entree-source/@provenance"/>
   <links>
   <link name="translation" xpath="/volume/article/bloc_sens/sens/bloc_traduction/lien_traduction">
-  		<volume xpath="IBaatukaay_axi"/>
+      <volume xpath="@volume"/>
   <value xpath="@id"/>
   <type xpath="@type"/>
   <lang xpath="@lang"/>
   <label xpath="@label"/>
   <weight xpath="@weight"/>
   </link>
-  		</links>
-	</cdm-elements>
+      </links>
+  </cdm-elements>
 <administrators>
-		  <user-ref name="khoule"/>
-		  <user-ref name="mangeot"/>
+      <user-ref name="khoule"/>
+      <user-ref name="mangeot"/>
  </administrators>
  <volume-ref xlink:href="ibaatukaay_srr_axi.xml" source-language="srr"/>
  <xmlschema-ref xlink:href="ibaatukaay_srr_axi.xsd"/>
 <template-entry-ref xlink:href="ibaatukaay_srr_axi-template.xml"/>
 <xsl-stylesheet name="IBaatukaay_srr_axi" default="true" xlink:href="IBaatukaay_srr_axi-view.xsl"/>
- 	</volume-metadata>
+  </volume-metadata>

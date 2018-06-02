@@ -25,10 +25,25 @@
  <legal>Creative Commons, CC by SA</legal>
  <access>public</access>
  <comments></comments>
+ <cdm-elements>
+  <cdm-volume xpath="/volume"/>
+<cdm-entry xpath="/volume/Article"/>
+<cdm-entry-id xpath="/volume/Article/@id"/>
+<cdm-headword xpath="/volume/Article/Vedette/text()"/>
+<cdm-pos xpath="/volume/Article/Gram/text()"/>
+<cdm-definition xpath="/volume/Article/Definition/text()"/>
+<cdm-translation xpath="/volume/Article/Français//text()" d:lang="fra" />
+  <cdm-example xpath="/volume/Article/Exemple/text()" d:lang="ful" />
+
+      <links>
+  </links>
+   </cdm-elements>
+
  <administrators>
 		  <user-ref name="mangeot"/>
  </administrators>
  <volumes>
+
   <volume-metadata-ref name="DicoFulNiger_ful_fra" xlink:href="DicoFulNiger_ful_fra-metadata.xml" source-language="ful" target-languages="fra" />
  </volumes>
   
