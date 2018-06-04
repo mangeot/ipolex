@@ -107,7 +107,7 @@ $cdmentryid =~ s/\/text\(\)$//;
 # On reconstruit les balises ouvrantes et fermantes du volume 
 my $headervolume = xpath2opentags($cdmvolume);
 my $footervolume = xpath2closedtags($cdmvolume);
-my $closedtagentry = xpath2closedtag($cdmentry);
+#my $closedtagentry = xpath2closedtag($cdmentry);
 my $opentagvolume = xpath2opentags($cdmvolume, 'creation-date="' . $date . '"');
 my $closedtagvolume = xpath2closedtags($cdmvolume);
 
@@ -117,7 +117,8 @@ my $closedtagvolume = xpath2closedtags($cdmvolume);
 open (INFILE, "<:encoding($encoding)",$FichierEntree) or die ("$! $FichierEntree\n");
 # On va lire le fichier d'entrée article par article 
 # donc on coupe après une balise de fin d'article.
-$/ = $closedtagentry;
+#$/ = $closedtagentry;
+#$/ = $closedtagentry;
 
 # ------------------------------------------------------------------------
 if ( defined $verbeux ) {&info('a');};
@@ -259,10 +260,11 @@ sub next_entry
 {
 	my $file = $_[0];
 	my $doc = '';
-	$/ = $closedtagentry;
+#	$/ = $closedtagentry;
 	my $line = <$file>;
 	if ($line) {
 		$line = $headervolume . $line . $footervolume;
+#		print STDERR "[$line]\n";
 		$doc = $parser->parse($line);
 		$nbentries++;
 	}

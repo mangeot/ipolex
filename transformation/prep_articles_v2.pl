@@ -12,6 +12,6 @@ my $nodeset = $xp->find($ARGV[1]); # find all paragraphs
  
 foreach my $node ($nodeset->get_nodelist) {
 	my $entry = XML::XPath::XMLParser::as_string($node);
-	$entry =~ s/\R//gsm;
+	$entry =~ s/\R/ /gsm;
     print STDOUT $entry, "\n";
 }

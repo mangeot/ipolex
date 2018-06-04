@@ -28,7 +28,7 @@
 <cdm-headword xpath="/volume/axie/mot_vedette/text()"/>
 <links>
   <link name="translation" xpath="/volume/axie/reflexies/reflexie">
-  		<volume xpath="IBaatukaay_fra"/>
+  		<volume xpath="@volume"/>
   <value xpath="@id"/>
   <type xpath="@type"/>
   <lang xpath="@lang"/>

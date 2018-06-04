@@ -535,30 +535,71 @@ sub fill_link {
 		my $langpath = $translationlinkinfo->{'lang'};
 		if ($langpath) {
 			my @langs = $linknode->findnodes($langpath);
-			my $lang = $langs[0];
-			$lang->addText($targetlang);
+			if (scalar(@langs)>0) {
+				my $lang = $langs[0];
+				$lang->addText($targetlang);
+			}
+			else {
+				print STDERR "Erreur : $langpath : pas de noeud lang trouvé!\n";
+				exit 0;
+			}
+		}
+		else {
+			print STDERR "Erreur : Pas de pointeur CDM link lang trouvé!\n";
+			exit 0;
 		}
 		my $typepath = $translationlinkinfo->{'type'};
 		if ($typepath) {
 			my @types = $linknode->findnodes($typepath);
-			my $type = $types[0];
-			$type->addText($typestring);
+			if (scalar(@types)>0) {
+				my $type = $types[0];
+				$type->addText($typestring);
+			}
+			else {
+				print STDERR "Erreur : $typepath : pas de noeud type trouvé!\n";
+				exit 0;
+			}
+		}
+		else {
+			print STDERR "Erreur : Pas de pointeur CDM link type trouvé!\n";
+			exit 0;
 		}
 		my $volumepath = $translationlinkinfo->{'volume'};
 		if ($volumepath) {
 			my @volumes = $linknode->findnodes($volumepath);
-			my $volume = $volumes[0];
-			$volume->addText($targetvolume);
+			if (scalar(@volumes)>0) {
+				my $volume = $volumes[0];
+				$volume->addText($targetvolume);
+			}
+			else {
+				print STDERR "Erreur : $volumepath : pas de noeud volume trouvé!\n";
+				exit 0;
+			}
+		}
+		else {
+			print STDERR "Erreur : Pas de pointeur CDM link volume trouvé!\n";
+			exit 0;
 		}
 		my $valuepath = $translationlinkinfo->{'value'};
 		if ($valuepath) {
 			my @values = $linknode->findnodes($valuepath);
-			my $value = $values[0];
-			$value->addText($targetid);
+			if (scalar(@values)>0) {
+				my $value = $values[0];
+				$value->addText($targetid);
+			}
+			else {
+				print STDERR "Erreur : Pas de noeud value trouvé!\n";
+				exit 0;
+			}
+		}
+		else {
+			print STDERR "Erreur : Pas de pointeur CDM value trouvé!\n";
+			exit 0;
 		}
 	}
 	else {
-		if ($verbeux) {print STDERR "Erreur : Pas de lien trouvé!\n"}
+		print STDERR "Erreur : Pas de lien trouvé!\n";
+		exit 0;
 	}
 	return $linknode;
 }

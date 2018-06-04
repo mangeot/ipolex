@@ -54,7 +54,7 @@ if ($FichierEntree) {
 }
 else {
 	$FichierEntree = 'STDIN';
-	$INFILE = *STDOUT;
+	$INFILE = *STDIN;
 }
 if ($FichierResultat) {
 	open $OUTFILE, ">:encoding($unicode)",$FichierResultat or die ("$! $FichierResultat \n");
@@ -94,6 +94,7 @@ my @total = ();
 if ( $verbeux ) {print STDERR "Extrait les vedettes et cat avec XPath\n";}
 while (my $line = <$INFILE>) {
 	my $entry = $headervolume . $line . $footervolume;
+#	print STDERR "Entry: [$entry]\n";
 	my $doc = $parser->parse($entry);
 	my $headword = find_string($doc,$cdmheadword);
 	my $pos = find_string($doc,$cdmpos);
