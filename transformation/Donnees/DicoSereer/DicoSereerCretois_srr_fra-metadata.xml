@@ -23,11 +23,11 @@
  <comments></comments>
  <cdm-elements>
   <cdm-volume xpath="/database"/>
-<cdm-entry xpath="/database/article"/>
-<cdm-entry-id xpath="/database/article/@id"/>
-<cdm-headword xpath="/database/article/mot_vedette/text()"/>
-<cdm-pos xpath="/database/article/catégorie_grammaticale/text()"/>
-<cdm-translation xpath="/database/article/traductions_françaises/traduction/text()" d:lang="fra" />
+<cdm-entry xpath="/database/item"/>      
+<cdm-entry-id xpath="/database/item/@id"/>
+<cdm-headword xpath="/database/item/mot_vedette/text()"/>
+<cdm-pos xpath="/database/item/catégorie_grammaticale/text()"/>
+<cdm-translation xpath="/database/item/traductions_françaises/traduction/text()" d:lang="fra" />
   <links>
   </links>
 	</cdm-elements>
