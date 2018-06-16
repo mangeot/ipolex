@@ -676,7 +676,7 @@ sub replace_direct_by_pivot_link {
 	$linkelement->setOwnerDocument($transnode->getOwnerDocument());
 	my $parent = $transnode->getParentNode();
 	$parent->replaceChild($linkelement, $transnode);
-	fill_link($linkinfo, $linkelement, $trgvolume, $targetid, $targetlang,'pivot');
+	fill_link($linkinfo, $linkelement, $trgvolume, $targetid, $targetlang,'axi');
 }	
 
  
