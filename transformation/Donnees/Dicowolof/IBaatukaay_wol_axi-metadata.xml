@@ -48,6 +48,7 @@
 
   <cdm-source-entry xpath="/volume/article/sources/entree-source"/>
   <cdm-source-entry-origin xpath="/volume/article/sources/entree-source/@provenance"/>
+
   <links>
   <link name="translation" xpath="/volume/article/bloc_sens/sens/bloc_traduction/lien_traduction">
   		<volume xpath="@volume"/>
@@ -59,6 +60,9 @@
   </link>
   		</links>
 	</cdm-elements>
+    <cdm-tables>
+   <table-cdm-pos>{"turu bokkaale":"nom","turu bopp":"nom","waxe-jëfin":"verbe","waxe-nekkin":"adjectif","adjectif qualificatif":"adjectif","verbe intransitif":"verbe","verbe transitif":"verbe","verbe":"verbe","nom":"nom","adjectif":"adjectif","adverbe":"adverbe","conjonction":"conjonction","coverbe":"coverbe","interjection":"interjection","nom pluriel":"nom","numéral":"numéral"}</table-cdm-pos>
+  </cdm-tables>
 <administrators>
 		  <user-ref name="khoule"/>
 		  <user-ref name="mangeot"/>
