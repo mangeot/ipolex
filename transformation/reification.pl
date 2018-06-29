@@ -82,15 +82,15 @@ if (defined $help) {&help;};
 # =======================================================================================================================================
 ###--- PROLOGUE ---###
 
-open $OUTSOURCE, ">:encoding($unicode)",$sortieSource or die ("$! $sortieSource \n");
-open $OUTTARGET, ">:encoding($unicode)",$sortieCible or die ("$! $sortieCible \n");
+open $OUTSOURCE, ">:encoding($unicode)",$sortieSource or die ("Problème de sortie source : $! $sortieSource \n");
+open $OUTTARGET, ">:encoding($unicode)",$sortieCible or die ("Problème de sortie cible : $! $sortieCible \n");
 
 my $collator = Unicode::Collate::->new();
 
 # on initialise le parseur XML DOM
 my $parser= XML::DOM::Parser->new();
 
-if ( $verbeux ) {print STDERR "load cdm fichiers meta et modèle source:\n";}
+if ( $verbeux ) {print STDERR "Charge le fichier meta source : $metaSource\n";}
 # ------------------------------------------------------------------------
 # données source
 my $metasourcestring = read_file($metaSource);
@@ -98,13 +98,14 @@ my %CDMSSOURCE = load_cdm($metasourcestring);
 my %LINKSSOURCE = load_links($metasourcestring);
 #print STDERR Dumper(\%CDMSSOURCE);
 #print STDERR Dumper(\%LINKSSOURCE);
-my $modelesourcestring = read_file($modeleSource);
-my $docsource = $parser->parse($modelesourcestring);
 my $srclang = load_source_language($metasourcestring);
 my $volumesource = load_volume_name($metasourcestring);
 # ATTENTION, il faudra spécifier comment trouver le bon link dans des métadonnées !!!
 my $keysource = (keys %LINKSSOURCE)[0];
 my $cdmfirsttranslationlinkinfosource = $LINKSSOURCE{$keysource};
+if ( $verbeux ) {print STDERR "Charge le fichier modèle source : $modeleSource\n";}
+my $modelesourcestring = read_file($modeleSource);
+my $docsource = $parser->parse($modelesourcestring);
 my $linknodesource = create_link_node($cdmfirsttranslationlinkinfosource,$docsource);
 my $cdmvolumesource = $CDMSSOURCE{'cdm-volume'}; # le volume
 my $cdmentrysource = $CDMSSOURCE{'cdm-entry'}; # l'article
@@ -117,19 +118,20 @@ my $opentagvolumesource = xpath2opentags($cdmvolumesource, 'creation-date="' . $
 my $closedtagvolumesource = xpath2closedtags($cdmvolumesource);
 
 
-if ( $verbeux ) {print STDERR "load cdm fichiers meta et modèle cible:\n";}
+if ( $verbeux ) {print STDERR "Charge le fichier meta cible : $metaCible\n";}
 # ------------------------------------------------------------------------
 # données cible
 my $metaciblestring = read_file($metaCible);
 my %CDMSCIBLE = load_cdm($metaciblestring);
 my %LINKSCIBLE = load_links($metaciblestring);
-my $modeleciblestring = read_file($modeleCible);
-my $doccible = $parser->parse($modeleciblestring);
 my $trglang = load_source_language($metaciblestring);
 my $volumecible = load_volume_name($metaciblestring);
 # ATTENTION, il faudra spécifier comment trouver le bon link dans des métadonnées !!!
 my $keycible = (keys %LINKSCIBLE)[0];
 my $cdmfirsttranslationlinkinfocible = $LINKSSOURCE{$keycible};
+if ( $verbeux ) {print STDERR "Charge le fichier modèle cible : $modeleCible\n";}
+my $modeleciblestring = read_file($modeleCible);
+my $doccible = $parser->parse($modeleciblestring);
 my $linknodecible = create_link_node($cdmfirsttranslationlinkinfocible,$doccible);
 my $cdmvolumecible = $CDMSCIBLE{'cdm-volume'}; # le volume
 my $cdmentrycible = $CDMSCIBLE{'cdm-entry'}; # l'article
@@ -142,19 +144,20 @@ my $opentagvolumecible = xpath2opentags($cdmvolumecible, 'creation-date="' . $da
 my $closedtagvolumecible = xpath2closedtags($cdmvolumecible);
 
 
-if ( $verbeux ) {print STDERR "load cdm fichiers meta et modèle pivot:\n";}
+if ( $verbeux ) {print STDERR "Charge le fichier meta pivot : $metaPivot\n";}
 # ------------------------------------------------------------------------
 # données pivot
 my $metapivotstring = read_file($metaPivot);
 my %CDMSPIVOT = load_cdm($metapivotstring);
 my %LINKSPIVOT = load_links($metapivotstring);
-my $modelepivotstring = read_file($modelePivot);
-my $docpivot = $parser->parse($modelepivotstring);
 my $pivotlang = load_source_language($metapivotstring);
 my $volumepivot = load_volume_name($metapivotstring);
 # ATTENTION, il faudra spécifier comment trouver le bon link dans des métadonnées !!!
 my $keypivot = (keys %LINKSPIVOT)[0];
 my $cdmfirsttranslationlinkinfopivot = $LINKSPIVOT{$keypivot};
+if ( $verbeux ) {print STDERR "Charge le fichier modèle pivot : $modelePivot\n";}
+my $modelepivotstring = read_file($modelePivot);
+my $docpivot = $parser->parse($modelepivotstring);
 my $linknodepivot = create_link_node($cdmfirsttranslationlinkinfopivot,$docpivot);
 my $cdmvolumepivot = $CDMSPIVOT{'cdm-volume'}; # le volume
 my $cdmentrypivot = $CDMSPIVOT{'cdm-entry'}; # l'article
@@ -168,7 +171,11 @@ my $closedtagvolumepivot = xpath2closedtags($cdmvolumepivot);
 
 # ------------------------------------------------------------------------
 # Input/ Output
-open (SOURCEFILE, "<:encoding($encoding)",$FichierSource) or die ("$! $FichierSource\n");
+if ( $verbeux ) {print STDERR "Ouvre le fichier source : $FichierSource\n";}
+open (SOURCEFILE, "<:encoding($encoding)",$FichierSource) or die ("Problème de fichier source : $! $FichierSource\n");
+if ( $verbeux ) {print STDERR "Ouvre le fichier cible : $FichierCible\n";}
+open (TARGETFILE, "<:encoding($encoding)",$FichierCible) or die ("Problème de fichier cible : $! $FichierCible\n");
+
 # On va lire le fichier d'entrée article par article 
 # donc on coupe après une balise de fin d'article.
 $/ = $closedtagentrysource;
@@ -252,7 +259,6 @@ print $OUTTARGET '<?xml version="1.0" encoding="UTF-8" ?>
 
 # ------------------------------------------------------------------------
 # Input/ Output
-open (TARGETFILE, "<:encoding($encoding)",$FichierCible) or die ("$! $FichierCible\n");
 # On va lire le fichier d'entrée article par article 
 # donc on coupe après une balise de fin d'article.
 $/ = $closedtagentrycible;
@@ -393,7 +399,7 @@ sub getNodeText {
 
 sub read_file {
   	my $fichier = $_[0];
-	open my $FILE, "<:encoding($unicode)", $fichier or die "error opening $fichier: $!";
+	open my $FILE, "<:encoding($unicode)", $fichier or die "Problème à l'ouverture du fichier $fichier: $!";
 	my $string = do { local $/; <$FILE> };
 	close $FILE;
 	return $string;
