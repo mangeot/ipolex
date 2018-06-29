@@ -70,7 +70,7 @@ if (!$metaEntree || !$metaSortie || !$modeleEntree || !$modeleCible || !$Fichier
 if (defined $help) {&help;};
 
 if ($FichierResultat) {
-	open $OUTFILE, ">:encoding($unicode)",$FichierResultat or die ("$! $FichierResultat \n");
+	open $OUTFILE, ">:encoding($unicode)",$FichierResultat or die ("Problème de fichier résultat : $! $FichierResultat \n");
 } # si le fichier sortie n'est pas spécifié, on ouvre la sortie standard
 else {
 	$FichierResultat = 'STDOUT';
@@ -85,14 +85,14 @@ if (defined $help) {&help;};
 # =======================================================================================================================================
 ###--- PROLOGUE ---###
 
-open $TARGETFILE, ">:encoding($unicode)",$FichierCible or die ("$! $FichierCible \n");
+open $TARGETFILE, ">:encoding($unicode)",$FichierCible or die ("Problème de fichier cible : $! $FichierCible \n");
 
 my $collator = Unicode::Collate::->new();
 
 # on initialise le parseur XML DOM
 my $parser= XML::DOM::Parser->new();
 
-if ( $verbeux ) {print STDERR "load cdm FichierMeta $metaEntree:\n";}
+if ( $verbeux ) {print STDERR "Charge le fichier meta : $metaEntree:\n";}
 my $metaentreestring = read_file($metaEntree);
 my %CDMSENTREE = load_cdm($metaentreestring);
 my %LINKSENTREE = load_links($metaentreestring);
@@ -101,16 +101,13 @@ my %LINKSENTREE = load_links($metaentreestring);
 my $keyentree = (keys %LINKSENTREE)[0];
 my $cdmtranslationlinkinfoentree = $LINKSENTREE{$keyentree};
 
-if ( $verbeux ) {print STDERR "load cdm FichierMeta $metaSortie:\n";}
+if ( $verbeux ) {print STDERR "Charge le fichier meta : $metaSortie:\n";}
 my $metasortiestring = read_file($metaSortie);
 my %CDMSARRIVEE = load_cdm($metasortiestring);
 my %LINKSARRIVEE = load_links($metasortiestring);
 # ATTENTION, il faudra spécifier comment trouver le bon link dans des métadonnées !!!
 my $keysortie = (keys %LINKSARRIVEE)[0];
 my $cdmtranslationlinkinfosortie = $LINKSARRIVEE{$keysortie};
-
-my $modeleentree = read_file($modeleEntree);
-my $modelesortie = read_file($modeleCible);
 
 my $srclang = load_source_language($metaentreestring);
 my $trglang = load_source_language($metasortiestring);
@@ -135,6 +132,8 @@ $cdmheadwordarrivee =~ s/\/text\(\)$//;
 $cdmposarrivee =~ s/\/$//;
 $cdmposarrivee =~ s/\/text\(\)$//;
 
+if ( $verbeux ) {print STDERR "Charge le fichier modèle source : $modeleEntree:\n";}
+my $modeleentree = read_file($modeleEntree);
 my $docentree = $parser->parse($modeleentree);
 my $linknodedepart = create_link_node($cdmtranslationlinkinfoentree,$docentree);
 
@@ -157,10 +156,12 @@ my $closedtagvolumedepart = xpath2closedtags($cdmvolumedepart);
 my $opentagvolumearrivee = xpath2opentags($cdmvolumearrivee, 'creation-date="' . $date . '"');
 my $closedtagvolumearrivee = xpath2closedtags($cdmvolumearrivee);
 
+if ( $verbeux ) {print STDERR "Charge le fichier modèle cible : $modeleCible:\n";}
+my $modelesortie = read_file($modeleCible);
 
 # ------------------------------------------------------------------------
 # Input/ Output
-open (INFILE, "<:encoding($encoding)",$FichierEntree) or die ("$! $FichierEntree\n");
+open (INFILE, "<:encoding($encoding)",$FichierEntree) or die ("Peoblème de fichier source : $! $FichierEntree\n");
 # On va lire le fichier d'entrée article par article 
 # donc on coupe après une balise de fin d'article.
 $/ = $closedtagentrydepart;
@@ -369,7 +370,7 @@ sub getNodeText {
 # ------------------------------------------------------------------------
 sub read_file {
   	my $fichier = $_[0];
-	open my $FILE, "<:encoding($unicode)", $fichier or die "error opening $fichier: $!";
+	open my $FILE, "<:encoding($unicode)", $fichier or die "Problème à l'ouverture du fichier $fichier: $!";
 	my $string = do { local $/; <$FILE> };
 	close $FILE;
 	return $string;
