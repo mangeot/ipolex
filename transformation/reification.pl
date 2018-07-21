@@ -253,7 +253,8 @@ close $OUTPIVOT;
 print $OUTSOURCE $closedtagvolumesource;
 close $OUTSOURCE;
  
-
+if ($verbeux) {&info('d');};
+ 
 print $OUTTARGET '<?xml version="1.0" encoding="UTF-8" ?>
 ',$opentagvolumecible,"\n";
 
@@ -302,7 +303,7 @@ close $OUTTARGET;
 
 # ------------------------------------------------------------------------
 if ( defined $verbeux ) {
-  &info('d');
+  &info('f');
 };
 
 
@@ -724,10 +725,16 @@ elsif ($info=~ 'b')
 elsif ($info=~ 'c')
 	{
 	print (STDERR "================================================================================\n");
-	print (STDERR "lancement du processus de réification\n");
+	print (STDERR "processus de réification : traitement du fichier source\n");
 	print (STDERR "--------------------------------------------------------------------------------\n");
 	}
-elsif ($info =~ 'd')
+elsif ($info=~ 'd')
+	{
+	print (STDERR "================================================================================\n");
+	print (STDERR "processus de réification : fichier cible\n");
+	print (STDERR "--------------------------------------------------------------------------------\n");
+	}
+elsif ($info =~ 'f')
 	{
 	print (STDERR "~~~~ $0 : END ~~~~\n");
 	print (STDERR "================================================================================\n");

@@ -129,41 +129,43 @@ print $OUTFILE '<?xml version="1.0" encoding="UTF-8" ?>
 print $OUTFILE $opentagvolumearrivee,"\n";
 
 # Boucle principale sur chaque entrée
-while( my $line = <$INFILE>)  {   
+while( my $line = <$INFILE>)  {
 
-	$line = $headerdepart . $line . $footerdepart;
-	my $docdepart = $parser->parse ($line);
-	my $docarrivee = $parser->parse ($xmlarrivee);
+	if ($line !~ /^\s*$/) {
+		$line = $headerdepart . $line . $footerdepart;
+		my $docdepart = $parser->parse ($line);
+		my $docarrivee = $parser->parse ($xmlarrivee);
 	
-	my @headwords = $docdepart->findnodes($cdmheadworddepart);
-	my $headword = getNodeText($headwords[0]);
+		my @headwords = $docdepart->findnodes($cdmheadworddepart);
+		my $headword = getNodeText($headwords[0]);
 	
-if ($verbeux) 	{print STDERR "\nTransformation article : $headword\n";}
-	copiePointeurs($CDMArbreDepart, $CDMArbreArrivee, $docdepart, $docarrivee);
+		if ($verbeux) 	{print STDERR "\nTransformation article : $headword\n";}
+		copiePointeurs($CDMArbreDepart, $CDMArbreArrivee, $docdepart, $docarrivee);
 
-	if ($cdmentrysourceorigin) {
-	#	Recopie de l'article de départ tel quel dans l'article d'arrivée pour éventuel travail ultérieur
-		if ($verbeux) {print STDERR "copie de l'article source $cdmentrydepart tel quel dans l'article arrivée $cdmentrysourceorigin\n";}
-		my @entrydepart = $docdepart->findnodes($cdmentrydepart);
-		if (scalar(@entrydepart)>0) {
-			my $entrydepart = $entrydepart[0];
-			my @entrysourceorigin = $docarrivee->findnodes($cdmentrysourceorigin);
-			if (scalar(@entrysourceorigin)>0) {
-				my $entrysourceorigin = $entrysourceorigin[0];
-				$entrysourceorigin->addText($nomDicoDepart);
-			}
-			my @entrysource = $docarrivee->findnodes($cdmentrysource);
-			if (scalar(@entrysource)>0) {
-				my $elementsource = $entrysource[0];
-				$entrydepart->setOwnerDocument($docarrivee);
-				$elementsource->appendChild($entrydepart);
+		if ($cdmentrysourceorigin) {
+		#	Recopie de l'article de départ tel quel dans l'article d'arrivée pour éventuel travail ultérieur
+			if ($verbeux) {print STDERR "copie de l'article source $cdmentrydepart tel quel dans l'article arrivée $cdmentrysourceorigin\n";}
+			my @entrydepart = $docdepart->findnodes($cdmentrydepart);
+			if (scalar(@entrydepart)>0) {
+				my $entrydepart = $entrydepart[0];
+				my @entrysourceorigin = $docarrivee->findnodes($cdmentrysourceorigin);
+				if (scalar(@entrysourceorigin)>0) {
+					my $entrysourceorigin = $entrysourceorigin[0];
+					$entrysourceorigin->addText($nomDicoDepart);
+				}
+				my @entrysource = $docarrivee->findnodes($cdmentrysource);
+				if (scalar(@entrysource)>0) {
+					my $elementsource = $entrysource[0];
+					$entrydepart->setOwnerDocument($docarrivee);
+					$elementsource->appendChild($entrydepart);
+				}
 			}
 		}
+		my @entryarrivee = $docarrivee->findnodes($cdmentryarrivee);
+		my $entryarrivee = $entryarrivee[0];
+		print $OUTFILE $entryarrivee->toString,"\n";
+	#	print STDERR "Fin transformation article\n";
 	}
-	my @entryarrivee = $docarrivee->findnodes($cdmentryarrivee);
-	my $entryarrivee = $entryarrivee[0];
-	print $OUTFILE $entryarrivee->toString,"\n";
-#	print STDERR "Fin transformation article\n";
 }
 #print STDERR "Fin transformation fichier\n";
 print $OUTFILE $closedtagvolumearrivee;
