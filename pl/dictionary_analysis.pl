@@ -124,7 +124,7 @@ my @tableauPronun;
 &guess_pronun($entry,0,$entryXpath, $entryCompte, $headwordName);
 @tableauPronun = reverse sort { $a->{ match } <=> $b->{ match } } @tableauPronun;
 my @tableauPos;
-&guess_pos($entry,0,$entryXpath, $entryCompte);
+&guess_pos($entry,0,$entryXpath, $entryCompte,$headwordName);
 @tableauPos = reverse sort { $a->{ match } <=> $b->{ match } } @tableauPos;
 my @tableauSens;
 &guess_sense($entry,0,$entryXpath, $entryCompte);
@@ -635,6 +635,7 @@ sub guess_pos {
 	my $level = $_[1];
 	my $xpath = $_[2];
 	my $compte = $_[3];    # 'count' of entry
+	my $headword = $_[4];
 
 	my $charnumber = $elt->{ charnumber };
 	my $charsize = $elt->{ charsize };
@@ -645,7 +646,7 @@ sub guess_pos {
 	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
 	if ($level >0 && $charnumber) {
 
-		if ($elt->{ count } >= $compte) {       # fréquence de POS est élevée >= HW
+		if ($elt->{ count } > $compte * 0.9 && $elt->{ name } ne $headword) {       # fréquence de POS est élevée >= HW
 	 		
 			$match += 0.1;
 			if ($elt->{ name } =~ /pos/ || $elt->{ name } =~ /gram/ || $elt->{ name } =~ /cat/){
@@ -658,7 +659,7 @@ sub guess_pos {
 				$match += 0.2;
 			}
 			
-			# beaucoup de valeurs différentes
+			# peu de valeurs différentes
 			my $ratiodiff = 0;
 			if ($elt->{ count }  < $maxMemoireListeValeurs) {
 				$ratiodiff = $elt->{ count } / $diff;
@@ -667,6 +668,7 @@ sub guess_pos {
 				$ratiodiff = $maxMemoireListeValeurs / $diff;
 			}
 			$match += 0.007 * $ratiodiff;
+			#print STDERR "guess_pos: ", $elt->{ name }, " diff: " , $diff, "count: ",$elt->{ count }, " ratiodiff: ", $ratiodiff, " match: ", $match,"\n";
 			
 			my $tableau_elt;
 			$tableau_elt->{ level } = $level;
@@ -678,7 +680,7 @@ sub guess_pos {
 		}
 	}
 	foreach my $child (values %{$elt->{ child }}) {
-		&guess_pos($child, $level+1, $xpath, $compte);
+		&guess_pos($child, $level+1, $xpath, $compte, $headword);
 	}
 }
 
