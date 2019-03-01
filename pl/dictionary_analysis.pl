@@ -8,7 +8,9 @@ use warnings;
 use utf8;
 
 # À faire : use of PerlSAX instead of the generic XML::Parser because of the use of line numbers
+# et aussi parce que l'événement "characters" peut être appelé plusieurs fois pour un seul élément !
 # use XML::Parser::PerlSAX;
+# voir parse.pl et XMLReader.pm pb: comment passer une variable globale au parser ?
 use XML::Parser;
 use Unicode::Collate;
 binmode STDOUT, ':utf8'; 
@@ -22,6 +24,7 @@ my $maxMemoireListeValeurs = 1000;
 my $root;
 my $Encoding = 'UTF-8';
 my @tree_stack;
+my $call_characters = 0;
 my $Collator = Unicode::Collate->new();
 
 my $parser = XML::Parser->new(
@@ -222,7 +225,7 @@ print "\n</template-entry>\n";
 
 print "\n</html>";
 
-print STDERR "Fin de l'écriture du résultat";	
+print STDERR "Fin de l'écriture du résultat\n";	
 
 sub xmldecl {
     my ( $parser, $version, $encoding, $standalone ) = @_;
@@ -232,6 +235,7 @@ sub xmldecl {
 sub start_element {
 
     my ( $parser, $element, @attrval ) = @_;
+    $call_characters = 0;
 
 	my $parent;
 	my $leaf;
@@ -273,13 +277,16 @@ sub start_element {
 
 sub characters {
     my ($parser, $string) = @_;
+	$call_characters++;
 	my $parent = $tree_stack[ -1 ];
 	$string =~ s/^[\s]+//;
 	$string =~ s/[\s]+$//;
 	if (length($string)>0) {
 		my @words = split(/\s+/, $string);
 		my $words = @words;
-		$parent->{ charnumber }++;
+		if ($call_characters ==1) { 
+			$parent->{ charnumber }++;
+		}
 		$parent->{ charsize } += length($string);
 		$parent->{ words } += $words;
     	my $prev = $parent->{ previous };
@@ -287,7 +294,7 @@ sub characters {
     		$parent->{ sup }++;
     	}
     	$parent->{ previous } = $string;
-    	if ($parent->{ charnumber }<$maxMemoireListeValeurs) {
+    	if ($parent->{ charnumber }<$maxMemoireListeValeurs && $call_characters ==1) {
     		$parent->{ values } { $string }++;
     	}
 	}
@@ -297,6 +304,7 @@ sub characters {
 sub end_element {
     $root = pop @tree_stack;
 }
+
 
 sub XMLEntities {
 	my $string = $_[0];
