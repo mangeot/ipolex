@@ -20,54 +20,67 @@
 	'cdm-example' => array(gettext('Exemple en '),'/volume/entry/examples/example/text()',''),
 	'cdm-idiom' => array(gettext('Expression idiomatique en '),'/volume/entry/idioms/idiom/text()','')
 	);
-	
+
 	$CDMLinkInfo = array(
 		'name' => array('*'.gettext('Nom'),''),
-		'volume' => array('*'.gettext('Volume cible'),''),
 		'xpath' => array('*'.gettext('XPath du lien'),gettext('XPath de l\'élément')),
+		'volume' => array('*'.gettext('XPath du volume cible'),''),
+		'default-volume' => array('*'.gettext('ou volume par défaut des cibles'),gettext('à effacer si le XPath précédent existe')),
+		'lang' => array('*'.gettext('XPath de la langue de la cible'),'la valeur est un code 3 lettres ISO-639-3 : eng, fra, etc.'),
+		'd:lang' => array('*'.gettext('ou langue par défaut des cibles'),gettext('à effacer si le XPath précédent existe')),
 		'value' => array('*'.gettext('XPath de la valeur du lien'),gettext('Chemin relatif à l\'élément')),
 		'type' => array('*'.gettext('XPath du type du lien'),gettext('Valeur "final" vers une entrée, et "axi" vers une axie')),
-		'lang' => array('*'.gettext('XPath de la langue de la cible'),''),
+		'default-type' => array('*'.gettext('ou type par défaut des liens'),gettext('à effacer si le XPath précédent existe')),
 		'label' => array(gettext('XPath de l\'étiquette du lien'),gettext('Valeur libre')),
-		'weight' => array(gettext('XPath du poids du lien'),gettext('Entier ou réel'))
+		'default-label' => array(gettext('ou étiquette par défaut des liens'),gettext('à effacer si le XPath précédent existe')),
+		'weight' => array(gettext('XPath du poids du lien'),gettext('Entier ou réel')),
+		'default-weight' => array(gettext('ou poids par défaut des liens'),gettext('à effacer si le XPath précédent existe'))
 	);
 
 	$CDMLink = array(
 		'name' => 'translation',
-		'volume' => 'target-volume-name',
 		'xpath' => '/volume/entry/translation-ref',
+		'volume' => '@volume',
+		'default-volume' => 'volume',
 		'value' => '@id',
 		'type' => '@type',
+		'default-type' => 'type',
 		'lang' => '@lang',
+		'd:lang' => 'lang',
 		'label' => '@label',
-		'weight' => '@weight'
+		'default-label' => 'label',
+		'weight' => '@weight',
+		'default-weight' => '1',
 	);
 
-	
+	$CDMLinkAttribute = array(
+		'name','xpath','default-volume','default-type','d:lang','default-label','default-weight'
+	);
+
 	define ('DML_PREFIX','http://www-clips.imag.fr/geta/services/dml');
 	define ('XLINK_PREFIX','http://www.w3.org/1999/xlink');
 	define ('DefaultResultFormatter','');
 	define ('DefaultResultPostUpdateProcessor','');
 	//define ('DefaultResultFormatter','fr.imag.clips.papillon.business.motamot.MotamotFormatter');
 	//define ('DefaultResultPostUpdateProcessor','fr.imag.clips.papillon.business.motamot.MotamotPostUpdateProcessor');
-	
+
 	function creerDictMetadata($params,$sources,$cibles) {
 		$res = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <dictionary-metadata
    xmlns="http://www-clips.imag.fr/geta/services/dml"
-   xmlns:d="http://www-clips.imag.fr/geta/services/dml" 
-   xmlns:xlink="http://www.w3.org/1999/xlink" 
+   xmlns:d="http://www-clips.imag.fr/geta/services/dml"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://www-clips.imag.fr/geta/services/dml
    http://www-clips.imag.fr/geta/services/dml/dml.xsd"
-   category="'.$params['Category'].'" 
-   creation-date="'.$params['CreationDate'].'" 
-   installation-date="'.$params['InstallationDate'].'" 
-   last-modification-date="'.date('c').'" 
+   category="'.$params['Category'].'"
+   creation-date="'.$params['CreationDate'].'"
+   installation-date="'.$params['InstallationDate'].'"
+   last-modification-date="'.date('c').'"
    fullname="'.htmlspecialchars($params['NameC']).'"
-   name="'.$params['Name'].'" 
-   owner="'.$params['Owner'].'" 
-   type="'.$params['Type'].'"> 
+   name="'.$params['Name'].'"
+   owner="'.$params['Owner'].'"
+   type="'.$params['Type'].'">
  <languages>
 ';
  		foreach ($sources as $source) {
@@ -78,7 +91,7 @@
  		}
  		$res .=' </languages>
  <contents>'.htmlspecialchars($params['Contents']).'</contents>
- <domain>'.htmlspecialchars($params['Domain']).'</domain> 
+ <domain>'.htmlspecialchars($params['Domain']).'</domain>
  <source>'.htmlspecialchars($params['Source']).'</source>
  <authors>'.$params['Authors'].'</authors>
  <legal>'.$params['Legal'].'</legal>
@@ -108,7 +121,7 @@
  		}
 		$res .= ' </volumes>
   ';
-  
+
   $res .=  (!empty($params['Links']))?stripslashes($params['Links'])."\n  ":'';
   $res .=  (!empty($params['OtherFiles']))?stripslashes($params['OtherFiles'])."\n  ":'';
 
@@ -143,8 +156,8 @@
 ';
 		return $res;
 	}
-		
-	
+
+
 	function enregistrerVolumeMetadata($params) {
 		if (empty($params['Format'])) {
 			$params['Format'] = '';
@@ -175,21 +188,21 @@
 		if (empty($params['Comments'])) {$params['Comments']='';}
 		$res = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <volume-metadata
-   xmlns="http://www-clips.imag.fr/geta/services/dml" 
+   xmlns="http://www-clips.imag.fr/geta/services/dml"
    xmlns:d="http://www-clips.imag.fr/geta/services/dml"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://www-clips.imag.fr/geta/services/dml
    http://www-clips.imag.fr/geta/services/dml/dml.xsd"
    location="local"
-   creation-date="'.$params['CreationDate'].'" 
-   installation-date="'.$params['InstallationDate'].'" 
-   last-modification-date="'.date('c').'" 
-   hw-number="'.$params['HwNumber'].'" 
-   encoding="'.$params['Encoding'].'" 
-   format="'.$params['Format'].'" 
+   creation-date="'.$params['CreationDate'].'"
+   installation-date="'.$params['InstallationDate'].'"
+   last-modification-date="'.date('c').'"
+   hw-number="'.$params['HwNumber'].'"
+   encoding="'.$params['Encoding'].'"
+   format="'.$params['Format'].'"
    name="'.$name.'"
-   dbname="'.$dbname.'" 
+   dbname="'.$dbname.'"
    version="1"
    source-language="'.$source.'"
    target-languages="'.$params['Targets'].'"
@@ -198,7 +211,7 @@
  <comments>'.htmlspecialchars($params['Comments']).'</comments>
  <cdm-elements>
   ';
-  global $CDMElements;
+  global $CDMElements,$CDMLinkAttribute;
   $keys=  '|'.join("|", array_keys($params)).'|';
   foreach ($CDMElements as $nom => $element) {
   	if (!empty($params[$nom])) {
@@ -222,8 +235,8 @@
   		$valeur = $params['CDMFreeElementsValue'][$i++];
   		$valeur = preg_replace('/\/$/','',$valeur);
   		if (!empty($nom) && !empty($valeur)) {
-  	  		$res .= '<'.$nom.' xpath="'.$valeur.'" index="true"  />	
-  		';} 
+  	  		$res .= '<'.$nom.' xpath="'.$valeur.'" index="true"  />
+  		';}
   	}
   }
   $res .= '<links>
@@ -232,24 +245,27 @@
   	foreach ($params['CDMLinks'] as $link) {
   		if (!empty($link['name']) && !empty($link['xpath'])) {
   		$valeur = preg_replace('/\/$/','',$link['xpath']);
-  		$res .= '<link name="'.$link['name'].'" xpath="'.$link['xpath'].'">
-  		';
+  		$res .= '<link ';
+			$xpaths = '';
   		 foreach ($link as $name => $value) {
-  		 	if ($name != 'name' && $name != 'xpath') {
-  		 		if (!empty($link[$name])) {
-				$res .='<'.$name.' xpath="'.$link[$name].'"/>
-  ';  		 	
-  		 		}
+				 if (!empty($value)) {
+  		 		if (in_array($name,$CDMLinkAttribute)) {
+						$res .= "$name=\"$value\" ";
+					}
+					else {
+						$xpaths .='<'.$name.' xpath="'.$value.'"/>
+						';
+					}
   			}
   		}
-  		  $res .= '</link>
+  		$res .= '>'.$xpaths.'</link>
   		';
   		}
 	}
   }
   $res .= '</links>
-	';  
- 
+	';
+
  $res .= '</cdm-elements>
 <administrators>';
 	$admins = preg_split("/[\s,;]+/", $params['Administrators']);
@@ -281,11 +297,11 @@
 ';
 		return $res;
 	}
-	
+
 	function getNumVolumes($params) {
 		$res = 1;
-		foreach($params as $key=>$val) { 
-   			if(substr($key,0,6) == 'Volume') { 
+		foreach($params as $key=>$val) {
+   			if(substr($key,0,6) == 'Volume') {
    				$tmp = intval(substr($key,6));
    				if ($tmp > $res) {
    					$res = $tmp;
@@ -294,12 +310,12 @@
 		}
 		return $res;
 	}
-	
+
 	function getNumCibles($params, $vol) {
 		$res = 0;
 		$match = 'Volume'.$vol.'Target';
-		foreach($params as $key=>$val) { 
-   			if(substr($key,0,strlen($match)) == $match) { 
+		foreach($params as $key=>$val) {
+   			if(substr($key,0,strlen($match)) == $match) {
    				$tmp = intval(substr($key,strlen($match)));
    				if ($tmp > $res) {
    					$res = $tmp;
@@ -308,7 +324,7 @@
 		}
 		return $res;
 	}
-	
+
 	function recupCiblesVolume($params, $vol) {
 	  	$nbcibles = getNumCibles($params,$vol);
   		$targets = '';
@@ -345,16 +361,16 @@
 		$idiom = empty($idiom)?'':substr($idiom,strrpos($idiom,'/')+1);
 
 		$sense = empty($sense)?'':substr($sense,strrpos($sense,'/')+1);
-		
+
 		$templatexml = simplexml_load_string($template);
 		$templatenamespaces = $templatexml->getDocNamespaces();
-		
+
 		$stylesheet = file_get_contents(RACINE_SITE.'include/default-view.xsl');
 
 		$stylesheetxml = simplexml_load_string($stylesheet);
 		$stylesheetnamespaces = $stylesheetxml->getDocNamespaces();
 		$namespacesdiff = array_diff_assoc($templatenamespaces, $stylesheetnamespaces);
-		
+
 		if (count($namespacesdiff) >0) {
 			foreach ($namespacesdiff as $nsprefix => $namespace) {
 				$stylesheetxml->addAttribute("xmlns:xmlns:".$nsprefix, $namespace);
@@ -371,11 +387,11 @@
 		if ($example) {$stylesheet = preg_replace('/##example_element##/',$example,$stylesheet);}
 		if ($idiom) {$stylesheet = preg_replace('/##idiom_element##/',$idiom,$stylesheet);}
 		if ($sense) {$stylesheet = preg_replace('/##sense_element##/',$sense,$stylesheet);}
-		
+
 		$myFile = $name . '-view.xsl';
 		file_put_contents($myFile,$stylesheet);
 	}
-	
+
 	function makeName($dictname, $source, $cibles) {
 		$name = $dictname . '_' . $source;
 		if (count($cibles)>0) { $name .= '_';}
@@ -385,9 +401,9 @@
 		if (count($cibles)>0) { $name = substr($name,0,strlen($name)-1);}
 		return $name;
 	}
-	
+
 	function restrictAccess($dirname, $users) {
-		$filename = DICTIONNAIRES_SITE.'/'.$dirname.'/.htaccess';		
+		$filename = DICTIONNAIRES_SITE.'/'.$dirname.'/.htaccess';
 		$htaccess = '<LimitExcept GET HEAD OPTIONS POST PROPFIND>
         Require user ';
         foreach ($users as $user) {

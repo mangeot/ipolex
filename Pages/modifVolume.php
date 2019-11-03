@@ -2,17 +2,17 @@
 	require_once('../init.php');
 
 	$Params = array();
-	
+
 	if (empty($_REQUEST['Dirname']) || empty($_REQUEST['Dictname']) || empty($_REQUEST['Source'])) {
 		header('Location:index.php');
 	}
-	
+
 	$source = $_REQUEST['Source'];
 	$targets = array_filter(explode(' ',$_REQUEST['Targets']));
 	$name = makeName($_REQUEST['Dictname'],$source,$targets);
-	$metadataFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$name.'-metadata.xml';	
-	$analysisFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$name.'-analysis.html';	
-	$analysisLink = DICTIONNAIRES_WEB.'/'.$_REQUEST['Dirname']."/".$name.'-analysis.html';	
+	$metadataFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$name.'-metadata.xml';
+	$analysisFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$name.'-analysis.html';
+	$analysisLink = DICTIONNAIRES_WEB.'/'.$_REQUEST['Dirname']."/".$name.'-analysis.html';
 
 	$parameters = 'Dirname='.$_REQUEST['Dirname'].'&Dictname='.$_REQUEST['Dictname'].'&Source='.$_REQUEST['Source'];
 	$parameters .= '&Targets='.$_REQUEST['Targets'].'&Authors='.$_REQUEST['Authors'].'&Administrators='.$_REQUEST['Administrators'];
@@ -20,21 +20,23 @@
 	if (!file_exists($metadataFile)) {
 		header('Location:creerVolume.php?'.$parameters);
 	}
-	
+
 	$modif = false;
 	if (!empty($_REQUEST['Administrators'])) {
 		$user=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:DEFAULT_TEST_USER;
 		$admins = preg_split("/[\s,;]+/", $_REQUEST['Administrators']);
-		$modif = in_array($user, $admins);
+		$modif = in_array($user, $admins) || (DEFAULT_TEST_USER != '' && $user == DEFAULT_TEST_USER);
 		if ($modif && (!empty($_REQUEST['Enregistrer']) || !empty($_REQUEST['AjoutLien']) || !empty($_REQUEST['AjoutCDMFreeElement']))) {
 			$Params = $_REQUEST;
 			$Params['Name'] = $name;
 			if (!empty($_REQUEST['AjoutLien'])) {
 				$LinkCopy = $CDMLink;
+				$LinkCopy['xpath'] = $Params['cdm-entry'] . '/translation-ref';
 				if (empty($Params['CDMLinks'])) {
 					$Params['CDMLinks'] = array();
 				}
 				array_push($Params['CDMLinks'],$LinkCopy);
+				var_dump($LinkCopy);
 			}
 			if (!empty($_REQUEST['AjoutCDMFreeElement'])) {
 				if (empty($Params['CDMFreeElementsName'])) {$Params['CDMFreeElementsName']=array();}
@@ -51,7 +53,7 @@
 			enregistrerVolume($Params);
 		}
 	}
-	
+
 	$Params = array();
 
 
@@ -68,7 +70,7 @@
 	$Params['CreationDate'] = $dict->getAttribute('creation-date');
 	$Params['InstallationDate'] = $dict->getAttribute('installation-date');
 	$Params['Format'] = $dict->getAttribute('format');
-	$Params['HwNumber'] = $dict->getAttribute('hw-number'); 
+	$Params['HwNumber'] = $dict->getAttribute('hw-number');
 	$Params['Authors'] = $dict->getElementsByTagName('authors')->item(0)->nodeValue;
 	$Params['Comments'] = $dict->getElementsByTagName('comments')->item(0)->nodeValue;
 	$administrators = $dict->getElementsByTagName('user-ref');
@@ -86,11 +88,11 @@
 					|| $nom == 'cdm-example' || $nom == 'cdm-idiom') {
 					$lang = $node->getAttributeNS(DML_PREFIX,'lang');
 					if ($lang == 'qaa' && empty($Params[$nom.'_'.$source])) {
-						$nom .= '_'.$source; 
+						$nom .= '_'.$source;
 						echo 'lang qaa:',$nom;
 					}
 					else {
-						$nom .= '_'.$lang; 
+						$nom .= '_'.$lang;
 					}
 				}
 				$Params[$nom] =  $node->getAttribute('xpath');
@@ -99,8 +101,9 @@
 				foreach ($node->childNodes as $linkNode) {
 					if ($linkNode->nodeType == XML_ELEMENT_NODE && $linkNode->nodeName == 'link') {
 						$newLink = array();
-						$newLink['name'] = $linkNode->getAttribute('name');
-						$newLink['xpath'] = $linkNode->getAttribute('xpath');
+						foreach ($linkNode->attributes as $attribute) {
+							$newLink[$attribute->nodeName] = $attribute->nodeValue;
+						}
 						foreach ($linkNode->childNodes as $linkValue) {
 							if ($linkValue->nodeType == XML_ELEMENT_NODE) {
 								$nom = $linkValue->nodeName;
@@ -151,7 +154,7 @@
 </header>
 <div id="partieCentrale">
 <?php
-	
+
 	$adresseDonnees = $modif?gettext('Adresse WebDAV pour mise à jour des données'):gettext('Adresse WebDAV pour accès aux données');
 	echo '<p>',$adresseDonnees,gettext(' : '),'<a href="',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'">',DICTIONNAIRES_DAV,'/',$Params['Dirname'],'</a></p>';
 	if ($modif) {
@@ -164,8 +167,8 @@
 <fieldset name="Gérer un volume">
 <legend><?php echo gettext('Gestion d\'un volume');?></legend>
 <div>
-	<p><?php echo gettext('Nom du dictionnaire'), gettext(' : ');?><?php affichep('Dictname')?>; 
-	<?php echo gettext('langue source'), gettext(' : ');?><?php echo $LANGUES[$source]?>; 
+	<p><?php echo gettext('Nom du dictionnaire'), gettext(' : ');?><?php affichep('Dictname')?>;
+	<?php echo gettext('langue source'), gettext(' : ');?><?php echo $LANGUES[$source]?>;
 	<?php echo gettext('langues cible'), gettext(' : ');?><?php foreach ($targets as $cible) {echo $LANGUES[$cible],', ';}?></p>
 	<p><?php echo gettext('Nom du volume'), gettext(' : ');?><?php affichep('Name')?></p>
 	<p><?php echo gettext('Nombre d\'entrées'), gettext(' : ');?><input type="text" id="HwNumber" name="HwNumber"  value="<?php affichep('HwNumber')?>"/>
@@ -204,12 +207,12 @@
 				echo '<li>',$element[0], ' : <input type="text" size="70" id="',$nom,'" name="',$nom,'"  value="', affichep($nom,$element[1]),'"/> ',$element[2],"\n";
 		  	}
 		  }
-		echo '		  </ul>';		  
+		echo '		  </ul>';
 		echo '<p>',gettext('Éléments CDM spécifiques à un volume'), gettext(' : '),' <input type="submit" name="AjoutCDMFreeElement" id="AjoutCDMFreeElement" value="+" /></p>';
 		  if (!empty($Params['CDMFreeElementsName'])) {
 			echo '<ul>';
 			$Valeurs = $Params['CDMFreeElementsValue'];
-			$i=0;			
+			$i=0;
 			foreach ($Params['CDMFreeElementsName'] as $nom) {
 				$valeur = $Valeurs[$i++];
 				echo '<li><input type="text" size="30" name="CDMFreeElementsName[]" value="', $nom,'"/> : ',"\n";
@@ -217,7 +220,7 @@
 			}
 		  }
 			echo '		  </ul>';
-			
+
 		echo '<p>',gettext('Liens vers d\'autres entrées'), gettext(' : '),' <input type="submit" name="AjoutLien" id="AjoutLien" value="+" /></p>';
 		if (empty($Params['CDMLinks'] )) {
 			$Params['CDMLinks']  = array();
@@ -225,8 +228,10 @@
 		$i = 0;
 		foreach ($Params['CDMLinks'] as $cdmlink) {
 			echo '<p>',gettext('Lien'),gettext(' : '),$i,'</p><ul> ';
-			foreach ($cdmlink as $nom => $valeur) {
-				echo '<li>',$CDMLinkInfo[$nom][0], ' : <input type="text" size="70" id="CDMLinks[',$i,'][',$nom,']" name="CDMLinks[',$i,'][',$nom,']"  value="', $valeur,'"/> ',$CDMLinkInfo[$nom][1],"\n";
+			foreach ($CDMLinkInfo as $nom => $tableau) {
+				$valeur = '';
+				if (!empty($cdmlink[$nom])) {$valeur = $cdmlink[$nom];}
+				echo '<li>',$tableau[0], gettext(' : '), '<input type="text" size="70" id="CDMLinks[',$i,'][',$nom,']" name="CDMLinks[',$i,'][',$nom,']"  value="', $valeur,'"/> ',$tableau[1],"\n";
 			}
 			$i++;
 			echo '</ul>';
@@ -258,13 +263,13 @@
 	 <?php echo gettext('Date de création'), gettext(' : ');?><input type="text"  size="50" name="CreationDate" value="<?php affichep('CreationDate',date('c'))?>" /><br/>
 	<?php echo gettext('Date d\'installation'), gettext(' : ');?><input type="text"  size="50" name="InstallationDate" value="<?php affichep('InstallationDate',date('c'))?>" /><br/>
 	<?php echo gettext('Auteurs'), gettext(' : ');?><input type="text"  size="100" name="Authors" value="<?php affichep('Authors')?>" /><br/>
-	<?php echo gettext('Administrateurs'), gettext(' : ');?><input type="text" size="100" id="Administrators" name="Administrators" value="<?php $u=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';affichep('Administrators',$u);?>"/><br/>	
+	<?php echo gettext('Administrateurs'), gettext(' : ');?><input type="text" size="100" id="Administrators" name="Administrators" value="<?php $u=!empty($_SERVER['PHP_AUTH_USER'])?$_SERVER['PHP_AUTH_USER']:'';affichep('Administrators',$u);?>"/><br/>
 	XmlschemaRef : <input type="text"  size="100" name="XmlschemaRef" value="<?php affichep('XmlschemaRef')?>" /><br/>
 	TemplateInterfaceRef : <input type="text"  size="100" name="TemplateInterfaceRef" value="<?php affichep('TemplateInterfaceRef')?>" /><br/>
 	<input name="Dictname" type="hidden" id="Dictname"  value="<?php affichep('Dictname')?>" />
 	<input name="Source" type="hidden" id="Source"  value="<?php affichep('Source')?>"/>
 	<input name="Targets" type="hidden" id="Targets"  value="<?php affichep('Targets')?>"/>
-	<?php 
+	<?php
 		$xsls = (!empty($Params['XslStylesheet']))?$Params['XslStylesheet']:array();
 		foreach ($xsls as $xsl) {
 			echo 'Stylesheet : <input type="text" name="XslStylesheet[]" value="',$xsl,'" /><br/>
@@ -287,9 +292,9 @@
 ?>
 
 <?php
-	
+
 	//require_once(RACINE_SITE . 'include/connexion.php');
-	
+
 	function affichep ($param,$default='') {
 		global $Params;
 		global $modif;
@@ -302,7 +307,7 @@
 		if (!empty($Params[$param]) && $Params[$param]==$option) echo ' selected="selected" ';
 		echo '>';
 	}
-	
+
 	function afficheLangues($option,$default='') {
 		if (empty($option)) {
 			$option= $default;
@@ -315,7 +320,7 @@
     		echo ">" . $LANGUES[$val] . "</option>\n";
 		}
 	}
-		
+
 	function creerVolume($params) {
 		$name = $params['Name'];
 		$volumeMetadata = enregistrerVolumeMetadata($params);
@@ -328,7 +333,7 @@
 			file_put_contents($myFile,stripslashes($params['Template']));
 		}
 	}
-	
+
 	function enregistrerVolume($params) {
 		if ($params['Format']=='xml' && (empty($params['cdm-volume'])
 											|| empty($params['cdm-entry'])
@@ -337,7 +342,7 @@
 		}
 		else {
 			$name = $params['Name'];
-			$metadataFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$name.'-metadata.xml';	
+			$metadataFile = DICTIONNAIRES_SITE.'/'.$_REQUEST['Dirname']."/".$name.'-metadata.xml';
 			if ($params['Format']=='xml' && empty($params['XslStylesheet'])) {
 				$filepath = DICTIONNAIRES_SITE.'/' . $params['Dirname'] . '/' . $name;
 				$pron = !empty($params['cdm-pronunciation'])?$params['cdm-pronunciation']:'';
@@ -348,7 +353,7 @@
 				createXslStylesheet($filepath,$params['cdm-entry'],$params['cdm-entry-id'],$params['cdm-headword'],
 					$pron,$pos,$example,$idiom, $sense, $params['Template']);
 				$params['XslStylesheet'] = array();
-				array_push($params['XslStylesheet'],$name);				
+				array_push($params['XslStylesheet'],$name);
 			}
 			if ($params['Format']=='xml' && (empty($params['XmlschemaRef']) || !file_exists($params['XmlschemaRef']))  && !empty($params['Template'])) {
 				$filepath = DICTIONNAIRES_SITE.'/' . $params['Dirname'] . '/' . strtolower($name);
@@ -358,10 +363,10 @@
 				$params['XmlschemaRef'] = pathinfo($filepath, PATHINFO_BASENAME);
 			}
 			creerVolume($params);
-			$dataFileName = strtolower($name). '.'.$params['Format'];			
+			$dataFileName = strtolower($name). '.'.$params['Format'];
 			}
 	}
-	
+
 	function creerXmlschema($schema, $xmlFile) {
 		$bugMAMP = "export DYLD_LIBRARY_PATH=\"\"; ";
 		$commande = 'java -jar ' . RACINE_SITE . 'jar/trang.jar ' .  $xmlFile . ' ' . $schema . ' 2>&1';
@@ -371,7 +376,7 @@
 			echo '<p style="color:red; font-size:1.2em; font-weight: bold;">Error with jar/trang.jar when generating the XSL schema: <br/><code style="color:black;">',$output,'</code></p>';
 		}
 	}
-	
+
 	function compterEntrees($params) {
 		$dataFileName = strtolower($params['Name']). '.'.$params['Format'];
 		$filepath = DICTIONNAIRES_SITE.'/' . $params['Dirname'] . '/' . $dataFileName;
@@ -379,7 +384,7 @@
 		$baliseEntree = substr($pointeurCDMEntree,strrpos($pointeurCDMEntree,'/')+1);
 		$baliseEntree = '</'.$baliseEntree.'>';
 		$result = `grep -c '$baliseEntree' $filepath`;
-		return $result;			
+		return $result;
 	}
 ?>
 </div>

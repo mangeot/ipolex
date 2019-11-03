@@ -8,13 +8,11 @@ use warnings;
 use utf8;
 
 # À faire : use of PerlSAX instead of the generic XML::Parser because of the use of line numbers
-# et aussi parce que l'événement "characters" peut être appelé plusieurs fois pour un seul élément !
 # use XML::Parser::PerlSAX;
-# voir parse.pl et XMLReader.pm pb: comment passer une variable globale au parser ?
 use XML::Parser;
 use Unicode::Collate;
-binmode STDOUT, ':utf8'; 
-binmode STDERR, ':utf8'; 
+binmode STDOUT, ':utf8';
+binmode STDERR, ':utf8';
 
 my $maxAffichageListeValeurs = 50;
 my $maxMemoireListeValeurs = 1000;
@@ -24,7 +22,6 @@ my $maxMemoireListeValeurs = 1000;
 my $root;
 my $Encoding = 'UTF-8';
 my @tree_stack;
-my $call_characters = 0;
 my $Collator = Unicode::Collate->new();
 
 my $parser = XML::Parser->new(
@@ -71,13 +68,13 @@ print '<?xml version="1.0"?>
 			<h1>Rapport d\'analyse du dictionnaire</h1>
 		</header>
 		<section id="signature">
-			<h2>Signature</h2> 
+			<h2>Signature</h2>
 			<pre>';
 &print_signature($root,0);
 
 print '</pre>
 		</section>';
-		
+
 print '		<section id="elementsArray">
 			<h2>Tableau des éléments</h2>
 				<table>
@@ -85,9 +82,9 @@ print '		<section id="elementsArray">
 						<tr><th>Nom</th><th>Fréquence</th></tr>
 					</thead>
 					<tbody>';
-					
+
 my %elementsArray;
-&buildElementsArray($root);	
+&buildElementsArray($root);
 
 foreach my $key (sort (keys(%elementsArray))) {
    print "						<tr><td>$key</td><td class='f'>",$elementsArray{$key},"</td></tr>\n";
@@ -127,7 +124,7 @@ my @tableauPronun;
 &guess_pronun($entry,0,$entryXpath, $entryCompte, $headwordName);
 @tableauPronun = reverse sort { $a->{ match } <=> $b->{ match } } @tableauPronun;
 my @tableauPos;
-&guess_pos($entry,0,$entryXpath, $entryCompte,$headwordName);
+&guess_pos($entry,0,$entryXpath, $entryCompte);
 @tableauPos = reverse sort { $a->{ match } <=> $b->{ match } } @tableauPos;
 my @tableauSens;
 &guess_sense($entry,0,$entryXpath, $entryCompte);
@@ -174,13 +171,13 @@ print "\t\t\t<tr><td>cdm-example</td><td>$tableauEx[0]->{ xpath }</td></tr>\n";
 print '				</tbody>
 			</table>
 		</section>
-';	
+';
 	print '	</body>
 ';
 
 my $entryName = $tableauEntry[0]->{ name };
 print '<volume-metadata encoding="',$Encoding,'" hwnumber="',$elementsArray{$entryName}, '"
-	xmlns="http://www-clips.imag.fr/geta/services/dml" 
+	xmlns="http://www-clips.imag.fr/geta/services/dml"
 	xmlns:d="http://www-clips.imag.fr/geta/services/dml">
 			<cdm-elements>
 ';
@@ -225,7 +222,7 @@ print "\n</template-entry>\n";
 
 print "\n</html>";
 
-print STDERR "Fin de l'écriture du résultat\n";	
+print STDERR "Fin de l'écriture du résultat";
 
 sub xmldecl {
     my ( $parser, $version, $encoding, $standalone ) = @_;
@@ -235,7 +232,6 @@ sub xmldecl {
 sub start_element {
 
     my ( $parser, $element, @attrval ) = @_;
-    $call_characters = 0;
 
 	my $parent;
 	my $leaf;
@@ -247,7 +243,7 @@ sub start_element {
 		$leaf->{ order } = keys %{$parent->{ child }};
 		$leaf->{ name } = $element;
 	}
-	$leaf->{ count }++;	
+	$leaf->{ count }++;
 	if ($leaf->{ count } % 1000 == 0) {
 		print STDERR $leaf->{ count }, ' ', $leaf->{ name }, ,' analysés', "\n";
 	}
@@ -277,16 +273,13 @@ sub start_element {
 
 sub characters {
     my ($parser, $string) = @_;
-	$call_characters++;
 	my $parent = $tree_stack[ -1 ];
 	$string =~ s/^[\s]+//;
 	$string =~ s/[\s]+$//;
 	if (length($string)>0) {
 		my @words = split(/\s+/, $string);
 		my $words = @words;
-		if ($call_characters ==1) { 
-			$parent->{ charnumber }++;
-		}
+		$parent->{ charnumber }++;
 		$parent->{ charsize } += length($string);
 		$parent->{ words } += $words;
     	my $prev = $parent->{ previous };
@@ -294,7 +287,7 @@ sub characters {
     		$parent->{ sup }++;
     	}
     	$parent->{ previous } = $string;
-    	if ($parent->{ charnumber }<$maxMemoireListeValeurs && $call_characters ==1) {
+    	if ($parent->{ charnumber }<$maxMemoireListeValeurs) {
     		$parent->{ values } { $string }++;
     	}
 	}
@@ -304,7 +297,6 @@ sub characters {
 sub end_element {
     $root = pop @tree_stack;
 }
-
 
 sub XMLEntities {
 	my $string = $_[0];
@@ -337,7 +329,7 @@ sub print_signature {
 			}
 			print ')';
 		}
-	}	
+	}
 	print '&gt;';
 	my $charnumber = $elt->{ charnumber };
 	my $charsize = $elt->{ charsize };
@@ -349,7 +341,7 @@ sub print_signature {
 		printf("%.1f", $charsize/$charnumber);
 		print ';words:';
 		printf("%.0f", $words/$charnumber);
-		print ';', $diff,'≠',$sup,'≥',$charnumber; 
+		print ';', $diff,'≠',$sup,'≥',$charnumber;
 		if ($diff<$maxAffichageListeValeurs) {
 			print '(';
 			my $i=0;
@@ -397,7 +389,7 @@ sub print_template {
             print $firstkey;
         }
 		print '"';
-	}	
+	}
 	print '>';
 	foreach my $child (sort { $a->{ order } <=> $b->{ order } } values %{$elt->{ child }}) {
 		print "\n";
@@ -419,10 +411,10 @@ sub guess_entry {
 	my $level = $_[1];
 	my $xpath = $_[2];
 	my $comptemax = $_[3];
-	
+
 	my $match = 0.1;
-		
-	if ($elt->{ count } > $comptemax) {
+
+	if ($elt->{ count } >= $comptemax) {
 		$comptemax = $elt->{ count };
 		$xpath .= '/' . $elt->{ name };
 	    if ($comptemax >1) {
@@ -488,13 +480,13 @@ sub guess_headword {
 	my $word = $elt->{ words };
 	my $charnumber = $elt->{ charnumber };
 	my $diff = keys %{$elt->{ values }};
-	
+
 	my $match = 0;
-	
+
 	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
 
 	if ($level >0 && $charnumber) {       #  descendant de entry && nombre d'entry == nombre d'element
-		
+
 		# autant de headword que de entry
 		if ($elt->{ count } == $compte) {
 			$match += 0.4;
@@ -502,31 +494,31 @@ sub guess_headword {
 		elsif (abs($elt->{ count } - $compte)< 0.01){
 			$match += 0.3;
 		}
-		
+
 		if (($elt->{ name } =~ /headword/) || ($elt->{ name } =~ /vedette/)){
 			# print " match nom; \n";
 			$match += 0.4;
 		}
-		
+
 		# peu de mots
 		 if (($word/$charnumber >= 1.0) && ($word/$charnumber <= 3.0)){
 			# print " match number of words; \n";
 			$match += 0.3;
 		 }
-		 
+
 		 if ($elt->{ count }  < $maxMemoireListeValeurs) {
 			if ($elt->{ count } / $diff < 1.5) {
 				# beaucoup de valeurs différentes
-				$match += 0.3 
+				$match += 0.3
 			}
 		}
 		else {
 			if ($maxMemoireListeValeurs / $diff < 1.5) {
 				# beaucoup de valeurs différentes
-				$match += 0.3 
+				$match += 0.3
 			}
 		}
-		 
+
 		 # le headword est souvent le premier de ses frères
 		 $match += 0.1 / ($elt->{ order } +1);
 
@@ -535,7 +527,7 @@ sub guess_headword {
 		$tableau_elt->{ level } = $level;
 		$tableau_elt->{ name } = $elt->{ name };
 		$tableau_elt->{ count } = $elt->{ count };
-		$tableau_elt->{ match } = $match / $level;	 # se trouve en priorité dans le début de l'arbre	
+		$tableau_elt->{ match } = $match / $level;	 # se trouve en priorité dans le début de l'arbre
 		$tableau_elt->{ xpath } = $xpath;
 
 		push @tableauHeadword, $tableau_elt;
@@ -550,6 +542,7 @@ sub guess_headword_hn {
 	my $elt = $_[0];
 	my $xpath = $_[1];
 	foreach my $attribute (keys %{ $elt->{ attribute }}) {
+		print STDERR "guess_headword_hn : $attribute\n";
 		my $match = 0;
 		my $attr = $elt->{ attribute }{ $attribute };
 		my $diff = keys %{$attr->{ values }};
@@ -566,7 +559,7 @@ sub guess_headword_hn {
 			}
 		}
 		$match += $num;
-		
+
 		my $tableau_elt;
 		$tableau_elt->{ element } = $attr;
 		$tableau_elt->{ name } = $attribute;
@@ -586,7 +579,7 @@ sub guess_pronun {
 	my $compte = $_[3];    # 'count' of entry
 	my $headword = $_[4];
 	my $match = 0;
-	
+
 	my $charnumber = $elt->{ charnumber };
 	my $charsize = $elt->{ charsize };
 	my $words = $elt->{ words };
@@ -595,31 +588,31 @@ sub guess_pronun {
 	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
 
 	if ($level >0 && $elt->{ name } ne $headword && $charnumber && $words) { # descendant de entry
- 		
+
  		#  nombre de pronunciation proche de celui de headword
-		if (($elt->{ count } > ($compte - $compte*0.02)) && ($elt->{ count } < ($compte + $compte*0.02))) {      
+		if (($elt->{ count } > ($compte - $compte*0.02)) && ($elt->{ count } < ($compte + $compte*0.02))) {
 			$match += 0.2;
 		}
 		if ($elt->{ name } =~ /pron/){
 			# print " match nom; \n";
 			$match += 0.7;
 		}
-		
+
 		# peu de mots
 		if (($words/$charnumber)<2) {
 			$match += 0.2;
 		}
-		
+
 		if ($elt->{ count }  < $maxMemoireListeValeurs) {
 			if ($elt->{ count } / $diff < 1.5) {
 				# beaucoup de valeurs différentes
-				$match += 0.3 
+				$match += 0.3
 			}
 		}
 		else {
 			if ($maxMemoireListeValeurs / $diff < 1.5) {
 				# beaucoup de valeurs différentes
-				$match += 0.3 
+				$match += 0.3
 			}
 		}
 
@@ -627,10 +620,10 @@ sub guess_pronun {
 		$tableau_elt->{ level } = $level;
 		$tableau_elt->{ name } = $elt->{ name };
 		$tableau_elt->{ count } = $elt->{ count };
-		$tableau_elt->{ match } = $match / $level;		
+		$tableau_elt->{ match } = $match / $level;
 		$tableau_elt->{ xpath } = $xpath;
 		push @tableauPronun, $tableau_elt;
-	
+
 	}
 	foreach my $child (reverse sort { $a->{ count } <=> $b->{ count } } values %{$elt->{ child }}) {
 		&guess_pronun($child, $level+1, $xpath, $compte, $headword);
@@ -643,31 +636,30 @@ sub guess_pos {
 	my $level = $_[1];
 	my $xpath = $_[2];
 	my $compte = $_[3];    # 'count' of entry
-	my $headword = $_[4];
 
 	my $charnumber = $elt->{ charnumber };
 	my $charsize = $elt->{ charsize };
 	my $words = $elt->{ words };
-	
+
 	my $match = 0;
 	my $diff = keys %{$elt->{ values }};
 	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
 	if ($level >0 && $charnumber) {
 
-		if ($elt->{ count } > $compte * 0.9 && $elt->{ name } ne $headword) {       # fréquence de POS est élevée >= HW
-	 		
+		if ($elt->{ count } >= $compte) {       # fréquence de POS est élevée >= HW
+
 			$match += 0.1;
 			if ($elt->{ name } =~ /pos/ || $elt->{ name } =~ /gram/ || $elt->{ name } =~ /cat/){
 				# print " match nom; \n";
 				$match += 0.45;
 			}
-			
+
 			# peu de mots
 			if (($words/$charnumber) <3) {
 				$match += 0.2;
 			}
-			
-			# peu de valeurs différentes
+
+			# beaucoup de valeurs différentes
 			my $ratiodiff = 0;
 			if ($elt->{ count }  < $maxMemoireListeValeurs) {
 				$ratiodiff = $elt->{ count } / $diff;
@@ -676,19 +668,18 @@ sub guess_pos {
 				$ratiodiff = $maxMemoireListeValeurs / $diff;
 			}
 			$match += 0.007 * $ratiodiff;
-			#print STDERR "guess_pos: ", $elt->{ name }, " diff: " , $diff, "count: ",$elt->{ count }, " ratiodiff: ", $ratiodiff, " match: ", $match,"\n";
-			
+
 			my $tableau_elt;
 			$tableau_elt->{ level } = $level;
 			$tableau_elt->{ name } = $elt->{ name };
 			$tableau_elt->{ count } = $elt->{ count };
-			$tableau_elt->{ match } = $match; # / $level;	 # se trouve en priorité dans le début de l'arbre			
+			$tableau_elt->{ match } = $match; # / $level;	 # se trouve en priorité dans le début de l'arbre
 			$tableau_elt->{ xpath } = $xpath;
 			push @tableauPos, $tableau_elt;
 		}
 	}
 	foreach my $child (values %{$elt->{ child }}) {
-		&guess_pos($child, $level+1, $xpath, $compte, $headword);
+		&guess_pos($child, $level+1, $xpath, $compte);
 	}
 }
 
@@ -700,20 +691,20 @@ sub guess_sense {
 	my $compte = $_[3];    # 'count' of entry
 
 	my $charnumber = $elt->{ charnumber };
-	
+
 	my $match = 0;
 	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
-	if ($level >0 && !$charnumber){  	
+	if ($level >0 && !$charnumber){
 
 		# il y a plus de sense que de entry
-		if ($elt->{ count } > 1.5 * $compte) {       
+		if ($elt->{ count } > 1.5 * $compte) {
 			$match += 0.3;
 		}
 		if ($elt->{ name } =~ /sens/){
 			# print " match nom; \n";
 			$match += 0.75;
 		}
-		
+
 		# l'élément a un attribut avec liste de valeurs (ressemblant au numéro de sens)
 		foreach my $attribute ($Collator->sort(keys %{ $elt->{ attribute }})) {
 			my $attr = $elt->{ attribute }{ $attribute };
@@ -721,9 +712,9 @@ sub guess_sense {
 			if ($diff<$maxAffichageListeValeurs) {
 				$match += 0.3
 			}
-		}	
+		}
 
-	
+
 		my $tableau_elt;
 		$tableau_elt->{ element } = $elt;
 		$tableau_elt->{ level } = $level;
@@ -752,20 +743,20 @@ sub guess_def {
 	my $headword = $_[4];
 	my $match = 0;
 	my $diff = keys %{$elt->{ values }};
-		
+
 	my $charnumber = $elt->{ charnumber };
 	my $charsize = $elt->{ charsize };
 	my $words = $elt->{ words };
 	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
 	if ($level >0 && $elt->{ name } ne $headword && $charnumber && ($words >= 2)) {
-       
+
        #  nombre de def proche de entry ou supérieur
        	if ($elt->{ count } >= $compte * 0.9) {
        			$match += 0.3;
 #       			print $elt->{ name }, " : nombre de def proche de entry ou supérieur : " .$elt->{ count } . " $compte et $match\n";
 		}
 
-		# beaucoup de mots 
+		# beaucoup de mots
 		#$match += (0.01 * $words/$charnumber);
         #print $elt->{ name }, " : beaucoup de mots : $words et $match\n";
 		# beaucoup de caractères
@@ -780,7 +771,7 @@ sub guess_def {
 			# print " match nom; \n";
 			$match += 0.3;
 		}
-		
+
 		# beaucoup de valeurs différentes
 		if ($elt->{ count }  < $maxMemoireListeValeurs) {
 			if ($elt->{ count } / $diff < 1.2) {
@@ -790,7 +781,7 @@ sub guess_def {
 		}
 		else {
 			if ($maxMemoireListeValeurs / $diff < 1.2) {
-				$match += 0.3; 
+				$match += 0.3;
 #   			print $elt->{ name }, " : beaucoup de valeurs différentes : $match\n";
 			}
 		}
@@ -801,12 +792,12 @@ sub guess_def {
 		 # et tôt dans l'arbre
 		 $match += 0.1 / $level;
  #      	print $elt->{ name }, " : définition tôt dans l'arbre : $level et $match\n";
-	
+
 		my $tableau_elt;
 		$tableau_elt->{ level } = $level;
 		$tableau_elt->{ name } = $elt->{ name };
 		$tableau_elt->{ count } = $elt->{ count };
-		$tableau_elt->{ match } = $match;			
+		$tableau_elt->{ match } = $match;
 		$tableau_elt->{ xpath } = $xpath;
 		push @tableauDef, $tableau_elt;
 	}
@@ -824,20 +815,20 @@ sub guess_example {
 	my $headword = $_[4];
 	my $match = 0;
 	my $diff = keys %{$elt->{ values }};
-		
+
 	my $charnumber = $elt->{ charnumber };
 	my $charsize = $elt->{ charsize };
 	my $words = $elt->{ words };
 	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
 	if ($level >0 && $elt->{ name } ne $headword && $charnumber && ($words >= 2)) {
-       
+
        #  nombre de exemple proche de entry ou supérieur
        	if ($elt->{ count } >= $compte * 0.4) {
        			$match += 0.3;
        	#		print $elt->{ name }, " : nombre de ex proche de entry : " .$elt->{ count } . " $compte et $match\n";
 		}
 
-		# beaucoup de mots 
+		# beaucoup de mots
 		$match += (0.01 * $words/$charnumber);
         # print $elt->{ name }, " : beaucoup de mots : $words et $match\n";
 		# beaucoup de caractères
@@ -851,7 +842,7 @@ sub guess_example {
 		elsif ($xpath =~ /\/ex\//) {
 			$match += 0.2;
 		}
-		
+
 		# beaucoup de valeurs différentes
 		if ($elt->{ count }  < $maxMemoireListeValeurs) {
 			if ($elt->{ count } / $diff < 1.2) {
@@ -861,7 +852,7 @@ sub guess_example {
 		}
 		else {
 			if ($maxMemoireListeValeurs / $diff < 1.2) {
-				$match += 0.3; 
+				$match += 0.3;
    		#	print $elt->{ name }, " : beaucoup de valeurs différentes : $match\n";
 			}
 		}
@@ -872,12 +863,12 @@ sub guess_example {
 		 # et tard dans l'arbre
 		 $match += 0.01 * $level;
  	    # 	print $elt->{ name }, " : exemple tard dans l'arbre : $level et $match\n";
-	
+
 		my $tableau_elt;
 		$tableau_elt->{ level } = $level;
 		$tableau_elt->{ name } = $elt->{ name };
 		$tableau_elt->{ count } = $elt->{ count };
-		$tableau_elt->{ match } = $match;			
+		$tableau_elt->{ match } = $match;
 		$tableau_elt->{ xpath } = $xpath;
 		push @tableauEx, $tableau_elt;
 	}
@@ -891,4 +882,3 @@ sub guess_example_block {
 	$exampleXpath =~ s/\/[^\/]+$//;
 	return $exampleXpath;
 }
-

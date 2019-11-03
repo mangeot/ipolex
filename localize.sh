@@ -10,5 +10,5 @@ msgmerge -U locale/en_US.UTF-8/LC_MESSAGES/default.po ipolex.pot
 msgfmt -c -v -o locale/fr_FR.UTF-8/LC_MESSAGES/default.mo  locale/fr_FR.UTF-8/LC_MESSAGES/default.po
 msgfmt -c -v -o locale/en_US.UTF-8/LC_MESSAGES/default.mo  locale/en_US.UTF-8/LC_MESSAGES/default.po
 
-open locale/fr_FR.UTF-8/LC_MESSAGES/default.po
-open locale/en_US.UTF-8/LC_MESSAGES/default.po
+open locale/fr_FR.UTF-8/LC_MESSAGES/default.po &
+open locale/en_US.UTF-8/LC_MESSAGES/default.po &
