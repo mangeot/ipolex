@@ -373,7 +373,9 @@
 
 		if (count($namespacesdiff) >0) {
 			foreach ($namespacesdiff as $nsprefix => $namespace) {
-				$stylesheetxml->addAttribute("xmlns:xmlns:".$nsprefix, $namespace);
+				if ($nsprefix != '') {
+					$stylesheetxml->addAttribute("xmlns:xmlns:".$nsprefix, $namespace);					
+				}
 			}
 			$stylesheet =$stylesheetxml->asXML();
 		}
