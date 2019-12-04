@@ -646,7 +646,7 @@ sub guess_pos {
 	if ($level > 0) {$xpath .= '/' . $elt->{ name };};
 	if ($level >0 && $charnumber) {
 
-		if ($elt->{ count } >= $compte) {       # fréquence de POS est élevée >= HW
+		if ($elt->{ count } >= ($compte*0.95)) {       # fréquence de POS est élevée >= HW*0,95
 
 			$match += 0.1;
 			if ($elt->{ name } =~ /pos/ || $elt->{ name } =~ /gram/ || $elt->{ name } =~ /cat/){
